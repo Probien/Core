@@ -39,3 +39,7 @@ func ConnectDB() {
 func GetDBInstance() *gorm.DB {
 	return database
 }
+
+func Migrate() {
+	GetDBInstance().AutoMigrate()
+}
