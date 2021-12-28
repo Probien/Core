@@ -1,27 +1,30 @@
 package application
 
 import (
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/category/domain"
-	"github.com/JairDavid/Probien-Backend/core/category/infrastructure/persistance"
+	"github.com/gin-gonic/gin"
 )
 
-func GetById() (domain.Category, error) {
-	return persistance.NewCategoryRepositoryImpl(config.GetDBInstance()).GetById()
+type CategoryInteractor struct {
+	repository domain.CategoryRepository
 }
 
-func GetAll() ([]domain.Category, error) {
-	return persistance.NewCategoryRepositoryImpl(config.GetDBInstance()).GetAll()
+func (CI *CategoryInteractor) GetById(c *gin.Context) (domain.Category, error) {
+	return CI.repository.GetById(c)
 }
 
-func Create() (domain.Category, error) {
-	return persistance.NewCategoryRepositoryImpl(config.GetDBInstance()).Create()
+func (CI *CategoryInteractor) GetAll() ([]domain.Category, error) {
+	return CI.repository.GetAll()
 }
 
-func Delete() (domain.Category, error) {
-	return persistance.NewCategoryRepositoryImpl(config.GetDBInstance()).Delete()
+func (CI *CategoryInteractor) Create(c *gin.Context) (domain.Category, error) {
+	return CI.repository.Create(c)
 }
 
-func Update() (domain.Category, error) {
-	return persistance.NewCategoryRepositoryImpl(config.GetDBInstance()).Update()
+func (CI *CategoryInteractor) Delete(c *gin.Context) (domain.Category, error) {
+	return CI.repository.Delete(c)
+}
+
+func (CI *CategoryInteractor) Update(c *gin.Context) (domain.Category, error) {
+	return CI.repository.Update(c)
 }

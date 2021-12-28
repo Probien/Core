@@ -2,6 +2,7 @@ package persistance
 
 import (
 	"github.com/JairDavid/Probien-Backend/core/category/domain"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -13,18 +14,18 @@ func NewCategoryRepositoryImpl(db *gorm.DB) domain.CategoryRepository {
 	return &CategoryRepositoryImpl{database: db}
 }
 
-func (r *CategoryRepositoryImpl) GetById() (domain.Category, error) {
+func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (domain.Category, error) {
 	return domain.Category{}, nil
 }
 func (r *CategoryRepositoryImpl) GetAll() ([]domain.Category, error) {
 	return []domain.Category{}, nil
 }
-func (r *CategoryRepositoryImpl) Create() (domain.Category, error) {
+func (r *CategoryRepositoryImpl) Create(c *gin.Context) (domain.Category, error) {
 	return domain.Category{}, nil
 }
-func (r *CategoryRepositoryImpl) Delete() (domain.Category, error) {
+func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (domain.Category, error) {
 	return domain.Category{}, nil
 }
-func (r *CategoryRepositoryImpl) Update() (domain.Category, error) {
+func (r *CategoryRepositoryImpl) Update(c *gin.Context) (domain.Category, error) {
 	return domain.Category{}, nil
 }

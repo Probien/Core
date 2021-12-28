@@ -1,8 +1,10 @@
 package domain
 
+import "github.com/gin-gonic/gin"
+
 type PawnOrderRepository interface {
-	GetById() (PawnOrder, error)
+	GetById(c *gin.Context) (PawnOrder, error)
 	GetAll() ([]PawnOrder, error)
-	Create() (PawnOrder, error)
-	Update() (PawnOrder, error)
+	Create(c *gin.Context) (PawnOrder, error)
+	Update(c *gin.Context) (PawnOrder, error)
 }

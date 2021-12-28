@@ -1,24 +1,26 @@
 package application
 
 import (
-	"github.com/JairDavid/Probien-Backend/config"
-
 	"github.com/JairDavid/Probien-Backend/core/product/domain"
-	"github.com/JairDavid/Probien-Backend/core/product/infrastructure/persistance"
+	"github.com/gin-gonic/gin"
 )
 
-func GetById() (domain.Product, error) {
-	return persistance.NewProductRepositoryImpl(config.GetDBInstance()).GetById()
+type ProductInteractor struct {
+	repository domain.ProductRepository
 }
 
-func GetAll() ([]domain.Product, error) {
-	return persistance.NewProductRepositoryImpl(config.GetDBInstance()).GetAll()
+func (PI *ProductInteractor) GetById(c *gin.Context) (domain.Product, error) {
+	return PI.repository.GetById(c)
 }
 
-func Create() ([]domain.Product, error) {
-	return persistance.NewProductRepositoryImpl(config.GetDBInstance()).Create()
+func (PI *ProductInteractor) GetAll() ([]domain.Product, error) {
+	return PI.repository.GetAll()
 }
 
-func Update() (domain.Product, error) {
-	return persistance.NewProductRepositoryImpl(config.GetDBInstance()).Update()
+func (PI *ProductInteractor) Create(c *gin.Context) ([]domain.Product, error) {
+	return PI.repository.Create(c)
+}
+
+func (PI *ProductInteractor) Update(c *gin.Context) (domain.Product, error) {
+	return PI.repository.Update(c)
 }

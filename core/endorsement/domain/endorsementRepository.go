@@ -1,7 +1,9 @@
 package domain
 
+import "github.com/gin-gonic/gin"
+
 type EndorsementRepository interface {
-	GetById() (Endorsement, error)
+	GetById(c *gin.Context) (Endorsement, error)
 	GetAll() ([]Endorsement, error)
-	Create() (Endorsement, error)
+	Create(c *gin.Context) (Endorsement, error)
 }

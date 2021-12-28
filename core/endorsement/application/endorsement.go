@@ -1,19 +1,22 @@
 package application
 
 import (
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/endorsement/domain"
-	"github.com/JairDavid/Probien-Backend/core/endorsement/infrastructure/persistance"
+	"github.com/gin-gonic/gin"
 )
 
-func GetById() (domain.Endorsement, error) {
-	return persistance.NewEndorsementRepositoryImpl(config.GetDBInstance()).GetById()
+type EndorsemenInteractor struct {
+	repository domain.EndorsementRepository
 }
 
-func GetAll() ([]domain.Endorsement, error) {
-	return persistance.NewEndorsementRepositoryImpl(config.GetDBInstance()).GetAll()
+func (EI *EndorsemenInteractor) GetById(c *gin.Context) (domain.Endorsement, error) {
+	return EI.repository.GetById(c)
 }
 
-func Create() (domain.Endorsement, error) {
-	return persistance.NewEndorsementRepositoryImpl(config.GetDBInstance()).Create()
+func (EI *EndorsemenInteractor) GetAll() ([]domain.Endorsement, error) {
+	return EI.repository.GetAll()
+}
+
+func (EI *EndorsemenInteractor) Create(c *gin.Context) (domain.Endorsement, error) {
+	return EI.repository.Create(c)
 }

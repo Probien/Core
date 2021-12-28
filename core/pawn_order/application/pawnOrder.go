@@ -1,23 +1,26 @@
 package application
 
 import (
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/pawn_order/domain"
-	"github.com/JairDavid/Probien-Backend/core/pawn_order/infrastructure/persistance"
+	"github.com/gin-gonic/gin"
 )
 
-func GetById() (domain.PawnOrder, error) {
-	return persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance()).GetById()
+type PawnOrderInteractor struct {
+	repository domain.PawnOrderRepository
 }
 
-func GetAll() ([]domain.PawnOrder, error) {
-	return persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance()).GetAll()
+func (PI *PawnOrderInteractor) GetById(c *gin.Context) (domain.PawnOrder, error) {
+	return PI.repository.GetById(c)
 }
 
-func Create() (domain.PawnOrder, error) {
-	return persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance()).Create()
+func (PI *PawnOrderInteractor) GetAll() ([]domain.PawnOrder, error) {
+	return PI.repository.GetAll()
 }
 
-func Update() (domain.PawnOrder, error) {
-	return persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance()).Update()
+func (PI *PawnOrderInteractor) Create(c *gin.Context) (domain.PawnOrder, error) {
+	return PI.repository.Create(c)
+}
+
+func (PI *PawnOrderInteractor) Update(c *gin.Context) (domain.PawnOrder, error) {
+	return PI.repository.Update(c)
 }

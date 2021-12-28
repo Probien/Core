@@ -1,23 +1,26 @@
 package application
 
 import (
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/employee/domain"
-	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/persistance"
+	"github.com/gin-gonic/gin"
 )
 
-func GetById() (domain.Employee, error) {
-	return persistance.NewEmployeeRepositoryImpl(config.GetDBInstance()).GetById()
+type EmployeeInteractor struct {
+	repository domain.EmployeeRepository
 }
 
-func GetAll() ([]domain.Employee, error) {
-	return persistance.NewEmployeeRepositoryImpl(config.GetDBInstance()).GetAll()
+func (EI *EmployeeInteractor) GetById(c *gin.Context) (domain.Employee, error) {
+	return EI.repository.GetById(c)
 }
 
-func Create() (domain.Employee, error) {
-	return persistance.NewEmployeeRepositoryImpl(config.GetDBInstance()).Create()
+func (EI *EmployeeInteractor) GetAll() ([]domain.Employee, error) {
+	return EI.repository.GetAll()
 }
 
-func Update() (domain.Employee, error) {
-	return persistance.NewEmployeeRepositoryImpl(config.GetDBInstance()).Update()
+func (EI *EmployeeInteractor) Create(c *gin.Context) (domain.Employee, error) {
+	return EI.repository.Create(c)
+}
+
+func (EI *EmployeeInteractor) Update(c *gin.Context) (domain.Employee, error) {
+	return EI.repository.Update(c)
 }
