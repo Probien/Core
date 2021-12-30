@@ -14,7 +14,7 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) domain.EmployeeRepository {
 	return &EmployeeRepositoryImpl{database: db}
 }
 
-func (r *EmployeeRepositoryImpl) GetById(c *gin.Context) (domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (domain.Employee, error) {
 	return domain.Employee{}, nil
 }
 

@@ -8,7 +8,7 @@ type Customer struct {
 	FirstName  string `gorm:"type:varchar(20);not null"`
 	SecondName string `gorm:"type:varchar(20);not null"`
 	Address    string `gorm:"type:varchar(50);not null"`
-	Phone      string `gorm:"type:varchar(10);not null"`
+	Phone      string `gorm:"type:varchar(10);unique;not null"`
 	PawnOrders []PawnOrder
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

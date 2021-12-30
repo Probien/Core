@@ -11,6 +11,7 @@ import (
 )
 
 func Setup(s *gin.Engine) {
+
 	v1 := *s.Group("/probien/api/v1")
 	{
 		category.CategoryHandler(&v1)

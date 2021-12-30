@@ -10,7 +10,7 @@ type EmployeeInteractor struct {
 }
 
 func (EI *EmployeeInteractor) GetById(c *gin.Context) (domain.Employee, error) {
-	return EI.repository.GetById(c)
+	return EI.repository.GetByEmail(c)
 }
 
 func (EI *EmployeeInteractor) GetAll() ([]domain.Employee, error) {
