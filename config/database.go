@@ -19,7 +19,7 @@ var (
 func ConnectDB() {
 	lock.Do(
 		func() {
-			db, err := gorm.Open(postgres.Open("host=localhost user=postgres password=root dbname=probien port=5432 sslmode=disable"), &gorm.Config{})
+			db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
 			database = db
 			if err != nil {
 				log.Fatal(err)
