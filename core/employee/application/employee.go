@@ -38,7 +38,8 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
 	return token
 }
 
-func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, bool) {
+func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, error) {
+
 	return EI.repository.Login(c)
 }
 
