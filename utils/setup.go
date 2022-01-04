@@ -3,7 +3,7 @@ package utils
 import (
 	category "github.com/JairDavid/Probien-Backend/core/category/interfaces"
 	customer "github.com/JairDavid/Probien-Backend/core/customer/interfaces"
-	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/jwt"
+	authenticator "github.com/JairDavid/Probien-Backend/core/employee/infrastructure/jwt"
 	employee "github.com/JairDavid/Probien-Backend/core/employee/interfaces"
 	endorsement "github.com/JairDavid/Probien-Backend/core/endorsement/interfaces"
 	pawnOrder "github.com/JairDavid/Probien-Backend/core/pawn_order/interfaces"
@@ -14,7 +14,7 @@ import (
 func Setup(s *gin.Engine) {
 
 	v1 := *s.Group("/probien/api/v1")
-	v1.Use(jwt.AuthJWT())
+	v1.Use(authenticator.AuthJWT())
 	{
 		category.CategoryHandler(&v1)
 		customer.CustomerHandler(&v1)

@@ -14,6 +14,10 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) domain.EmployeeRepository {
 	return &EmployeeRepositoryImpl{database: db}
 }
 
+func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, bool) {
+	return domain.Employee{}, true
+}
+
 func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (domain.Employee, error) {
 	return domain.Employee{}, nil
 }
