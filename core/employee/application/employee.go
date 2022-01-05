@@ -4,14 +4,15 @@ import (
 	"encoding/base64"
 	"time"
 
+	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/employee/domain"
 	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/auth"
+	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/persistance"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 type EmployeeInteractor struct {
-	repository domain.EmployeeRepository
 }
 
 func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
@@ -24,14 +25,14 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
 		IsAdmin:    data.IsAdmin,
 		CreatedAt:  data.CreatedAt,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
 			Issuer:    "Probien",
 			Subject:   data.Email,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := t.SignedString([]byte(base64.StdEncoding.EncodeToString([]byte("EQVJ7UM8xJNcfsaxs$aw3Es2Z@8ewegzxZ531C$^bhEoMq!%fe"))))
+	token, err := t.SignedString([]byte(base64.StdEncoding.EncodeToString([]byte("EQVJ7UM8xJNcfsaxs$aw3Es2Z@8ewegzxZ531CbhEoMq!e"))))
 	if err != nil {
 		panic(err)
 	}
@@ -39,22 +40,27 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
 }
 
 func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, error) {
+	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
 
-	return EI.repository.Login(c)
+	return repository.Login(c)
 }
 
 func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (domain.Employee, error) {
-	return EI.repository.GetByEmail(c)
+	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
+	return repository.GetByEmail(c)
 }
 
 func (EI *EmployeeInteractor) GetAll() ([]domain.Employee, error) {
-	return EI.repository.GetAll()
+	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
+	return repository.GetAll()
 }
 
 func (EI *EmployeeInteractor) Create(c *gin.Context) (domain.Employee, error) {
-	return EI.repository.Create(c)
+	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
+	return repository.Create(c)
 }
 
 func (EI *EmployeeInteractor) Update(c *gin.Context) (domain.Employee, error) {
-	return EI.repository.Update(c)
+	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
+	return repository.Update(c)
 }
