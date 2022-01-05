@@ -3,7 +3,7 @@ package utils
 import (
 	category "github.com/JairDavid/Probien-Backend/core/category/interfaces"
 	customer "github.com/JairDavid/Probien-Backend/core/customer/interfaces"
-	authenticator "github.com/JairDavid/Probien-Backend/core/employee/infrastructure/jwt"
+	authenticator "github.com/JairDavid/Probien-Backend/core/employee/infrastructure/auth"
 	employee "github.com/JairDavid/Probien-Backend/core/employee/interfaces"
 	endorsement "github.com/JairDavid/Probien-Backend/core/endorsement/interfaces"
 	pawnOrder "github.com/JairDavid/Probien-Backend/core/pawn_order/interfaces"
