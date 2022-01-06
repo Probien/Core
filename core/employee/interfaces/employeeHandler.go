@@ -13,7 +13,12 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 	employeeHandlerV1 := *v1.Group("/employee")
 
 	employeeHandlerV1.POST("/login", func(c *gin.Context) {
-		interactor.Login(c)
+		employee, err := interactor.Login(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"data": err.Error()})
+		} else {
+			c.JSON(http.StatusCreated, gin.H{"data": employee})
+		}
 	})
 
 	employeeHandlerV1.POST("/", func(c *gin.Context) {

@@ -41,7 +41,6 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
 
 func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.GetDBInstance())
-
 	return repository.Login(c)
 }
 

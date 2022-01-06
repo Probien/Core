@@ -17,10 +17,15 @@ type AuthCustomClaims struct {
 	jwt.StandardClaims
 }
 
-func EncryptPassword(data []byte) []byte {
+type LoginCredentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func EncryptPassword(data []byte, ch chan<- []byte) {
 	hash, err := bcrypt.GenerateFromPassword(data, bcrypt.MinCost)
 	if err != nil {
 		panic(err)
 	}
-	return hash
+	ch <- hash
 }
