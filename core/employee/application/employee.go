@@ -15,7 +15,7 @@ import (
 type EmployeeInteractor struct {
 }
 
-func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
+func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer chan<- string) {
 
 	claims := &auth.AuthCustomClaims{
 		Name:       data.Name,
@@ -36,7 +36,7 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee) string {
 	if err != nil {
 		panic(err)
 	}
-	return token
+	tokenizer <- token
 }
 
 func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, error) {
