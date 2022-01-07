@@ -36,9 +36,10 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, error) 
 
 		//fix this :D, watch COmpareHashAndPassword data type return
 	} else if err := bcrypt.CompareHashAndPassword(<-crypt, []byte(employee.Password)); err != nil {
-		return employee, errors.New("email or Password incorrect")
+		return employee, nil
 	}
-	return employee, nil
+	return employee, errors.New("email or Password incorrect")
+
 }
 
 func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (domain.Employee, error) {
