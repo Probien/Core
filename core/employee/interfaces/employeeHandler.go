@@ -17,7 +17,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": employee})
+			c.JSON(http.StatusOK, gin.H{"data": employee, "token": "xd"})
 		}
 	})
 
