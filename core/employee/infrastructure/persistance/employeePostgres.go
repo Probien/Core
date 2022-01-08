@@ -19,7 +19,6 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) domain.EmployeeRepository {
 }
 
 func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, error) {
-	crypt := make(chan []byte, 1)
 	var employee domain.Employee
 	var loginCredentials auth.LoginCredentials
 
@@ -29,16 +28,14 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, error) 
 
 	r.database.Model(domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee)
 
-	go auth.EncryptPassword([]byte(loginCredentials.Password), crypt)
-
 	if employee == (domain.Employee{}) {
 		return domain.Employee{}, errors.New("inexistent employee with that email")
 
 		//fix this :D, watch COmpareHashAndPassword data type return
-	} else if err := bcrypt.CompareHashAndPassword(<-crypt, []byte(employee.Password)); err != nil {
-		return employee, nil
+	} else if err := bcrypt.CompareHashAndPassword([]byte(employee.Password), []byte(loginCredentials.Password)); err != nil {
+		return employee, errors.New("email or Password incorrect")
 	}
-	return employee, errors.New("email or Password incorrect")
+	return employee, nil
 
 }
 

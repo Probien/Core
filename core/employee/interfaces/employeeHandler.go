@@ -15,7 +15,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 	employeeHandlerV1.POST("/login", func(c *gin.Context) {
 		tokenizer := make(chan string, 1)
 		employee, err := interactor.Login(c)
-		//pending send data to generate token
+		interactor.GenerateToken(&employee, tokenizer)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
