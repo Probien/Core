@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,7 +12,8 @@ func AuthJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if len(authHeader) > 0 {
-			ts := authHeader[len("bearer"):]
+			ts := authHeader[len("Bearer "):]
+			fmt.Print(ts)
 			token, err := validateToken(ts)
 			if token.Valid {
 				claims := token.Claims.(jwt.MapClaims)
@@ -31,9 +31,9 @@ func AuthJWT() gin.HandlerFunc {
 func validateToken(encodedToken string) (*jwt.Token, error) {
 	return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, isValid := token.Method.(*jwt.SigningMethodHMAC); !isValid {
-			return nil, errors.New("invalid Token")
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte("ge4@$bchBVENkwcUn@D9S2MdGByjNE3tUDJ2vuryS9snoaxJgBz5WhgsMgkYLib^PknvKq@XAxU^Rk!usiz@mx!P&k"), nil
+		return []byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"), nil
 	})
 
 }

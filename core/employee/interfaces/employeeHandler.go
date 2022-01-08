@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/employee/application"
-	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,8 +21,6 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 			c.JSON(http.StatusOK, gin.H{"data": employee, "token": <-tokenizer})
 		}
 	})
-
-	employeeHandlerV1.Use(auth.AuthJWT())
 
 	employeeHandlerV1.POST("/", func(c *gin.Context) {
 		employee, err := interactor.Create(c)
