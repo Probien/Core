@@ -1,7 +1,6 @@
 package application
 
 import (
-	"encoding/base64"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/config"
@@ -25,14 +24,14 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer cha
 		IsAdmin:    data.IsAdmin,
 		CreatedAt:  data.CreatedAt,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 1).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 1).Unix(),
 			Issuer:    "Probien",
 			Subject:   data.Email,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := t.SignedString([]byte(base64.StdEncoding.EncodeToString([]byte("EQVJ7UM8xJNcfsaxs$aw3Es2Z@8ewegzxZ531CbhEoMq!e"))))
+	token, err := t.SignedString([]byte("ge4@$bchBVENkwcUn@D9S2MdGByjNE3tUDJ2vuryS9snoaxJgBz5WhgsMgkYLib^PknvKq@XAxU^Rk!usiz@mx!P&k"))
 	if err != nil {
 		panic(err)
 	}
