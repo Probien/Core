@@ -11,6 +11,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 
 	interactor := application.EmployeeInteractor{}
 	employeeHandlerV1 := *v1.Group("/employee")
+
 	employeeHandlerV1.POST("/login", func(c *gin.Context) {
 		tokenizer := make(chan string, 1)
 		employee, err := interactor.Login(c)
@@ -30,7 +31,15 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		c.JSON(http.StatusCreated, gin.H{"data": employee})
 	})
 
+	employeeHandlerV1.GET("/:email", func(c *gin.Context) {
+
+	})
+
 	employeeHandlerV1.GET("/", func(c *gin.Context) {
+
+	})
+
+	employeeHandlerV1.PATCH("/", func(c *gin.Context) {
 
 	})
 }
