@@ -45,7 +45,11 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (domain.Employee, er
 	}
 
 	r.database.Model(domain.Employee{}).Where("email = ?", employee.Email).Find(&employee)
-	return domain.Employee{}, nil
+
+	if employee == (domain.Employee{}) {
+		return domain.Employee{}, errors.New("inexistent employee with that email")
+	}
+	return employee, nil
 }
 
 func (r *EmployeeRepositoryImpl) GetAll() ([]domain.Employee, error) {
