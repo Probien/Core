@@ -2,6 +2,7 @@ package persistance
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/JairDavid/Probien-Backend/core/employee/domain"
 	"github.com/JairDavid/Probien-Backend/core/employee/infrastructure/auth"
@@ -23,10 +24,10 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, error) 
 	var loginCredentials auth.LoginCredentials
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
-		return domain.Employee{}, errors.New("error binding JSON data")
+		return domain.Employee{}, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee)
+	r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee)
 
 	if employee == (domain.Employee{}) {
 		return domain.Employee{}, errors.New("inexistent employee with that email")
@@ -41,10 +42,10 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (domain.Employee, er
 	var employee domain.Employee
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
-		return domain.Employee{}, errors.New("error binding JSON data")
+		return domain.Employee{}, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(domain.Employee{}).Where("email = ?", employee.Email).Find(&employee)
+	r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Find(&employee)
 
 	if employee == (domain.Employee{}) {
 		return domain.Employee{}, errors.New("inexistent employee with that email")
@@ -64,7 +65,7 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (domain.Employee, error)
 	var employee domain.Employee
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
-		return domain.Employee{}, errors.New("error binding JSON data")
+		return domain.Employee{}, errors.New("error binding JSON data, verify fields")
 	}
 	auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
@@ -75,12 +76,26 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (domain.Employee, error)
 
 func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (domain.Employee, error) {
 	//PENDING: consider all error cases
-	patch := make(map[string]interface{})
+	var employee domain.Employee
+	var patch map[string]interface{}
 
-	if err := c.BindJSON(patch); err != nil {
+	if err := c.Bind(&patch); err != nil {
 		return domain.Employee{}, errors.New("error binding JSON data")
+	} else if len(patch) == 0 {
+		return domain.Employee{}, errors.New("empty request body")
+	} else if _, err := patch["email"]; !err {
+		return domain.Employee{}, errors.New("to perform this operation it is necessary to enter an email in the JSON body")
 	}
-	r.database.Model(&domain.Employee{}).Updates(&patch)
 
-	return domain.Employee{}, nil
+	r.database.Model(&domain.Employee{}).Where("email = ?", patch["email"]).Find(&employee)
+	if employee.ID == 0 {
+		return domain.Employee{}, errors.New("employee not found")
+	}
+	fmt.Print(employee)
+	result := r.database.Model(&domain.Employee{}).Omit("password").Where("email = ?", &employee.Email).Updates(&patch)
+	if result.RowsAffected == 0 {
+		return domain.Employee{}, errors.New("json data does not match with the database entity")
+	}
+
+	return employee, nil
 }

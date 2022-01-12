@@ -33,7 +33,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		c.JSON(http.StatusCreated, gin.H{"data": employee})
 	})
 
-	employeeHandlerV1.GET("/:email", func(c *gin.Context) {
+	employeeHandlerV1.GET("/byEmail/", func(c *gin.Context) {
 		employee, err := interactor.GetByEmail(c)
 
 		if err != nil {
