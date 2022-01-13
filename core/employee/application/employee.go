@@ -24,7 +24,7 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer cha
 		IsAdmin:    data.IsAdmin,
 		CreatedAt:  data.CreatedAt,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 30).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 60).Unix(),
 			Issuer:    "Probien",
 			Subject:   data.Email,
 			IssuedAt:  time.Now().Unix(),
