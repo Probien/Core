@@ -57,5 +57,20 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (domain.Category, error)
 }
 
 func (r *CategoryRepositoryImpl) Update(c *gin.Context) (domain.Category, error) {
-	return domain.Category{}, nil
+	patch, category := map[string]interface{}{}, domain.Category{}
+
+	if err := c.Bind(&patch); err != nil {
+		return domain.Category{}, errors.New("error binding JSON data")
+	} else if len(patch) == 0 {
+		return domain.Category{}, errors.New("empty request body")
+	} else if _, err := patch["id"]; !err {
+		return domain.Category{}, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+	}
+
+	r.database.Model(&domain.Category{}).Where("id= ?", patch["id"]).Find(&category)
+	if category.ID == 0 {
+		return domain.Category{}, errors.New("category not found")
+	}
+
+	return category, nil
 }
