@@ -83,14 +83,9 @@ func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (domain.Employee, error)
 		return domain.Employee{}, errors.New("to perform this operation it is necessary to enter an email in the JSON body")
 	}
 
-	r.database.Model(&domain.Employee{}).Where("email = ?", patch["email"]).Find(&employee)
-	if employee.ID == 0 {
-		return domain.Employee{}, errors.New("employee not found")
-	}
-
-	result := r.database.Model(&domain.Employee{}).Omit("password").Where("email = ?", &employee.Email).Updates(&patch)
+	result := r.database.Model(&domain.Employee{}).Where("email = ?", &employee.Email).Omit("id").Updates(&patch).Find(&employee)
 	if result.RowsAffected == 0 {
-		return domain.Employee{}, errors.New("json data does not match with the database entity")
+		return domain.Employee{}, errors.New("employee not found or json data does not match ")
 	}
 
 	return employee, nil
