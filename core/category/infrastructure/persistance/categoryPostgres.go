@@ -19,7 +19,7 @@ func NewCategoryRepositoryImpl(db *gorm.DB) domain.CategoryRepository {
 func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (domain.Category, error) {
 	var category domain.Category
 
-	r.database.Model(&domain.Category{}).Find(&category, c.Param("id"))
+	r.database.Model(&domain.Category{}).Preload("Products").Find(&category, c.Param("id"))
 	if category.ID == 0 {
 		return domain.Category{}, errors.New("category not found")
 	}
@@ -49,6 +49,8 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (domain.Category, error)
 	r.database.Model(&domain.Category{}).Find(&category, c.Param("id"))
 	if category.ID == 0 {
 		return domain.Category{}, errors.New("category not found")
+	} else if len(category.Products) > 0 {
+		return domain.Category{}, errors.New("you canot delete a category with related data")
 	}
 
 	r.database.Model(&domain.Category{}).Unscoped().Delete(&category, &category.ID)
