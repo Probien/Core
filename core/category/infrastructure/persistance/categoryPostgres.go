@@ -74,5 +74,10 @@ func (r *CategoryRepositoryImpl) Update(c *gin.Context) (domain.Category, error)
 		return domain.Category{}, errors.New("category not found")
 	}
 
+	result := r.database.Model(&domain.Category{}).Omit("password").Where("id = ?", patch["id"]).Updates(&patch)
+	if result.RowsAffected == 0 {
+		return domain.Category{}, errors.New("json data does not match with the database entity")
+	}
+
 	return category, nil
 }
