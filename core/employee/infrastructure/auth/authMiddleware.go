@@ -13,7 +13,6 @@ func AuthJWT() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 		if len(authHeader) > 0 {
 			ts := authHeader[len("Bearer "):]
-			fmt.Print(ts)
 			token, err := validateToken(ts)
 			if token.Valid {
 				claims := token.Claims.(jwt.MapClaims)
