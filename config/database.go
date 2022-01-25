@@ -1,8 +1,7 @@
 package config
 
 import (
-	"log"
-	"sync"
+	"time"
 
 	"github.com/JairDavid/Probien-Backend/config/migrations/models"
 
@@ -11,28 +10,23 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
-	database *gorm.DB
-	lock     sync.Once
-)
+func ConnectDB() *gorm.DB {
+	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	configs, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	configs.SetMaxIdleConns(100)
+	configs.SetMaxOpenConns(50)
+	configs.SetConnMaxLifetime(time.Minute * 5)
 
-func ConnectDB() {
-	lock.Do(
-		func() {
-			db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
-			database = db
-			if err != nil {
-				log.Fatal(err)
-			} else {
-				log.Printf("the database has been connected successfuly")
-			}
-		})
-}
-
-func GetDBInstance() *gorm.DB {
-	return database
+	return db
 }
 
 func Migrate() {
-	GetDBInstance().AutoMigrate(&models.Category{}, &models.Customer{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{})
+	conn := ConnectDB()
+	conn.AutoMigrate(&models.Category{}, &models.Customer{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{})
 }

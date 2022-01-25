@@ -19,7 +19,7 @@ func NewEndorsementRepositoryImpl(db *gorm.DB) domain.EndorsementRepository {
 func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
-	r.database.Model(&domain.Endorsement{}).Preload("Products").Find(&endorsement, c.Param("id"))
+	r.database.Model(&domain.Endorsement{}).Preload("PawnOrderID").Find(&endorsement, c.Param("id"))
 	if endorsement.ID == 0 {
 		return domain.Endorsement{}, errors.New("category not found")
 	}
