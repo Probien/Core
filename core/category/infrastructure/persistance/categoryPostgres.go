@@ -35,6 +35,7 @@ func (r *CategoryRepositoryImpl) GetAll() ([]domain.Category, error) {
 
 func (r *CategoryRepositoryImpl) Create(c *gin.Context) (domain.Category, error) {
 	var category domain.Category
+
 	if err := c.ShouldBindJSON(&category); err != nil {
 		return domain.Category{}, errors.New("error binding JSON data, verify fields")
 	}

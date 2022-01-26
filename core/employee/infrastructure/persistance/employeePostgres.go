@@ -31,7 +31,7 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (domain.Employee, error) 
 		return domain.Employee{}, errors.New("inexistent employee with that email")
 
 	} else if err := bcrypt.CompareHashAndPassword([]byte(employee.Password), []byte(loginCredentials.Password)); err != nil {
-		return employee, errors.New("email or Password incorrect")
+		return domain.Employee{}, errors.New("email or Password incorrect")
 	}
 	return employee, nil
 }

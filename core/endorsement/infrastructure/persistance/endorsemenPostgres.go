@@ -21,7 +21,7 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (domain.Endorsement,
 
 	r.database.Model(&domain.Endorsement{}).Preload("PawnOrderID").Find(&endorsement, c.Param("id"))
 	if endorsement.ID == 0 {
-		return domain.Endorsement{}, errors.New("category not found")
+		return domain.Endorsement{}, errors.New("endorsement not found")
 	}
 	return endorsement, nil
 }

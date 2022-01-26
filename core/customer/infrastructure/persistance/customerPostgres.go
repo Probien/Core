@@ -21,7 +21,7 @@ func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (domain.Customer, error
 
 	r.database.Model(&domain.Customer{}).Preload("PawnOrders").Find(&customer, c.Param("id"))
 	if customer.ID == 0 {
-		return customer, errors.New("category not found")
+		return domain.Customer{}, errors.New("customer not found")
 	}
 	return customer, nil
 }
@@ -55,7 +55,7 @@ func (r *CustomerRepositoryImpl) Update(c *gin.Context) (domain.Customer, error)
 
 	result := r.database.Model(&domain.Customer{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&customer)
 	if result.RowsAffected == 0 {
-		return domain.Customer{}, errors.New("category not found or json data does not match ")
+		return domain.Customer{}, errors.New("customer not found or json data does not match ")
 	}
 
 	return customer, nil
