@@ -11,21 +11,21 @@ type PawnOrderInteractor struct {
 }
 
 func (PI *PawnOrderInteractor) GetById(c *gin.Context) (domain.PawnOrder, error) {
-	repository := persistance.NewPawnOrderRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance())
 	return repository.GetById(c)
 }
 
 func (PI *PawnOrderInteractor) GetAll() ([]domain.PawnOrder, error) {
-	repository := persistance.NewPawnOrderRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance())
 	return repository.GetAll()
 }
 
 func (PI *PawnOrderInteractor) Create(c *gin.Context) (domain.PawnOrder, error) {
-	repository := persistance.NewPawnOrderRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance())
 	return repository.Create(c)
 }
 
 func (PI *PawnOrderInteractor) Update(c *gin.Context) (domain.PawnOrder, error) {
-	repository := persistance.NewPawnOrderRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewPawnOrderRepositoryImpl(config.GetDBInstance())
 	return repository.Update(c)
 }

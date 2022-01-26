@@ -11,21 +11,21 @@ type CustomerInteractor struct {
 }
 
 func (CI *CustomerInteractor) GetById(c *gin.Context) (domain.Customer, error) {
-	repository := persistance.NewCustomerRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewCustomerRepositoryImpl(config.GetDBInstance())
 	return repository.GetById(c)
 }
 
 func (CI *CustomerInteractor) GetAll() ([]domain.Customer, error) {
-	repository := persistance.NewCustomerRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewCustomerRepositoryImpl(config.GetDBInstance())
 	return repository.GetAll()
 }
 
 func (CI *CustomerInteractor) Create(c *gin.Context) (domain.Customer, error) {
-	repository := persistance.NewCustomerRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewCustomerRepositoryImpl(config.GetDBInstance())
 	return repository.Create(c)
 }
 
 func (CI *CustomerInteractor) Update(c *gin.Context) (domain.Customer, error) {
-	repository := persistance.NewCustomerRepositoryImpl(config.ConnectDB())
+	repository := persistance.NewCustomerRepositoryImpl(config.GetDBInstance())
 	return repository.Update(c)
 }

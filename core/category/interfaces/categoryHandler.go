@@ -18,7 +18,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		}
-		c.JSON(http.StatusCreated, gin.H{"data": category})
+		c.JSON(http.StatusCreated, gin.H{"data": &category})
 	})
 
 	categoryHandlerV1.GET("/", func(c *gin.Context) {
@@ -27,7 +27,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"data": "something went wrong"})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": categories})
+			c.JSON(http.StatusOK, gin.H{"data": &categories})
 		}
 	})
 
@@ -37,7 +37,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": category})
+			c.JSON(http.StatusOK, gin.H{"data": &category})
 		}
 	})
 
@@ -47,7 +47,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": category})
+			c.JSON(http.StatusOK, gin.H{"data": &category})
 		}
 	})
 
@@ -57,7 +57,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": category})
+			c.JSON(http.StatusOK, gin.H{"data": &category})
 		}
 	})
 }

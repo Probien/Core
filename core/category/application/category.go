@@ -10,27 +10,27 @@ import (
 type CategoryInteractor struct {
 }
 
-func (CI *CategoryInteractor) GetById(c *gin.Context) (domain.Category, error) {
-	repository := persistance.NewCategoryRepositoryImpl(config.ConnectDB())
+func (CI *CategoryInteractor) GetById(c *gin.Context) (*domain.Category, error) {
+	repository := persistance.NewCategoryRepositoryImpl(config.GetDBInstance())
 	return repository.GetById(c)
 }
 
-func (CI *CategoryInteractor) GetAll() ([]domain.Category, error) {
-	repository := persistance.NewCategoryRepositoryImpl(config.ConnectDB())
+func (CI *CategoryInteractor) GetAll() (*[]domain.Category, error) {
+	repository := persistance.NewCategoryRepositoryImpl(config.GetDBInstance())
 	return repository.GetAll()
 }
 
-func (CI *CategoryInteractor) Create(c *gin.Context) (domain.Category, error) {
-	repository := persistance.NewCategoryRepositoryImpl(config.ConnectDB())
+func (CI *CategoryInteractor) Create(c *gin.Context) (*domain.Category, error) {
+	repository := persistance.NewCategoryRepositoryImpl(config.GetDBInstance())
 	return repository.Create(c)
 }
 
-func (CI *CategoryInteractor) Delete(c *gin.Context) (domain.Category, error) {
-	repository := persistance.NewCategoryRepositoryImpl(config.ConnectDB())
+func (CI *CategoryInteractor) Delete(c *gin.Context) (*domain.Category, error) {
+	repository := persistance.NewCategoryRepositoryImpl(config.GetDBInstance())
 	return repository.Delete(c)
 }
 
-func (CI *CategoryInteractor) Update(c *gin.Context) (domain.Category, error) {
-	repository := persistance.NewCategoryRepositoryImpl(config.ConnectDB())
+func (CI *CategoryInteractor) Update(c *gin.Context) (*domain.Category, error) {
+	repository := persistance.NewCategoryRepositoryImpl(config.GetDBInstance())
 	return repository.Update(c)
 }
