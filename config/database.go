@@ -1,8 +1,6 @@
 package config
 
 import (
-	"sync"
-
 	"github.com/JairDavid/Probien-Backend/config/migrations/models"
 
 	"gorm.io/driver/postgres"
@@ -11,23 +9,29 @@ import (
 )
 
 var (
-	database *gorm.DB
-	lock     sync.Once
+	Database *gorm.DB
 )
 
 func ConnectDB() {
-	lock.Do(
-		func() {
-			db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
-			database = db
-			if err != nil {
-				panic(err)
-			}
-		})
+	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
+
+	if err != nil {
+		panic(err)
+	}
+
+	sqlDB, err := db.DB()
+
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(100)
+	sqlDB.SetMaxOpenConns(100)
+
+	Database = db
 }
 
 func GetDBInstance() *gorm.DB {
-	return database
+	return Database
 }
 
 func Migrate() {
