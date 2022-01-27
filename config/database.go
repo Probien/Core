@@ -30,10 +30,6 @@ func ConnectDB() {
 	Database = db
 }
 
-func GetDBInstance() *gorm.DB {
-	return Database
-}
-
 func Migrate() {
-	GetDBInstance().AutoMigrate(&models.Category{}, &models.Customer{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{})
+	Database.AutoMigrate(&models.Category{}, &models.Customer{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{})
 }
