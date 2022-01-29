@@ -38,27 +38,27 @@ func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer cha
 	tokenizer <- token
 }
 
-func (EI *EmployeeInteractor) Login(c *gin.Context) (domain.Employee, error) {
+func (EI *EmployeeInteractor) Login(c *gin.Context) (*domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.Database)
 	return repository.Login(c)
 }
 
-func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (domain.Employee, error) {
+func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (*domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.Database)
 	return repository.GetByEmail(c)
 }
 
-func (EI *EmployeeInteractor) GetAll() ([]domain.Employee, error) {
+func (EI *EmployeeInteractor) GetAll() (*[]domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.Database)
 	return repository.GetAll()
 }
 
-func (EI *EmployeeInteractor) Create(c *gin.Context) (domain.Employee, error) {
+func (EI *EmployeeInteractor) Create(c *gin.Context) (*domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.Database)
 	return repository.Create(c)
 }
 
-func (EI *EmployeeInteractor) Update(c *gin.Context) (domain.Employee, error) {
+func (EI *EmployeeInteractor) Update(c *gin.Context) (*domain.Employee, error) {
 	repository := persistance.NewEmployeeRepositoryImpl(config.Database)
 	return repository.Update(c)
 }

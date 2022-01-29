@@ -16,30 +16,30 @@ func NewEndorsementRepositoryImpl(db *gorm.DB) domain.EndorsementRepository {
 	return &EndorsementRepositoryImpl{database: db}
 }
 
-func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
 	r.database.Model(&domain.Endorsement{}).Preload("PawnOrderID").Find(&endorsement, c.Param("id"))
 	if endorsement.ID == 0 {
-		return domain.Endorsement{}, errors.New("endorsement not found")
+		return &domain.Endorsement{}, errors.New("endorsement not found")
 	}
-	return endorsement, nil
+	return &endorsement, nil
 }
 
-func (r *EndorsementRepositoryImpl) GetAll() ([]domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) GetAll() (*[]domain.Endorsement, error) {
 	var endorsements []domain.Endorsement
 
 	r.database.Model(&domain.Endorsement{}).Find(&endorsements)
-	return endorsements, nil
+	return &endorsements, nil
 }
 
-func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
 	if err := c.ShouldBindJSON(&endorsement); err != nil {
-		return domain.Endorsement{}, errors.New("error binding JSON data, verify fields")
+		return &domain.Endorsement{}, errors.New("error binding JSON data, verify fields")
 	}
 	r.database.Model(&domain.Endorsement{}).Create(&endorsement)
 
-	return endorsement, nil
+	return &endorsement, nil
 }

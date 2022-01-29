@@ -18,7 +18,7 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		}
-		c.JSON(http.StatusCreated, gin.H{"data": endorsement})
+		c.JSON(http.StatusCreated, gin.H{"data": &endorsement})
 	})
 
 	endorsementHandlerV1.GET("/", func(c *gin.Context) {
@@ -27,7 +27,7 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"data": "something went wrong"})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": endorsements})
+			c.JSON(http.StatusOK, gin.H{"data": &endorsements})
 		}
 	})
 
@@ -37,7 +37,7 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": endorsement})
+			c.JSON(http.StatusOK, gin.H{"data": &endorsement})
 		}
 	})
 

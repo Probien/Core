@@ -14,18 +14,18 @@ func NewProductRepositoryImpl(db *gorm.DB) domain.ProductRepository {
 	return &ProductRepositoryImpl{database: db}
 }
 
-func (r *ProductRepositoryImpl) GetById(c *gin.Context) (domain.Product, error) {
-	return domain.Product{}, nil
+func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error) {
+	return &domain.Product{}, nil
 }
 
-func (r *ProductRepositoryImpl) GetAll() ([]domain.Product, error) {
-	return []domain.Product{}, nil
+func (r *ProductRepositoryImpl) GetAll() (*[]domain.Product, error) {
+	return &[]domain.Product{}, nil
 }
 
-func (r *ProductRepositoryImpl) Create(c *gin.Context) ([]domain.Product, error) {
-	return []domain.Product{}, nil
+func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) {
+	return &domain.Product{}, nil
 }
 
-func (r *ProductRepositoryImpl) Update(c *gin.Context) (domain.Product, error) {
-	return domain.Product{}, nil
+func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) {
+	return &domain.Product{}, nil
 }

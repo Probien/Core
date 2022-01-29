@@ -18,7 +18,7 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		}
-		c.JSON(http.StatusCreated, gin.H{"data": pawnOrder})
+		c.JSON(http.StatusCreated, gin.H{"data": &pawnOrder})
 	})
 
 	pawnOrderHandlerV1.GET("/", func(c *gin.Context) {
@@ -27,7 +27,7 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"data": "something went wrong"})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": pawnOrders})
+			c.JSON(http.StatusOK, gin.H{"data": &pawnOrders})
 		}
 	})
 
@@ -37,7 +37,7 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusFound, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": pawnOrder})
+			c.JSON(http.StatusOK, gin.H{"data": &pawnOrder})
 		}
 	})
 
@@ -47,7 +47,7 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": pawnOrder})
+			c.JSON(http.StatusOK, gin.H{"data": &pawnOrder})
 		}
 	})
 }

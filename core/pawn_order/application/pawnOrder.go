@@ -10,22 +10,22 @@ import (
 type PawnOrderInteractor struct {
 }
 
-func (PI *PawnOrderInteractor) GetById(c *gin.Context) (domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	repository := persistance.NewPawnOrderRepositoryImpl(config.Database)
 	return repository.GetById(c)
 }
 
-func (PI *PawnOrderInteractor) GetAll() ([]domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) GetAll() (*[]domain.PawnOrder, error) {
 	repository := persistance.NewPawnOrderRepositoryImpl(config.Database)
 	return repository.GetAll()
 }
 
-func (PI *PawnOrderInteractor) Create(c *gin.Context) (domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) Create(c *gin.Context) (*domain.PawnOrder, error) {
 	repository := persistance.NewPawnOrderRepositoryImpl(config.Database)
 	return repository.Create(c)
 }
 
-func (PI *PawnOrderInteractor) Update(c *gin.Context) (domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) Update(c *gin.Context) (*domain.PawnOrder, error) {
 	repository := persistance.NewPawnOrderRepositoryImpl(config.Database)
 	return repository.Update(c)
 }

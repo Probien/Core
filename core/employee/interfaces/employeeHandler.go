@@ -16,11 +16,11 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		tokenizer := make(chan string, 1)
 		employee, err := interactor.Login(c)
 
-		interactor.GenerateToken(&employee, tokenizer)
+		interactor.GenerateToken(employee, tokenizer)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": employee, "token": <-tokenizer})
+			c.JSON(http.StatusOK, gin.H{"data": &employee, "token": <-tokenizer})
 		}
 	})
 
@@ -30,7 +30,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		}
-		c.JSON(http.StatusCreated, gin.H{"data": employee})
+		c.JSON(http.StatusCreated, gin.H{"data": &employee})
 	})
 
 	employeeHandlerV1.GET("/byEmail/", func(c *gin.Context) {
@@ -39,7 +39,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusFound, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": employee})
+			c.JSON(http.StatusOK, gin.H{"data": &employee})
 		}
 	})
 
@@ -49,7 +49,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"data": "something went wrong"})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": employees})
+			c.JSON(http.StatusOK, gin.H{"data": &employees})
 		}
 	})
 
@@ -59,7 +59,7 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": employee})
+			c.JSON(http.StatusOK, gin.H{"data": &employee})
 		}
 	})
 }
