@@ -17,7 +17,7 @@
 
 What did you learn while building this project? What challenges did you face and how did you overcome them?
 
-First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of architecture so I create this project with domain based approach (DDD) (Recomendations are welcome). 
+First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of desing so I create this project with domain based approach [(DDD)](https://airbrake.io/blog/software-design/domain-driven-design) (Recomendations are welcome). 
 
 ## Design
 
