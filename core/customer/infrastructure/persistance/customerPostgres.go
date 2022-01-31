@@ -21,7 +21,7 @@ func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, erro
 
 	r.database.Model(&domain.Customer{}).Preload("PawnOrders").Find(&customer, c.Param("id"))
 	if customer.ID == 0 {
-		return &domain.Customer{}, errors.New("customer not found")
+		return nil, errors.New("customer not found")
 	}
 	return &customer, nil
 }
@@ -36,7 +36,7 @@ func (r *CustomerRepositoryImpl) GetAll() (*[]domain.Customer, error) {
 func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error) {
 	var customer domain.Customer
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		return &domain.Customer{}, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
 	r.database.Model(&domain.Customer{}).Create(&customer)
@@ -46,16 +46,16 @@ func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error
 func (r *CustomerRepositoryImpl) Update(c *gin.Context) (*domain.Customer, error) {
 	patch, customer := map[string]interface{}{}, domain.Customer{}
 	if err := c.Bind(&patch); err != nil {
-		return &domain.Customer{}, errors.New("error binding JSON data")
+		return nil, errors.New("error binding JSON data")
 	} else if len(patch) == 0 {
-		return &domain.Customer{}, errors.New("empty request body")
+		return nil, errors.New("empty request body")
 	} else if _, err := patch["id"]; !err {
-		return &domain.Customer{}, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
 	}
 
 	result := r.database.Model(&domain.Customer{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&customer)
 	if result.RowsAffected == 0 {
-		return &domain.Customer{}, errors.New("customer not found or json data does not match ")
+		return nil, errors.New("customer not found or json data does not match ")
 	}
 
 	return &customer, nil

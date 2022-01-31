@@ -21,7 +21,7 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 
 	r.database.Model(&domain.Endorsement{}).Preload("PawnOrderID").Find(&endorsement, c.Param("id"))
 	if endorsement.ID == 0 {
-		return &domain.Endorsement{}, errors.New("endorsement not found")
+		return nil, errors.New("endorsement not found")
 	}
 	return &endorsement, nil
 }
@@ -37,7 +37,7 @@ func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement,
 	var endorsement domain.Endorsement
 
 	if err := c.ShouldBindJSON(&endorsement); err != nil {
-		return &domain.Endorsement{}, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New("error binding JSON data, verify fields")
 	}
 	r.database.Model(&domain.Endorsement{}).Create(&endorsement)
 

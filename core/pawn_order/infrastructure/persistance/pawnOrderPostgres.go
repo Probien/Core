@@ -21,7 +21,7 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 
 	r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Endorsements").Find(&pawnOrder, c.Param("id"))
 	if pawnOrder.ID == 0 {
-		return &domain.PawnOrder{}, errors.New("pawn order not found")
+		return nil, errors.New("pawn order not found")
 	}
 	return &pawnOrder, nil
 }
@@ -37,7 +37,7 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 	var pawnOrder domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil {
-		return &domain.PawnOrder{}, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
 	r.database.Model(&domain.PawnOrder{}).Create(&pawnOrder)
