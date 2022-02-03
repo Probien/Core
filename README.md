@@ -36,6 +36,11 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Interfaces
   - HTTP handler
 
+## Database Model
+
+<img src="https://imgdb.net/storage/uploads/25847851dc958eb3e3dd6742dd036e6c06c083a116c524c4cdcfc146cee00034.png
+" alt="database"/>
+
 
 ## Roadmap
 
