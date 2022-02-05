@@ -45,5 +45,20 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 }
 
 func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, error) {
+	patch, pawnOrder := map[string]interface{}{}, domain.PawnOrder{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, errors.New("error binding JSON data")
+	} else if len(patch) == 0 {
+		return nil, errors.New("empty request body")
+	} else if _, err := patch["id"]; !err {
+		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+	}
+
+	result := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder)
+	if result.RowsAffected == 0 {
+		return nil, errors.New("category not found or json data does not match ")
+	}
+
 	return &domain.PawnOrder{}, nil
 }
