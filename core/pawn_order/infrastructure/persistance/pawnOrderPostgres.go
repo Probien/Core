@@ -19,7 +19,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) domain.PawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Endorsements").Find(&pawnOrder, c.Param("id"))
+	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, c.Param("id"))
 	if pawnOrder.ID == 0 {
 		return nil, errors.New("pawn order not found")
 	}
@@ -29,7 +29,7 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Endorsements").Find(&pawnOrders)
+	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrders)
 	return &pawnOrders, nil
 }
 
@@ -40,7 +40,7 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.PawnOrder{}).Create(&pawnOrder)
+	r.database.Model(&domain.PawnOrder{}).Omit("Products").Omit("Endorsements").Create(&pawnOrder)
 	return &pawnOrder, nil
 }
 
@@ -57,7 +57,7 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 
 	result := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder)
 	if result.RowsAffected == 0 {
-		return nil, errors.New("category not found or json data does not match ")
+		return nil, errors.New("pawn order not found or json data does not match ")
 	}
 
 	return &domain.PawnOrder{}, nil

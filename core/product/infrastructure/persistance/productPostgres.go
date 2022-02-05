@@ -19,9 +19,9 @@ func NewProductRepositoryImpl(db *gorm.DB) domain.ProductRepository {
 func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error) {
 	var product domain.Product
 
-	r.database.Model(&domain.Product{}).Preload("Products").Preload("Endorsements").Find(&product, c.Param("id"))
+	r.database.Model(&domain.Product{}).Find(&product, c.Param("id"))
 	if product.ID == 0 {
-		return nil, errors.New("pawn order not found")
+		return nil, errors.New("product order not found")
 	}
 	return &product, nil
 }
@@ -29,8 +29,8 @@ func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error)
 func (r *ProductRepositoryImpl) GetAll() (*[]domain.Product, error) {
 	var products []domain.Product
 
-	r.database.Model(&domain.Product{}).Preload("Products").Preload("Endorsements").Find(&products)
-	return &[]domain.Product{}, nil
+	r.database.Model(&domain.Product{}).Find(&products)
+	return &products, nil
 }
 
 func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) {
@@ -57,7 +57,7 @@ func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) 
 
 	result := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&product)
 	if result.RowsAffected == 0 {
-		return nil, errors.New("category not found or json data does not match ")
+		return nil, errors.New("product not found or json data does not match ")
 	}
 
 	return &product, nil
