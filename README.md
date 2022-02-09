@@ -36,9 +36,9 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Interfaces
   - HTTP handler
 
-## Database Model
+## Database Model (subject to change)
 
-<img width="1200" height="500" src="https://imgdb.net/storage/uploads/25847851dc958eb3e3dd6742dd036e6c06c083a116c524c4cdcfc146cee00034.png" alt="database"/>
+<img width="1200" height="400" src="https://imgdb.net/storage/uploads/25847851dc958eb3e3dd6742dd036e6c06c083a116c524c4cdcfc146cee00034.png" alt="database"/>
 
 
 ## Roadmap
@@ -55,6 +55,6 @@ First, I had no idea how to structure the project, I come from java and have alw
 
 Contributions are always welcome!
 
-This project is small, if you want to contribute improving code or add a new feature send a PR, make you sure to add a description.
+This project is small, if you want to contribute improving code or add a new feature send a PR, make sure to add a description.
 
 
