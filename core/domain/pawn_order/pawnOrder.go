@@ -10,8 +10,8 @@ import (
 type PawnOrder struct {
 	ID            uint                 `json:"id"`
 	EmployeeID    uint                 `json:"employee_id"`
-	CustomerID    uint                 `json:"customer_id"`
 	StatusID      uint                 `json:"status_id"`
+	Customer      uint                 `json:"customer"`
 	TotalMount    float64              `json:"total_mount"`
 	Monthly       bool                 `json:"monthly"`
 	Products      []product.Product    `json:"products"`

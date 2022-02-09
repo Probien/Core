@@ -40,7 +40,7 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.PawnOrder{}).Omit("Products").Omit("Endorsements").Create(&pawnOrder)
+	r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder)
 	return &pawnOrder, nil
 }
 
@@ -60,5 +60,5 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("pawn order not found or json data does not match ")
 	}
 
-	return &domain.PawnOrder{}, nil
+	return &pawnOrder, nil
 }
