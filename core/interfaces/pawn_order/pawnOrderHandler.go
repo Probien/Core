@@ -1,9 +1,9 @@
-package interfaces
+package pawn_order_interface
 
 import (
 	"net/http"
 
-	"github.com/JairDavid/Probien-Backend/core/pawn_order/application"
+	application "github.com/JairDavid/Probien-Backend/core/application/pawn_order"
 	"github.com/gin-gonic/gin"
 )
 

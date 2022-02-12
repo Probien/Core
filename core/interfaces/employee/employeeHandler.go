@@ -1,9 +1,9 @@
-package interfaces
+package employee_interface
 
 import (
 	"net/http"
 
-	"github.com/JairDavid/Probien-Backend/core/employee/application"
+	application "github.com/JairDavid/Probien-Backend/core/application/employee"
 	"github.com/gin-gonic/gin"
 )
 

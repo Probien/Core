@@ -1,4 +1,4 @@
-package domain
+package category_domain
 
 import "github.com/gin-gonic/gin"
 

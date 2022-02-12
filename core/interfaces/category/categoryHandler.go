@@ -1,9 +1,9 @@
-package interfaces
+package category_interface
 
 import (
 	"net/http"
 
-	"github.com/JairDavid/Probien-Backend/core/category/application"
+	application "github.com/JairDavid/Probien-Backend/core/application/category"
 	"github.com/gin-gonic/gin"
 )
 

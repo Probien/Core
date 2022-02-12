@@ -1,9 +1,9 @@
-package interfaces
+package endorsement_interface
 
 import (
 	"net/http"
 
-	"github.com/JairDavid/Probien-Backend/core/endorsement/application"
+	application "github.com/JairDavid/Probien-Backend/core/application/endorsement"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,12 +1,12 @@
 package utils
 
 import (
-	category "github.com/JairDavid/Probien-Backend/core/category/interfaces"
-	customer "github.com/JairDavid/Probien-Backend/core/customer/interfaces"
-	employee "github.com/JairDavid/Probien-Backend/core/employee/interfaces"
-	endorsement "github.com/JairDavid/Probien-Backend/core/endorsement/interfaces"
-	pawnOrder "github.com/JairDavid/Probien-Backend/core/pawn_order/interfaces"
-	product "github.com/JairDavid/Probien-Backend/core/product/interfaces"
+	category_interface "github.com/JairDavid/Probien-Backend/core/interfaces/category"
+	customer_interface "github.com/JairDavid/Probien-Backend/core/interfaces/customer"
+	employee_interface "github.com/JairDavid/Probien-Backend/core/interfaces/employee"
+	endorsement_interface "github.com/JairDavid/Probien-Backend/core/interfaces/endorsement"
+	pawn_order_interface "github.com/JairDavid/Probien-Backend/core/interfaces/pawn_order"
+	product_interface "github.com/JairDavid/Probien-Backend/core/interfaces/product"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,12 +15,12 @@ func Setup(s *gin.Engine) {
 	v1 := *s.Group("/probien/api/v1")
 	//v1.Use(authenticator.AuthJWT())
 	{
-		category.CategoryHandler(&v1)
-		customer.CustomerHandler(&v1)
-		employee.EmployeeHandler(&v1)
-		endorsement.EndorsementHandler(&v1)
-		pawnOrder.PawnOrderHandler(&v1)
-		product.ProductHandler(&v1)
+		category_interface.CategoryHandler(&v1)
+		customer_interface.CustomerHandler(&v1)
+		employee_interface.EmployeeHandler(&v1)
+		endorsement_interface.EndorsementHandler(&v1)
+		pawn_order_interface.PawnOrderHandler(&v1)
+		product_interface.ProductHandler(&v1)
 	}
 
 }

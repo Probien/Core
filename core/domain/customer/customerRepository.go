@@ -1,4 +1,4 @@
-package domain
+package customer_domain
 
 import "github.com/gin-gonic/gin"
 

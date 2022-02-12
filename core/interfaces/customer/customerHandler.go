@@ -1,9 +1,9 @@
-package interfaces
+package customer_interface
 
 import (
 	"net/http"
 
-	"github.com/JairDavid/Probien-Backend/core/customer/application"
+	application "github.com/JairDavid/Probien-Backend/core/application/customer"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,4 +1,4 @@
-package domain
+package pawn_order_domain
 
 import "github.com/gin-gonic/gin"
 
