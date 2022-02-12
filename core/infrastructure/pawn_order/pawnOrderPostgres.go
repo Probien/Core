@@ -3,7 +3,7 @@ package persistance
 import (
 	"errors"
 
-	"github.com/JairDavid/Probien-Backend/core/pawn_order/domain"
+	pawn_order_domain "github.com/JairDavid/Probien-Backend/core/domain/pawn_order"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -12,40 +12,40 @@ type PawnOrderRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func NewPawnOrderRepositoryImpl(db *gorm.DB) domain.PawnOrderRepository {
+func NewPawnOrderRepositoryImpl(db *gorm.DB) pawn_order_domain.PawnOrderRepository {
 	return &PawnOrderRepositoryImpl{database: db}
 }
 
-func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
-	var pawnOrder domain.PawnOrder
+func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*pawn_order_domain.PawnOrder, error) {
+	var pawnOrder pawn_order_domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, c.Param("id"))
+	r.database.Model(&pawn_order_domain.PawnOrder{}).Find(&pawnOrder, c.Param("id"))
 	if pawnOrder.ID == 0 {
 		return nil, errors.New("pawn order not found")
 	}
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
-	var pawnOrders []domain.PawnOrder
+func (r *PawnOrderRepositoryImpl) GetAll() (*[]pawn_order_domain.PawnOrder, error) {
+	var pawnOrders []pawn_order_domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrders)
+	r.database.Model(&pawn_order_domain.PawnOrder{}).Find(&pawnOrders)
 	return &pawnOrders, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, error) {
-	var pawnOrder domain.PawnOrder
+func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*pawn_order_domain.PawnOrder, error) {
+	var pawnOrder pawn_order_domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil {
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder)
+	r.database.Model(&pawn_order_domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder)
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, error) {
-	patch, pawnOrder := map[string]interface{}{}, domain.PawnOrder{}
+func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*pawn_order_domain.PawnOrder, error) {
+	patch, pawnOrder := map[string]interface{}{}, pawn_order_domain.PawnOrder{}
 
 	if err := c.Bind(&patch); err != nil {
 		return nil, errors.New("error binding JSON data")
@@ -55,7 +55,7 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
 	}
 
-	result := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder)
+	result := r.database.Model(&pawn_order_domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder)
 	if result.RowsAffected == 0 {
 		return nil, errors.New("pawn order not found or json data does not match ")
 	}
