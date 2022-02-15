@@ -28,8 +28,8 @@ func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*category_domain.Categ
 
 func (r *CategoryRepositoryImpl) GetAll() (*[]category_domain.Category, error) {
 	var categories []category_domain.Category
-
-	r.database.Model(&category_domain.Category{}).Preload("Products").Find(&categories)
+	r.database.Raw("SELECT * FROM categories").Scan(&categories)
+	//r.database.Model(&category_domain.Category{}).Preload("Products").Find(&categories)
 	return &categories, nil
 }
 
