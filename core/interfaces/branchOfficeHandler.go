@@ -13,12 +13,12 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 	interactor := application.BranchOfficeInteractor{}
 
 	branchOfficeHandlerv1.POST("/", func(c *gin.Context) {
-		employees, err := interactor.Create(c)
+		branchOffice, err := interactor.Create(c)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		}
-		c.JSON(http.StatusOK, gin.H{"data": &employees})
+		c.JSON(http.StatusOK, gin.H{"data": &branchOffice})
 	})
 
 	branchOfficeHandlerv1.GET("/", func(c *gin.Context) {
