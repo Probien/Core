@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,18 +17,23 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		branchOffice, err := interactor.Create(c)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+			c.JSON(
+				http.StatusBadRequest,
+				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			)
 		}
-		c.JSON(http.StatusOK, gin.H{"data": &branchOffice})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
 	})
 
 	branchOfficeHandlerv1.GET("/", func(c *gin.Context) {
 		branchOffices, err := interactor.GetAll()
 
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"data": "something went wrong"})
+			c.JSON(
+				http.StatusInternalServerError,
+				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": &branchOffices})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffices})
 		}
 	})
 
@@ -35,9 +41,12 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		branchOffice, err := interactor.GetById(c)
 
 		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"data": err.Error()})
+			c.JSON(
+				http.StatusNotFound,
+				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			)
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": &branchOffice})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
 		}
 	})
 
@@ -45,9 +54,12 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		branchOffice, err := interactor.Update(c)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+			c.JSON(
+				http.StatusBadRequest,
+				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			)
 		} else {
-			c.JSON(http.StatusOK, gin.H{"data": &branchOffice})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
 		}
 	})
 }
