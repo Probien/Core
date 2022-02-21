@@ -26,7 +26,9 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee)
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
 
 	if employee.ID == 0 {
 		return nil, errors.New("inexistent employee with that email")
@@ -44,7 +46,9 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Find(&employee)
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Find(&employee).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
 
 	if employee.ID == 0 {
 		return nil, errors.New("employee with that email not found")
@@ -55,7 +59,10 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
-	r.database.Model(domain.Employee{}).Find(&employees)
+	if err := r.database.Model(domain.Employee{}).Find(&employees).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &employees, nil
 }
 
@@ -68,24 +75,26 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
 
-	r.database.Model(&domain.Employee{}).Create(&employee)
+	if err := r.database.Model(&domain.Employee{}).Create(&employee).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &employee, nil
 }
 
 func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error) {
-
 	patch, employee := map[string]interface{}{}, domain.Employee{}
+	_, errID := patch["id"]
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, errors.New("error binding JSON data")
-	} else if len(patch) == 0 {
-		return nil, errors.New("empty request body")
-	} else if _, err := patch["email"]; !err {
-		return nil, errors.New("to perform this operation it is necessary to enter an email in the JSON body")
+	if err := c.Bind(&patch); err != nil && !errID {
+		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	result := r.database.Model(&domain.Employee{}).Where("email = ?", &employee.Email).Omit("id").Updates(&patch).Find(&employee)
-	if result.RowsAffected == 0 {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", &employee.Email).Updates(&patch).Find(&employee).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	if employee.ID == 0 {
 		return nil, errors.New("employee not found or json data does not match ")
 	}
 

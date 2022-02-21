@@ -20,7 +20,10 @@ func NewCustomerRepositoryImpl(db *gorm.DB) repository.CustomerRepository {
 func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, error) {
 	var customer domain.Customer
 
-	r.database.Model(&domain.Customer{}).Preload("PawnOrders").Find(&customer, c.Param("id"))
+	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders").Find(&customer, c.Param("id")).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	if customer.ID == 0 {
 		return nil, errors.New("customer not found")
 	}
@@ -30,7 +33,10 @@ func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, erro
 func (r *CustomerRepositoryImpl) GetAll() (*[]domain.Customer, error) {
 	var customers []domain.Customer
 
-	r.database.Model(domain.Customer{}).Preload("PawnOrders").Find(&customers)
+	if err := r.database.Model(domain.Customer{}).Preload("PawnOrders").Find(&customers).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &customers, nil
 }
 
@@ -40,23 +46,27 @@ func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.Customer{}).Create(&customer)
+	if err := r.database.Model(&domain.Customer{}).Create(&customer).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &customer, nil
 }
 
 func (r *CustomerRepositoryImpl) Update(c *gin.Context) (*domain.Customer, error) {
 	patch, customer := map[string]interface{}{}, domain.Customer{}
-	if err := c.Bind(&patch); err != nil {
-		return nil, errors.New("error binding JSON data")
-	} else if len(patch) == 0 {
-		return nil, errors.New("empty request body")
-	} else if _, err := patch["id"]; !err {
-		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+	_, errID := patch["id"]
+
+	if err := c.Bind(&patch); err != nil && !errID {
+		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	result := r.database.Model(&domain.Customer{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&customer)
-	if result.RowsAffected == 0 {
-		return nil, errors.New("customer not found or json data does not match ")
+	if err := r.database.Model(&domain.Customer{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&customer).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	if customer.ID == 0 {
+		return nil, errors.New("customer not found")
 	}
 
 	return &customer, nil

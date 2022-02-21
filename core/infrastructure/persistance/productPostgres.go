@@ -20,7 +20,10 @@ func NewProductRepositoryImpl(db *gorm.DB) repository.ProductRepository {
 func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error) {
 	var product domain.Product
 
-	r.database.Model(&domain.Product{}).Find(&product, c.Param("id"))
+	if err := r.database.Model(&domain.Product{}).Find(&product, c.Param("id")).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	if product.ID == 0 {
 		return nil, errors.New("product order not found")
 	}
@@ -30,7 +33,10 @@ func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error)
 func (r *ProductRepositoryImpl) GetAll() (*[]domain.Product, error) {
 	var products []domain.Product
 
-	r.database.Model(&domain.Product{}).Find(&products)
+	if err := r.database.Model(&domain.Product{}).Find(&products).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &products, nil
 }
 
@@ -40,24 +46,27 @@ func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) 
 	if err := c.ShouldBindJSON(&product); err != nil {
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
-	r.database.Model(&domain.Product{}).Create(&product)
+
+	if err := r.database.Model(&domain.Product{}).Create(&product).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &product, nil
 }
 
 func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) {
-
 	patch, product := map[string]interface{}{}, domain.Product{}
+	_, errID := patch["id"]
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, errors.New("error binding JSON data")
-	} else if len(patch) == 0 {
-		return nil, errors.New("empty request body")
-	} else if _, err := patch["id"]; !err {
-		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+	if err := c.Bind(&patch); err != nil && !errID {
+		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	result := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&product)
-	if result.RowsAffected == 0 {
+	if err := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&product).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	if product.ID == 0 {
 		return nil, errors.New("product not found or json data does not match ")
 	}
 

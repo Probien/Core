@@ -20,7 +20,10 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.PawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, c.Param("id"))
+	if err := r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, c.Param("id")).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	if pawnOrder.ID == 0 {
 		return nil, errors.New("pawn order not found")
 	}
@@ -30,7 +33,10 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
-	r.database.Model(&domain.PawnOrder{}).Preload("Customer").Find(&pawnOrders)
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Find(&pawnOrders).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &pawnOrders, nil
 }
 
@@ -41,23 +47,26 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder)
+	if err := r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
 	return &pawnOrder, nil
 }
 
 func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, error) {
 	patch, pawnOrder := map[string]interface{}{}, domain.PawnOrder{}
+	_, errID := patch["id"]
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, errors.New("error binding JSON data")
-	} else if len(patch) == 0 {
-		return nil, errors.New("empty request body")
-	} else if _, err := patch["id"]; !err {
-		return nil, errors.New("to perform this operation it is necessary to enter an ID in the JSON body")
+	if err := c.Bind(&patch); err != nil && !errID {
+		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	result := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder)
-	if result.RowsAffected == 0 {
+	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	if pawnOrder.ID == 0 {
 		return nil, errors.New("pawn order not found or json data does not match ")
 	}
 
