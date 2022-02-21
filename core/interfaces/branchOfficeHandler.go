@@ -22,7 +22,7 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		}
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
+		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
 	})
 
 	branchOfficeHandlerv1.GET("/", func(c *gin.Context) {
@@ -31,9 +31,9 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusInternalServerError,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
+				common.Response{Status: http.StatusInternalServerError, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffices})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully created", Data: &branchOffices})
 		}
 	})
 
@@ -46,7 +46,7 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully created", Data: &branchOffice})
 		}
 	})
 
@@ -59,7 +59,7 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully created", Data: &branchOffice})
 		}
 	})
 }
