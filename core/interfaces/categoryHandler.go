@@ -34,7 +34,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusInternalServerError, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully created", Data: &categories})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &categories})
 		}
 	})
 
@@ -47,7 +47,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully created", Data: &category})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &category})
 		}
 	})
 
@@ -60,7 +60,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully created", Data: &category})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully updated", Data: &category})
 		}
 	})
 
@@ -73,7 +73,7 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully created", Data: &category})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully deleted", Data: &category})
 		}
 	})
 }
