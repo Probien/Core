@@ -10,6 +10,7 @@ func Setup(ge *gin.Engine) {
 	v1 := *ge.Group("/probien/api/v1")
 	//v1.Use(authenticator.AuthJWT())
 	{
+		interfaces.BranchOfficeHandler(&v1)
 		interfaces.CategoryHandler(&v1)
 		interfaces.CustomerHandler(&v1)
 		interfaces.EmployeeHandler(&v1)
