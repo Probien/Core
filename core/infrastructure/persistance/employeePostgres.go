@@ -90,7 +90,7 @@ func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error
 		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", &employee.Email).Updates(&patch).Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&employee).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

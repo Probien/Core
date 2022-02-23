@@ -20,7 +20,7 @@ func NewBranchOfficeRepositoryImp(db *gorm.DB) repository.BranchOfficeRepository
 func (r *BranchOfficeRepositoryImp) GetAll() (*[]domain.BranchOffice, error) {
 	var branchOffices []domain.BranchOffice
 
-	if err := r.database.Model(&domain.BranchOffice{}).Find(&branchOffices).Error; err != nil {
+	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffices).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 	return &branchOffices, nil
@@ -46,7 +46,7 @@ func (r *BranchOfficeRepositoryImp) Create(c *gin.Context) (*domain.BranchOffice
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	if err := r.database.Model(&domain.BranchOffice{}).Create(&branchOffice).Error; err != nil {
+	if err := r.database.Model(&domain.BranchOffice{}).Omit("Employees").Create(&branchOffice).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 	return &branchOffice, nil
