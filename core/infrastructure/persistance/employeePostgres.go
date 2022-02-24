@@ -69,7 +69,7 @@ func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error) {
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
-	if err := c.ShouldBindJSON(&employee); err != nil {
+	if err := c.ShouldBindJSON(&employee); err != nil || employee.BranchOfficeID == 0 {
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 	auth.EncryptPassword([]byte(employee.Password), crypt)

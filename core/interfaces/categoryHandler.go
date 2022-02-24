@@ -21,8 +21,9 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 				http.StatusBadRequest,
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
+		} else {
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &category})
 		}
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &category})
 	})
 
 	categoryHandlerV1.GET("/", func(c *gin.Context) {

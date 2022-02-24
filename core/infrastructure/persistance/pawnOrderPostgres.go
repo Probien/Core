@@ -43,7 +43,7 @@ func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := c.ShouldBindJSON(&pawnOrder); err != nil {
+	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 

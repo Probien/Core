@@ -20,7 +20,7 @@ func NewEndorsementRepositoryImpl(db *gorm.DB) repository.EndorsementRepository 
 func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
-	if err := r.database.Model(&domain.Endorsement{}).Preload("PawnOrderID").Find(&endorsement, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsement, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -43,7 +43,7 @@ func (r *EndorsementRepositoryImpl) GetAll() (*[]domain.Endorsement, error) {
 func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
-	if err := c.ShouldBindJSON(&endorsement); err != nil {
+	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 {
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 

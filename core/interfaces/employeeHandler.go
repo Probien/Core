@@ -36,8 +36,9 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 				http.StatusBadRequest,
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
+		} else {
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &employee})
 		}
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &employee})
 	})
 
 	employeeHandlerV1.GET("/", func(c *gin.Context) {
