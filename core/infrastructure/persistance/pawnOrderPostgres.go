@@ -20,7 +20,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.PawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Find(&pawnOrder, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -47,7 +47,7 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	if err := r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Create(&pawnOrder).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Omit("Customer").Create(&pawnOrder).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
