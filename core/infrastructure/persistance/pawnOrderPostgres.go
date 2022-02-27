@@ -63,7 +63,7 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&pawnOrder).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("Products").Omit("Endorsements").Updates(&patch).Find(&pawnOrder).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

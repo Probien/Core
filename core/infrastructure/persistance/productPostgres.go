@@ -62,7 +62,7 @@ func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) 
 		return nil, errors.New("error binding JSON data, verify json format")
 	}
 
-	if err := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Omit("id").Updates(&patch).Find(&product).Error; err != nil {
+	if err := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&product).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
