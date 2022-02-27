@@ -9,7 +9,7 @@ import (
 )
 
 func ProductHandler(v1 *gin.RouterGroup) {
-	productHandlerV1 := *v1.Group("/product")
+	productHandlerV1 := *v1.Group("/products")
 	interactor := application.ProductInteractor{}
 
 	productHandlerV1.POST("/", func(c *gin.Context) {

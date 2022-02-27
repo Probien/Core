@@ -10,7 +10,7 @@ import (
 
 func EndorsementHandler(v1 *gin.RouterGroup) {
 
-	endorsementHandlerV1 := *v1.Group("/endorsement")
+	endorsementHandlerV1 := *v1.Group("/endorsements")
 	interactor := application.EndorsemenInteractor{}
 
 	endorsementHandlerV1.POST("/", func(c *gin.Context) {

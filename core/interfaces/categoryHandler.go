@@ -10,7 +10,7 @@ import (
 
 func CategoryHandler(v1 *gin.RouterGroup) {
 
-	categoryHandlerV1 := *v1.Group("/category")
+	categoryHandlerV1 := *v1.Group("/categories")
 	interactor := application.CategoryInteractor{}
 
 	categoryHandlerV1.POST("/", func(c *gin.Context) {

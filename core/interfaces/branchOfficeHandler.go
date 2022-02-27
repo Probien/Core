@@ -10,7 +10,7 @@ import (
 
 func BranchOfficeHandler(v1 *gin.RouterGroup) {
 
-	branchOfficeHandlerv1 := *v1.Group("/branch-office")
+	branchOfficeHandlerv1 := *v1.Group("/branch-offices")
 	interactor := application.BranchOfficeInteractor{}
 
 	branchOfficeHandlerv1.POST("/", func(c *gin.Context) {

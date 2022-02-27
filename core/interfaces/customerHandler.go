@@ -10,7 +10,7 @@ import (
 
 func CustomerHandler(v1 *gin.RouterGroup) {
 
-	customerHandlerV1 := *v1.Group("/customer")
+	customerHandlerV1 := *v1.Group("/customers")
 	interactor := application.CustomerInteractor{}
 
 	customerHandlerV1.POST("/", func(c *gin.Context) {

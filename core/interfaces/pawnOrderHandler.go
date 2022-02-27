@@ -10,7 +10,7 @@ import (
 
 func PawnOrderHandler(v1 *gin.RouterGroup) {
 
-	pawnOrderHandlerV1 := *v1.Group("/pawn-order")
+	pawnOrderHandlerV1 := *v1.Group("/pawn-orders")
 	interactor := application.PawnOrderInteractor{}
 
 	pawnOrderHandlerV1.POST("/", func(c *gin.Context) {

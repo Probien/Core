@@ -11,7 +11,7 @@ import (
 func EmployeeHandler(v1 *gin.RouterGroup) {
 
 	interactor := application.EmployeeInteractor{}
-	employeeHandlerV1 := *v1.Group("/employee")
+	employeeHandlerV1 := *v1.Group("/employees")
 
 	employeeHandlerV1.POST("/login", func(c *gin.Context) {
 		tokenizer := make(chan string, 1)
