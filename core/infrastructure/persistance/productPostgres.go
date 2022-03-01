@@ -13,7 +13,7 @@ type ProductRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func NewProductRepositoryImpl(db *gorm.DB) repository.ProductRepository {
+func NewProductRepositoryImpl(db *gorm.DB) repository.IProductRepository {
 	return &ProductRepositoryImpl{database: db}
 }
 

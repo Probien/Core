@@ -15,7 +15,7 @@ type EmployeeRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func NewEmployeeRepositoryImpl(db *gorm.DB) repository.EmployeeRepository {
+func NewEmployeeRepositoryImpl(db *gorm.DB) repository.IEmployeeRepository {
 	return &EmployeeRepositoryImpl{database: db}
 }
 

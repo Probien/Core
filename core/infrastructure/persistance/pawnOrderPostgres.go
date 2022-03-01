@@ -13,7 +13,7 @@ type PawnOrderRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.PawnOrderRepository {
+func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.IPawnOrderRepository {
 	return &PawnOrderRepositoryImpl{database: db}
 }
 

@@ -13,7 +13,7 @@ type BranchOfficeRepositoryImp struct {
 	database *gorm.DB
 }
 
-func NewBranchOfficeRepositoryImp(db *gorm.DB) repository.BranchOfficeRepository {
+func NewBranchOfficeRepositoryImp(db *gorm.DB) repository.IBranchOfficeRepository {
 	return &BranchOfficeRepositoryImp{database: db}
 }
 

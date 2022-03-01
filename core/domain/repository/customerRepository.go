@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CustomerRepository interface {
+type ICustomerRepository interface {
 	GetById(c *gin.Context) (*domain.Customer, error)
 	GetAll() (*[]domain.Customer, error)
 	Create(c *gin.Context) (*domain.Customer, error)

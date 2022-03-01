@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EndorsementRepository interface {
+type IEndorsementRepository interface {
 	GetById(c *gin.Context) (*domain.Endorsement, error)
 	GetAll() (*[]domain.Endorsement, error)
 	Create(c *gin.Context) (*domain.Endorsement, error)

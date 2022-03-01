@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CategoryRepository interface {
+type ICategoryRepository interface {
 	GetById(c *gin.Context) (*domain.Category, error)
 	GetAll() (*[]domain.Category, error)
 	Create(c *gin.Context) (*domain.Category, error)

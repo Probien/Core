@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BranchOfficeRepository interface {
+type IBranchOfficeRepository interface {
 	GetAll() (*[]domain.BranchOffice, error)
 	GetById(c *gin.Context) (*domain.BranchOffice, error)
 	Create(c *gin.Context) (*domain.BranchOffice, error)

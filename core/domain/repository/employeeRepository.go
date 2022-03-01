@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EmployeeRepository interface {
+type IEmployeeRepository interface {
 	Login(c *gin.Context) (*domain.Employee, error)
 	GetByEmail(c *gin.Context) (*domain.Employee, error)
 	GetAll() (*[]domain.Employee, error)

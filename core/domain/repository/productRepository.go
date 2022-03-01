@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProductRepository interface {
+type IProductRepository interface {
 	GetById(c *gin.Context) (*domain.Product, error)
 	GetAll() (*[]domain.Product, error)
 	Create(c *gin.Context) (*domain.Product, error)

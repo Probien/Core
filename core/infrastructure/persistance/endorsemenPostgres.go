@@ -13,7 +13,7 @@ type EndorsementRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func NewEndorsementRepositoryImpl(db *gorm.DB) repository.EndorsementRepository {
+func NewEndorsementRepositoryImpl(db *gorm.DB) repository.IEndorsementRepository {
 	return &EndorsementRepositoryImpl{database: db}
 }
 
