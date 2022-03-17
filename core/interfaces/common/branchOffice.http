@@ -1,0 +1,7 @@
+# Get a branch office by ID
+GET http://localhost:9000/probien/api/v1/branch-offices/1 HTTP/1.1
+content-type: application/json
+
+#Get all existing branch offices
+GET http://localhost:9000/probien/api/v1/branch-offices/ HTTP/1.1
+content-type: application/json 
