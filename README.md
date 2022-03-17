@@ -34,7 +34,8 @@ First, I had no idea how to structure the project, I come from java and have alw
   - Implements repository interface
     - employee_repository.go
 - Interfaces
-  - HTTP handler
+  - Expose http connections
+    - HTTP handler
 
 ## Database Model (subject to change)
 
