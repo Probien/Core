@@ -6,7 +6,6 @@ type BranchOffice struct {
 	ID         uint       `json:"branch_office_id"`
 	Employees  []Employee `json:"employees"`
 	BranchName string     `json:"branch_name"`
-	Payment    float64    `json:"payment"`
 	Address    string     `json:"address"`
 	ZipCode    string     `json:"zip_code"`
 	CreatedAt  time.Time
