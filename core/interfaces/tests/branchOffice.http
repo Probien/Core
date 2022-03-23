@@ -15,7 +15,7 @@ content-type: application/json
     "zip_code":"87291"
 }
 
-#Update
+#Update branch (dinamic fields)
 PATCH http://localhost:9000/probien/api/v1/branch-offices/ HTTP/1.1
 content-type: application/json
 {
