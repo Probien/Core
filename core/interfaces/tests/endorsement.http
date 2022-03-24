@@ -1,0 +1,15 @@
+# Get an endorsement by ID
+GET http://localhost:9000/probien/api/v1/endorsements/1 HTTP/1.1
+
+#Get all existing endorsements
+GET http://localhost:9000/probien/api/v1/endorsements/ HTTP/1.1
+content-type: application/json
+
+#Create new endorsement
+POST http://localhost:9000/probien/api/v1/endorsements/ HTTP/1.1
+content-type: application/json
+{
+	"pawn_order_id":1,
+	"payment":2000
+}
+

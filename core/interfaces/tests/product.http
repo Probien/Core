@@ -1,0 +1,31 @@
+# Get a product by ID
+GET http://localhost:9000/probien/api/v1/products/1 HTTP/1.1
+content-type: application/json
+
+#Get all existing products
+GET http://localhost:9000/probien/api/v1/products/ HTTP/1.1
+content-type: application/json
+
+#Create a new product
+POST http://localhost:9000/probien/api/v1/products/ HTTP/1.1
+content-type: application/json
+{
+	"pawn_order_id":1,
+	"category_id":3,
+	"price":190.20,
+	"name":"washer",
+	"brand":"Mave",
+    "details":"some details",
+    "on_sale":false
+}
+
+#Update product (dinamic fields)
+PATCH http://localhost:9000/probien/api/v1/products/ HTTP/1.1
+content-type: application/json
+{
+	"id": 2,
+	"price": 122,
+	"name": "Car",
+	"brand": "Toyota",
+	"details": "4 doors, color red"
+}
