@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
@@ -19,9 +20,11 @@ func AuthJWT() gin.HandlerFunc {
 				fmt.Println(claims)
 			} else {
 				fmt.Println(err)
+				c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Invalid token"})
 				c.AbortWithStatus(http.StatusUnauthorized)
 			}
 		} else {
+			c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
