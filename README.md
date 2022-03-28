@@ -48,6 +48,7 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Tests :clock330:
 - Authentication Based on Roles :clock330:
 - Transaction | CRUD Operations :clock330:
+- Database logs :clock330:
 - E-mail Notifications :heavy_minus_sign:
 - Recover Password :heavy_minus_sign:
 - Reports By Pawn Shop Branch :heavy_minus_sign:
