@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
 
 func ProductHandler(v1 *gin.RouterGroup) {
 	productHandlerV1 := *v1.Group("/products")
+	productHandlerV1.Use(auth.RoutesAndAuthority(false))
 	interactor := application.ProductInteractor{}
 
 	productHandlerV1.POST("/", func(c *gin.Context) {

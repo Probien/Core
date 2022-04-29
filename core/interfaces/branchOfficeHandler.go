@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,7 @@ import (
 func BranchOfficeHandler(v1 *gin.RouterGroup) {
 
 	branchOfficeHandlerv1 := *v1.Group("/branch-offices")
+	branchOfficeHandlerv1.Use(auth.RoutesAndAuthority(false))
 	interactor := application.BranchOfficeInteractor{}
 
 	branchOfficeHandlerv1.POST("/", func(c *gin.Context) {
