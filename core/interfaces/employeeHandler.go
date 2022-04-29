@@ -16,14 +16,13 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 	employeeHandlerV1.POST("/login", func(c *gin.Context) {
 		tokenizer := make(chan string, 1)
 		employee, err := interactor.Login(c)
-
-		interactor.GenerateToken(employee, tokenizer)
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
+			interactor.GenerateToken(employee, tokenizer)
 			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully logged in", Data: &employee, Token: <-tokenizer})
 		}
 	})

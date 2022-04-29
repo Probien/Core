@@ -25,7 +25,7 @@ func ConnectDB() {
 		panic(err)
 	}
 	sqlDB.SetMaxIdleConns(1000)
-	sqlDB.SetMaxOpenConns(0)
+	sqlDB.SetMaxOpenConns(100)
 
 	Database = db
 }
