@@ -45,7 +45,7 @@ First, I had no idea how to structure the project, I come from java and have alw
 ## Roadmap
 
 - JWT Authentication :heavy_check_mark:
-- Tests :clock330:
+- HTTP Tests :heavy_check_mark:
 - Authentication Based on Roles :clock330:
 - Transaction | CRUD Operations :clock330:
 - Database logs :clock330:
