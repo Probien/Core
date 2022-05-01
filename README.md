@@ -46,7 +46,7 @@ First, I had no idea how to structure the project, I come from java and have alw
 
 - JWT Authentication :heavy_check_mark:
 - HTTP Tests :heavy_check_mark:
-- Authentication Based on Roles :clock330:
+- Authorization Based on Roles :heavy_check_mark:
 - Transaction | CRUD Operations :clock330:
 - Database logs :clock330:
 - E-mail Notifications :heavy_minus_sign:

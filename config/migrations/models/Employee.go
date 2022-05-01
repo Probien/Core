@@ -14,6 +14,7 @@ type Employee struct {
 	IsAdmin        bool   `gorm:"not null"`
 	IsActive       bool   `gorm:"not null"`
 	BranchOfficeID uint   `gorm:"not null"`
+	SessionLogs    []SessionLog
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
