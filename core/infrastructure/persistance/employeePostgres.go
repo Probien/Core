@@ -36,6 +36,9 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 	} else if err := bcrypt.CompareHashAndPassword([]byte(employee.Password), []byte(loginCredentials.Password)); err != nil {
 		return nil, errors.New("incorrect credentials")
 	}
+
+	go r.database.Exec("CALL savesession(?)", employee.ID)
+
 	return &employee, nil
 }
 

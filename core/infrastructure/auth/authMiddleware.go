@@ -7,6 +7,7 @@ import (
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func AuthJWT() gin.HandlerFunc {
@@ -46,6 +47,14 @@ func RoutesAndAuthority(isAdmin bool) gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
+}
+
+func EncryptPassword(data []byte, ch chan<- []byte) {
+	hash, err := bcrypt.GenerateFromPassword(data, bcrypt.MinCost)
+	if err != nil {
+		panic(err)
+	}
+	ch <- hash
 }
 
 func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClaims) (*jwt.Token, error) {
