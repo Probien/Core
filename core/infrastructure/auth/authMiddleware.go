@@ -2,7 +2,9 @@ package auth
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/dgrijalva/jwt-go"
@@ -13,17 +15,22 @@ import (
 func AuthJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
-		if len(authHeader) > 0 {
-			encodedToken := authHeader[len("Bearer "):]
-			data := AuthCustomClaims{}
+		data := AuthCustomClaims{}
+
+		if len(authHeader) > 0 && authHeader != "Bearer" {
+
+			splitToken := strings.Split(authHeader, "Bearer")
+			encodedToken := strings.TrimSpace(splitToken[1])
 			token, err := validateAndParseToken(encodedToken, &data)
+			log.Print(err)
+
 			if token.Valid {
 				c.Next()
 			} else {
-				fmt.Println(err)
 				c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Invalid token"})
 				c.AbortWithStatus(http.StatusUnauthorized)
 			}
+
 		} else {
 			c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -35,13 +42,19 @@ func RoutesAndAuthority(isAdmin bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		authHeader := c.GetHeader("Authorization")
-		encodedToken := authHeader[len("Bearer "):]
 		data := AuthCustomClaims{}
 
-		validateAndParseToken(encodedToken, &data)
+		if len(authHeader) > 0 && authHeader != "Bearer" {
+			splitToken := strings.Split(authHeader, "Bearer")
+			encodedToken := strings.TrimSpace(splitToken[1])
+			validateAndParseToken(encodedToken, &data)
 
-		if data.IsAdmin == isAdmin {
-			c.Next()
+			if data.IsAdmin == isAdmin {
+				c.Next()
+			} else {
+				c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
+				c.AbortWithStatus(http.StatusUnauthorized)
+			}
 		} else {
 			c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
 			c.AbortWithStatus(http.StatusUnauthorized)
