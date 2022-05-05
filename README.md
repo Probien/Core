@@ -21,31 +21,30 @@ First, I had no idea how to structure the project, I come from java and have alw
 
 ## Design
 
+- Config
+  - Models | Entity struct that represent mapping to data model
+  - Stored procedures
 - Application
   - Write business logic
-    - employee.go (GetEmployeeById, GetAllEmployees, &...)
 - Domain
   - Define interface
     - repository interface for infrastructure
   - Define struct
-    - Entity struct that represent mapping to data model
-      - employee.go
+    - Entity struct that represent I/O JSON format
 - Infrastructure
+  - Auth
+    - Middleware and security filter
   - Implements repository interface
-    - employee_repository.go
-- Interfaces
-  - Expose http connections
-    - HTTP handler
+- Interface
+  - Expose http endpoints
 
 ## Database Model (subject to change)
 
-<img width="1200" height="400" src="https://imgdb.net/storage/uploads/25847851dc958eb3e3dd6742dd036e6c06c083a116c524c4cdcfc146cee00034.png" alt="database"/>
-
+<img src="https://i.ibb.co/QPsbgy0/database.png" alt="database" border="0">
 
 ## Roadmap
 
 - JWT Authentication :heavy_check_mark:
-- HTTP Tests :heavy_check_mark:
 - Authorization Based on Roles :heavy_check_mark:
 - Transaction | CRUD Operations :clock330:
 - Database logs :clock330:
@@ -53,6 +52,7 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Recover Password :heavy_minus_sign:
 - Reports By Pawn Shop Branch :heavy_minus_sign:
 - Swagger Documentation :heavy_minus_sign:
+- HTTP Tests :heavy_check_mark:
 
 ## Contributing
 
