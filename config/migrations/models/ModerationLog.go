@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Moderation struct {
+type ModerationLog struct {
 	ID            uint `gorm:"primaryKey"`
 	EmployeeID    uint
 	Employee      Employee `gorm:"foreignKey:EmployeeID"`
