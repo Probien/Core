@@ -19,5 +19,6 @@ func Setup(server *gin.Engine) {
 		interfaces.EndorsementHandler(&v1)
 		interfaces.PawnOrderHandler(&v1)
 		interfaces.ProductHandler(&v1)
+		interfaces.LogHandler(&v1)
 	}
 }

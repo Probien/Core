@@ -1,0 +1,96 @@
+package persistance
+
+import (
+	"errors"
+
+	"github.com/JairDavid/Probien-Backend/core/domain"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+type LogsRepositoryImp struct {
+	database *gorm.DB
+}
+
+func NewLogsRepositoryImp(db *gorm.DB) repository.IlogsRepository {
+	return &LogsRepositoryImp{database: db}
+}
+
+func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error) {
+	var sessions []domain.SessionLog
+
+	if err := r.database.Model(domain.SessionLog{}).Preload("Employee").Find(&sessions).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return &sessions, nil
+}
+
+func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
+	data := map[string]interface{}{}
+	var sessions []domain.SessionLog
+	_, employeeIdExist := data["id"]
+
+	if err := c.Bind(&data); err != nil && !employeeIdExist {
+		return nil, errors.New("error binding JSON data, verify json format")
+	}
+
+	if err := r.database.Model(domain.SessionLog{}).Find(&sessions, data["id"]); err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return &sessions, nil
+}
+
+func (r *LogsRepositoryImp) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
+	var payments []domain.PaymentLog
+
+	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return &payments, nil
+}
+
+func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
+	data := map[string]interface{}{}
+	var payments []domain.PaymentLog
+	_, customerIdExist := data["id"]
+
+	if err := c.Bind(&data); err != nil && !customerIdExist {
+		return nil, errors.New("error binding JSON data, verify json format")
+	}
+
+	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments, data["id"]); err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return &payments, nil
+}
+
+func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
+	var movements []domain.ModerationLog
+
+	if err := r.database.Model(domain.ModerationLog{}).Preload("Employee").Find(&movements).Error; err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return &movements, nil
+}
+
+func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
+	data := map[string]interface{}{}
+	var movements []domain.ModerationLog
+	_, employeeIdExist := data["id"]
+
+	if err := c.Bind(&data); err != nil && !employeeIdExist {
+		return nil, errors.New("error binding JSON data, verify json format")
+	}
+
+	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Find(&movements, data["id"]); err != nil {
+		return nil, errors.New("failed to establish a connection with our database services")
+	}
+
+	return nil, nil
+}
