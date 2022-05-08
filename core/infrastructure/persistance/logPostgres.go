@@ -20,7 +20,7 @@ func NewLogsRepositoryImp(db *gorm.DB) repository.IlogsRepository {
 func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error) {
 	var sessions []domain.SessionLog
 
-	if err := r.database.Model(domain.SessionLog{}).Preload("Employee").Find(&sessions).Error; err != nil {
+	if err := r.database.Model(&domain.SessionLog{}).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -28,15 +28,9 @@ func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog
 }
 
 func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
-	data := map[string]interface{}{}
 	var sessions []domain.SessionLog
-	_, employeeIdExist := data["id"]
 
-	if err := c.Bind(&data); err != nil && !employeeIdExist {
-		return nil, errors.New("error binding JSON data, verify json format")
-	}
-
-	if err := r.database.Model(domain.SessionLog{}).Find(&sessions, data["id"]); err != nil {
+	if err := r.database.Model(&domain.SessionLog{}).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -46,7 +40,7 @@ func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domai
 func (r *LogsRepositoryImp) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
 	var payments []domain.PaymentLog
 
-	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
+	if err := r.database.Model(&domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -54,15 +48,9 @@ func (r *LogsRepositoryImp) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog
 }
 
 func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
-	data := map[string]interface{}{}
 	var payments []domain.PaymentLog
-	_, customerIdExist := data["id"]
 
-	if err := c.Bind(&data); err != nil && !customerIdExist {
-		return nil, errors.New("error binding JSON data, verify json format")
-	}
-
-	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments, data["id"]); err != nil {
+	if err := r.database.Model(&domain.PaymentLog{}).Where("customer_id = ?", c.Param("id")).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -72,7 +60,7 @@ func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domai
 func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
 
-	if err := r.database.Model(domain.ModerationLog{}).Preload("Employee").Find(&movements).Error; err != nil {
+	if err := r.database.Model(&domain.ModerationLog{}).Preload("Employee").Find(&movements).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -80,15 +68,9 @@ func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.Moderatio
 }
 
 func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
-	data := map[string]interface{}{}
 	var movements []domain.ModerationLog
-	_, employeeIdExist := data["id"]
 
-	if err := c.Bind(&data); err != nil && !employeeIdExist {
-		return nil, errors.New("error binding JSON data, verify json format")
-	}
-
-	if err := r.database.Model(domain.PaymentLog{}).Preload("Employee").Find(&movements, data["id"]); err != nil {
+	if err := r.database.Model(&domain.ModerationLog{}).Where("employee_id", c.Param("id")).Preload("Employee").Find(&movements).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

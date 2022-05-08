@@ -22,7 +22,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &sessions})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &sessions})
 		}
 
 	})
@@ -36,7 +36,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &sessions})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &sessions})
 		}
 	})
 
@@ -49,7 +49,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &payments})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &payments})
 		}
 	})
 
@@ -62,7 +62,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &payments})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &payments})
 		}
 	})
 
@@ -75,7 +75,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &movements})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &movements})
 		}
 	})
 
@@ -88,7 +88,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &movements})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully consulted", Data: &movements})
 		}
 	})
 }
