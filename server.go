@@ -9,7 +9,7 @@ import (
 func main() {
 	server := gin.Default()
 	config.ConnectDB()
-	config.Migrate()
+	//config.Migrate()
 
 	router.Setup(server)
 	server.Run(":9000")

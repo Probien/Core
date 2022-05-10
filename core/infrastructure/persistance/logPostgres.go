@@ -74,5 +74,5 @@ func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]doma
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
-	return nil, nil
+	return &movements, nil
 }
