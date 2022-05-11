@@ -9,7 +9,7 @@
         <a target="_blank" href="https://crowdin.com/project/excalidraw">
       <img src="https://img.shields.io/github/last-commit/ThePandaDevs/Probien-Backend">
     </a>
-      <h4>Alpha version, Im still working on this</h4>
+      <h4>Phase 1/2, Im still working on this</h4>
   </p>
 </div>
 
@@ -17,7 +17,27 @@
 
 What did you learn while building this project? What challenges did you face and how did you overcome them?
 
-First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of desing so I create this project with domain based approach [(DDD)](https://airbrake.io/blog/software-design/domain-driven-design) (Recomendations are welcome). 
+First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of desing so I create this project with domain based approach [(DDD)](https://airbrake.io/blog/software-design/domain-driven-design) (Recomendations are welcome).
+
+## Roadmap
+
+- Phase 1
+  - JWT Authentication :heavy_check_mark:
+  - Authorization Based on Roles :heavy_check_mark:
+  - Database logs :heavy_check_mark:
+  - Transaction | CRUD Operations :clock330:
+  - HTTP Tests :heavy_check_mark:
+
+- Phase 2
+  - E-mail Notifications :heavy_minus_sign:
+  - Recover Password :heavy_minus_sign:
+  - Reports By Pawn Shop Branch :heavy_minus_sign:
+  - Swagger Documentation :heavy_minus_sign:
+
+- Phase 3
+  - Refactor code and bussiness logic
+  - (Possibly) add employee payments & extra features
+  - Start frontend...
 
 ## Design
 
@@ -32,27 +52,14 @@ First, I had no idea how to structure the project, I come from java and have alw
   - Define struct
     - Entity struct that represent I/O JSON format
 - Infrastructure
-  - Auth
-    - Middleware and security filter
-  - Implements repository interface
+  - Auth | Middleware and security filters
+  - Persistance | Implements repository interface
 - Interface
   - Expose http endpoints
 
 ## Database Model (subject to change)
 
 <img src="https://i.ibb.co/QPsbgy0/database.png" alt="database" border="0">
-
-## Roadmap
-
-- JWT Authentication :heavy_check_mark:
-- Authorization Based on Roles :heavy_check_mark:
-- Transaction | CRUD Operations :clock330:
-- Database logs :clock330:
-- E-mail Notifications :heavy_minus_sign:
-- Recover Password :heavy_minus_sign:
-- Reports By Pawn Shop Branch :heavy_minus_sign:
-- Swagger Documentation :heavy_minus_sign:
-- HTTP Tests :heavy_check_mark:
 
 ## Contributing
 
