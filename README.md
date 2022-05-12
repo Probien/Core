@@ -19,6 +19,26 @@ What did you learn while building this project? What challenges did you face and
 
 First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of desing so I create this project with domain based approach [(DDD)](https://airbrake.io/blog/software-design/domain-driven-design) (Recomendations are welcome).
 
+
+## Bussiness Logic
+
+- Administrator
+  - Can see all occurred logs into application (sessions, movements and payments).
+  - Can see detailed reports by branch office (money recorded, total products, employee statistics, etc).
+  - Can manage user access, create new branches, create new employees and create new category products.
+  
+- Employee
+  - Can manage the category of products
+  - Can do pawn orders to customers as well as do endorsements.
+  - Can manage the status of pawn orders (in course, late, paid or overdue)
+
+- Customer
+  - Can do multiple pawns, their stuff are evaluated and classified by a category product when a quote is realized.
+  - Can do endorsements depending of payment modality (weekly or monthly).
+
+Lost products
+  - When a customer doesn't make any endorsement after the deadline, all the client's things become the property of probien.
+
 ## Roadmap
 
 - Phase 1
@@ -41,21 +61,25 @@ First, I had no idea how to structure the project, I come from java and have alw
 
 ## Design
 
-- Config
-  - Models | Entity struct that represent mapping to data model
-  - Stored procedures
-- Application
-  - Write business logic
-- Domain
-  - Define interface
-    - repository interface for infrastructure
-  - Define struct
-    - Entity struct that represent I/O JSON format
-- Infrastructure
-  - Auth | Middleware and security filters
-  - Persistance | Implements repository interface
-- Interface
-  - Expose http endpoints
+config/
+├─ database.go | Connection to postgresql using ORM
+|
+├─ migrations/
+│  ├─ stored procedures | Raw sql/
+│  ├─ models | Entity struct that represent mapping to data model/
+core/
+|
+├─ application | Write business logic/
+├─ domain | Entity struct that represent I/O JSON format/
+│  ├─ repository | Repository interface for infrastructure/
+|
+├─ infrastructure/
+│  ├─ auth | Middleware and security filters/
+│  ├─ persistance | Implements repository interface with database /
+|
+├─ interface | Expose http endpoints/
+router | Routing for endpoints/
+server.go
 
 ## Database Model (subject to change)
 

@@ -15,7 +15,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 	interactor := application.LogsInteractor{}
 
 	logHandler.GET("/sessions", func(c *gin.Context) {
-		sessions, err := interactor.GetAllSessions(c)
+		sessions, err := interactor.GetAllSessions()
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
@@ -41,7 +41,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 	})
 
 	logHandler.GET("/payments", func(c *gin.Context) {
-		payments, err := interactor.GetAllPayments(c)
+		payments, err := interactor.GetAllPayments()
 
 		if err != nil {
 			c.JSON(
@@ -67,7 +67,7 @@ func LogHandler(v1 *gin.RouterGroup) {
 	})
 
 	logHandler.GET("/movements", func(c *gin.Context) {
-		movements, err := interactor.GetAllMovements(c)
+		movements, err := interactor.GetAllMovements()
 
 		if err != nil {
 			c.JSON(

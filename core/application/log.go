@@ -9,9 +9,9 @@ import (
 
 type LogsInteractor struct{}
 
-func (li *LogsInteractor) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error) {
+func (li *LogsInteractor) GetAllSessions() (*[]domain.SessionLog, error) {
 	repository := persistance.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessions(c)
+	return repository.GetAllSessions()
 }
 
 func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
@@ -19,9 +19,9 @@ func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.
 	return repository.GetAllSessionsByEmployeeId(c)
 }
 
-func (li *LogsInteractor) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
+func (li *LogsInteractor) GetAllPayments() (*[]domain.PaymentLog, error) {
 	repository := persistance.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllPayments(c)
+	return repository.GetAllPayments()
 }
 
 func (li *LogsInteractor) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
@@ -29,9 +29,9 @@ func (li *LogsInteractor) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.
 	return repository.GetAllPaymentsByCustomerId(c)
 }
 
-func (li *LogsInteractor) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
+func (li *LogsInteractor) GetAllMovements() (*[]domain.ModerationLog, error) {
 	repository := persistance.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovements(c)
+	return repository.GetAllMovements()
 }
 
 func (li *LogsInteractor) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
