@@ -60,6 +60,7 @@ Lost products
   - Start frontend...
 
 ## Design
+```
 
 config/
 ├─ database.go | Connection to postgresql using ORM
@@ -80,6 +81,7 @@ core/
 ├─ interface | Expose http endpoints/
 router | Routing for endpoints/
 server.go
+```
 
 ## Database Model (subject to change)
 
