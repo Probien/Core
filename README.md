@@ -9,7 +9,7 @@
         <a target="_blank" href="https://crowdin.com/project/excalidraw">
       <img src="https://img.shields.io/github/last-commit/ThePandaDevs/Probien-Backend">
     </a>
-      <h4>Phase 1/2, Im still working on this</h4>
+      <h4>Phase 1/3, Im still working on this</h4>
   </p>
 </div>
 
@@ -35,8 +35,9 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Customer
   - Can do multiple pawns, their stuff are evaluated and classified by a category product when a quote is realized.
   - Can do endorsements depending of payment modality (weekly or monthly).
+  - The Customer has an extension of payment depending on the modality
 
-Lost products
+- Extras
   - When a customer doesn't make any endorsement after the deadline, all the client's things become the property of probien.
 
 ## Roadmap
