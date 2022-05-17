@@ -7,7 +7,7 @@ import (
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistance"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 
 	"github.com/gin-gonic/gin"
 )

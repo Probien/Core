@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
