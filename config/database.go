@@ -32,5 +32,17 @@ func ConnectDB() {
 
 //to migrate the models, add this function on main.go before setup all routes
 func Migrate() {
-	Database.AutoMigrate(&models.Category{}, &models.Customer{}, &models.BranchOffice{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{}, &models.SessionLog{}, &models.ModerationLog{}, &models.PaymentLog{})
+	Database.AutoMigrate(
+		&models.Category{},
+		&models.Customer{},
+		&models.BranchOffice{},
+		&models.Employee{},
+		&models.Product{},
+		&models.Endorsement{},
+		&models.PawnOrder{},
+		&models.Status{},
+		&models.SessionLog{},
+		&models.ModerationLog{},
+		&models.PaymentLog{},
+		&models.Profile{})
 }
