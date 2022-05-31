@@ -39,10 +39,13 @@ func Migrate() {
 		&models.Employee{},
 		&models.Product{},
 		&models.Endorsement{},
-		&models.PawnOrder{},
 		&models.Status{},
+		&models.PawnOrder{},
 		&models.SessionLog{},
 		&models.ModerationLog{},
 		&models.PaymentLog{},
 		&models.Profile{})
+
+	//Join tables config
+	Database.SetupJoinTable(&models.Employee{}, "EndorsementsDone", &models.Endorsement{})
 }
