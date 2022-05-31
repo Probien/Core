@@ -8,6 +8,6 @@ type PaymentLog struct {
 	Employee   Employee `json:"employee"`
 	CustomerID uint     `json:"customer_id"`
 	Customer   Customer `json:"customer"`
-	Payment    float64  `json:"payment"`
+	Amount     float64  `json:"payment"`
 	CreatedAt  time.Time
 }

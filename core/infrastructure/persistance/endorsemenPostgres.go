@@ -24,9 +24,6 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
-	if endorsement.ID == 0 {
-		return nil, errors.New("endorsement not found")
-	}
 	return &endorsement, nil
 }
 

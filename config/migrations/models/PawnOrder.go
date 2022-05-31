@@ -8,9 +8,10 @@ type PawnOrder struct {
 	Employee      Employee `gorm:"foreignKey:EmployeeID;"`
 	CustomerID    uint
 	Customer      Customer `gorm:"foreignKey:CustomerID;"`
-	StatusID      uint     `gorm:"not null"`
-	TotalMount    float64  `gorm:"not null"`
-	Monthly       bool     `gorm:"not null"`
+	StatusID      uint
+	Status        Status  `gorm:"foreignKey:StatusID;"`
+	TotalMount    float64 `gorm:"not null"`
+	Monthly       bool    `gorm:"not null"`
 	Products      []Product
 	CutOffDay     time.Time
 	ExtensionDate time.Time
