@@ -4,7 +4,6 @@ import "time"
 
 type Employee struct {
 	ID               uint         `json:"id"`
-	ProfileID        uint         `json:"profile_id"`
 	Profile          Profile      `json:"profile"`
 	Email            string       `json:"email"`
 	Password         string       `json:"password"`

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,7 @@ import (
 func CategoryHandler(v1 *gin.RouterGroup) {
 
 	categoryHandlerV1 := *v1.Group("/categories")
-	categoryHandlerV1.Use(auth.RoutesAndAuthority(false))
+	//categoryHandlerV1.Use(auth.RoutesAndAuthority(false))
 	interactor := application.CategoryInteractor{}
 
 	categoryHandlerV1.POST("/", func(c *gin.Context) {
