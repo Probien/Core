@@ -49,7 +49,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Find(&employee).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

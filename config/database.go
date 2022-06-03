@@ -15,7 +15,7 @@ var (
 )
 
 func ConnectDB() {
-	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
 
 	if err != nil {
 		panic(err)
