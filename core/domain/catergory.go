@@ -9,7 +9,7 @@ type Category struct {
 	Name          string    `json:"name"`
 	Description   string    `json:"description"`
 	Interest_rate float64   `json:"interest_rate"`
-	Products      []Product `json:"products"`
+	Products      []Product `json:"products,omitempty"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

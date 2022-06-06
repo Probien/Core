@@ -21,7 +21,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.IPawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Employee").Preload("Customer").Preload("Status").Find(&pawnOrder, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -35,7 +35,7 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Customer").Preload("Employee").Preload("Status").Preload("Endorsements").Find(&pawnOrders).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

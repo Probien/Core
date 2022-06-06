@@ -49,7 +49,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Preload("PawnOrdersDone.Customer").Preload("SessionLogs").Preload("Endorsements").Find(&employee).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -62,7 +62,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
-	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("PawnOrdersDone").Preload("Endorsements").Find(&employees).Error; err != nil {
+	if err := r.database.Model(domain.Employee{}).Preload("Profile").Find(&employees).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
