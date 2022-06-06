@@ -13,6 +13,7 @@ type PawnOrder struct {
 	TotalAmount   float64 `gorm:"not null"`
 	Monthly       bool    `gorm:"not null"`
 	Products      []Product
+	Endorsements  []Endorsement
 	CutOffDay     time.Time
 	ExtensionDate time.Time
 }

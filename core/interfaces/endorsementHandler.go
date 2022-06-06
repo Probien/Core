@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,7 @@ import (
 func EndorsementHandler(v1 *gin.RouterGroup) {
 
 	endorsementHandlerV1 := *v1.Group("/endorsements")
-	endorsementHandlerV1.Use(auth.RoutesAndAuthority(false))
+	//endorsementHandlerV1.Use(auth.RoutesAndAuthority(false))
 	interactor := application.EndorsemenInteractor{}
 
 	endorsementHandlerV1.POST("/", func(c *gin.Context) {

@@ -1,8 +1,6 @@
 package config
 
 import (
-	"log"
-
 	"github.com/JairDavid/Probien-Backend/config/migrations/models"
 
 	"gorm.io/driver/postgres"
@@ -40,17 +38,11 @@ func Migrate() {
 		&models.BranchOffice{},
 		&models.Employee{},
 		&models.Product{},
-		&models.Endorsement{},
 		&models.Status{},
 		&models.PawnOrder{},
+		&models.Endorsement{},
 		&models.SessionLog{},
 		&models.ModerationLog{},
 		&models.PaymentLog{},
 		&models.Profile{})
-
-	//Join tables config
-	err := Database.SetupJoinTable(&models.Employee{}, "Endorsements", &models.Endorsement{})
-	if err != nil {
-		log.Print(err)
-	}
 }

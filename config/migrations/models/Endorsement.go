@@ -3,8 +3,9 @@ package models
 import "time"
 
 type Endorsement struct {
-	EmployeeID  uint    `gorm:"primaryKey"`
-	PawnOrderID uint    `gorm:"primaryKey"`
+	ID          uint    `gorm:"primaryKey"`
+	EmployeeID  uint    `gorm:"not null"`
+	PawnOrderID uint    `gorm:"not null"`
 	Amount      float64 `gorm:"not null;"`
 	PaidAt      time.Time
 }

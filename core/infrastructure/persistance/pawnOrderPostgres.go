@@ -35,7 +35,7 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Customer").Preload("Employee").Preload("Status").Preload("Endorsements").Find(&pawnOrders).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

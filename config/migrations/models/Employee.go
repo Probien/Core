@@ -12,7 +12,7 @@ type Employee struct {
 	BranchOfficeID uint   `gorm:"not null"`
 	PawnOrdersDone []PawnOrder
 	SessionLogs    []SessionLog
-	Endorsements   []PawnOrder `gorm:"many2many:endorsements"`
+	Endorsements   []Endorsement
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
