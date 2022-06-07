@@ -2,6 +2,7 @@ package persistance
 
 import (
 	"errors"
+	"log"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -20,7 +21,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.IPawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Products").Preload("Endorsements").Find(&pawnOrder, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -34,7 +35,7 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Find(&pawnOrders).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 
@@ -45,10 +46,11 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 	var pawnOrder domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
+		log.Print(err)
 		return nil, errors.New("error binding JSON data, verify fields")
 	}
 
-	if err := r.database.Model(&domain.PawnOrder{}).Omit("Endorsements").Omit("Customer").Create(&pawnOrder).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Omit("Employee").Omit("Customer").Omit("Status").Create(&pawnOrder).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

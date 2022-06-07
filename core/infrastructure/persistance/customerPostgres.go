@@ -20,7 +20,7 @@ func NewCustomerRepositoryImpl(db *gorm.DB) repository.ICustomerRepository {
 func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, error) {
 	var customer domain.Customer
 
-	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders").Find(&customer, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders.Products").Preload("PawnOrders.Endorsements").Find(&customer, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

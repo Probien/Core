@@ -33,7 +33,7 @@ func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*domain.Category, erro
 func (r *CategoryRepositoryImpl) GetAll() (*[]domain.Category, error) {
 	var categories []domain.Category
 
-	if err := r.database.Model(&domain.Category{}).Preload("Products").Find(&categories).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Find(&categories).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 	return &categories, nil

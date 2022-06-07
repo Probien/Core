@@ -13,7 +13,7 @@ var (
 )
 
 func ConnectDB() {
-	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien"), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
 
 	if err != nil {
 		panic(err)
@@ -32,5 +32,17 @@ func ConnectDB() {
 
 //to migrate the models, add this function on main.go before setup all routes
 func Migrate() {
-	Database.AutoMigrate(&models.Category{}, &models.Customer{}, &models.BranchOffice{}, &models.Employee{}, &models.Product{}, &models.Endorsement{}, &models.PawnOrder{}, &models.Status{}, &models.SessionLog{}, &models.ModerationLog{}, &models.PaymentLog{})
+	Database.AutoMigrate(
+		&models.Category{},
+		&models.Customer{},
+		&models.BranchOffice{},
+		&models.Employee{},
+		&models.Product{},
+		&models.Status{},
+		&models.PawnOrder{},
+		&models.Endorsement{},
+		&models.SessionLog{},
+		&models.ModerationLog{},
+		&models.PaymentLog{},
+		&models.Profile{})
 }

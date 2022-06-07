@@ -18,13 +18,13 @@ type EmployeeInteractor struct {
 func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer chan<- string) {
 
 	claims := &auth.AuthCustomClaims{
-		Name:      data.Name,
+		Name:      data.Profile.Name,
 		IsAdmin:   data.IsAdmin,
 		CreatedAt: data.CreatedAt,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 60).Unix(),
 			Issuer:    "Probien",
-			Subject:   data.Name + data.FirstName + data.SecondName,
+			Subject:   data.Profile.Name + data.Profile.FirstName + data.Profile.SecondName,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}

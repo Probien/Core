@@ -1,8 +1,6 @@
 package domain
 
-import (
-	"time"
-)
+import "time"
 
 type Customer struct {
 	ID         uint        `json:"id"`

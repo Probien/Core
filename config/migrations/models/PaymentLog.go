@@ -8,6 +8,6 @@ type PaymentLog struct {
 	Employee   Employee `gorm:"foreignKey:EmployeeID"`
 	CustomerID uint
 	Customer   Customer `gorm:"foreignKey:CustomerID"`
-	Payment    float64  `gorm:"not null"`
+	Amount     float64  `gorm:"not null"`
 	CreatedAt  time.Time
 }

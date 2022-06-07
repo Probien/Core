@@ -29,7 +29,7 @@ func (r *BranchOfficeRepositoryImp) GetAll() (*[]domain.BranchOffice, error) {
 func (r *BranchOfficeRepositoryImp) GetById(c *gin.Context) (*domain.BranchOffice, error) {
 	var branchOffice domain.BranchOffice
 
-	if err := r.database.Model(&domain.BranchOffice{}).Find(&branchOffice, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffice, c.Param("id")).Error; err != nil {
 		return nil, errors.New("failed to establish a connection with our database services")
 	}
 

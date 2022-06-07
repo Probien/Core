@@ -4,8 +4,8 @@ import "time"
 
 type Endorsement struct {
 	ID          uint    `gorm:"primaryKey"`
+	EmployeeID  uint    `gorm:"not null"`
 	PawnOrderID uint    `gorm:"not null"`
-	Payment     float64 `gorm:"not null"`
-	Endorsement time.Time
-	CutOffDay   time.Time
+	Amount      float64 `gorm:"not null;"`
+	CreatedAt   time.Time
 }
