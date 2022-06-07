@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +12,7 @@ import (
 func CustomerHandler(v1 *gin.RouterGroup) {
 
 	customerHandlerV1 := *v1.Group("/customers")
-	//customerHandlerV1.Use(auth.RoutesAndAuthority(false))
+	customerHandlerV1.Use(auth.RoutesAndAuthority(false))
 	interactor := application.CustomerInteractor{}
 
 	customerHandlerV1.POST("/", func(c *gin.Context) {
