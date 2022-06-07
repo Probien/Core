@@ -7,5 +7,5 @@ type Endorsement struct {
 	EmployeeID  uint    `gorm:"not null"`
 	PawnOrderID uint    `gorm:"not null"`
 	Amount      float64 `gorm:"not null;"`
-	PaidAt      time.Time
+	CreatedAt   time.Time
 }
