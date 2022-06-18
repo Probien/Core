@@ -3,6 +3,6 @@ create procedure savesession(IN sp_employee_id integer)
 as
 $$
 BEGIN
-    INSERT INTO session_logs(employee_id, created_at) VALUES(sp_employee_id, current_timestamp);
+    INSERT INTO session_logs(employee_id, created_at) VALUES(sp_employee_id, CURRENT_TIMESTAMP);
 END;
 $$;

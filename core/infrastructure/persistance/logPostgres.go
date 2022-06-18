@@ -21,7 +21,7 @@ func (r *LogsRepositoryImp) GetAllSessions() (*[]domain.SessionLog, error) {
 	var sessions []domain.SessionLog
 
 	if err := r.database.Model(&domain.SessionLog{}).Preload("Employee").Find(&sessions).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &sessions, nil
@@ -31,7 +31,7 @@ func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domai
 	var sessions []domain.SessionLog
 
 	if err := r.database.Model(&domain.SessionLog{}).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &sessions, nil
@@ -41,7 +41,7 @@ func (r *LogsRepositoryImp) GetAllPayments() (*[]domain.PaymentLog, error) {
 	var payments []domain.PaymentLog
 
 	if err := r.database.Model(&domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &payments, nil
@@ -51,7 +51,7 @@ func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domai
 	var payments []domain.PaymentLog
 
 	if err := r.database.Model(&domain.PaymentLog{}).Where("customer_id = ?", c.Param("id")).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &payments, nil
@@ -60,8 +60,8 @@ func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domai
 func (r *LogsRepositoryImp) GetAllMovements() (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
 
-	if err := r.database.Model(&domain.ModerationLog{}).Preload("Employee").Find(&movements).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+	if err := r.database.Model(&domain.ModerationLog{}).Find(&movements).Error; err != nil {
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &movements, nil
@@ -70,8 +70,8 @@ func (r *LogsRepositoryImp) GetAllMovements() (*[]domain.ModerationLog, error) {
 func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
 
-	if err := r.database.Model(&domain.ModerationLog{}).Where("employee_id", c.Param("id")).Preload("Employee").Find(&movements).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+	if err := r.database.Model(&domain.ModerationLog{}).Where("user_id", c.Param("id")).Find(&movements).Error; err != nil {
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &movements, nil

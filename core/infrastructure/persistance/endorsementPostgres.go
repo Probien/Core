@@ -21,11 +21,11 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 	var endorsement domain.Endorsement
 
 	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsement, c.Param("id")).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if endorsement.ID == 0 {
-		return nil, errors.New("endorsement not found")
+		return nil, errors.New(ENDORSEMENT_NOT_FOUND)
 	}
 
 	return &endorsement, nil
@@ -35,7 +35,7 @@ func (r *EndorsementRepositoryImpl) GetAll() (*[]domain.Endorsement, error) {
 	var endorsements []domain.Endorsement
 
 	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsements).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &endorsements, nil
@@ -45,12 +45,14 @@ func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement,
 	var endorsement domain.Endorsement
 
 	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 {
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
 	if err := r.database.Model(&domain.Endorsement{}).Create(&endorsement).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, nil, &endorsement)
 	return &endorsement, nil
 }

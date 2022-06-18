@@ -22,11 +22,11 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 	var pawnOrder domain.PawnOrder
 
 	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, c.Param("id")).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if pawnOrder.ID == 0 {
-		return nil, errors.New("pawn order not found")
+		return nil, errors.New(PAWNORDER_NOT_FOUND)
 	}
 
 	return &pawnOrder, nil
@@ -36,7 +36,7 @@ func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
 	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &pawnOrders, nil
@@ -47,31 +47,37 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
 		log.Print(err)
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
 	if err := r.database.Model(&domain.PawnOrder{}).Omit("Employee").Omit("Customer").Omit("Status").Create(&pawnOrder).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, nil, &pawnOrder)
 	return &pawnOrder, nil
 }
 
 func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, error) {
-	patch, pawnOrder := map[string]interface{}{}, domain.PawnOrder{}
+	patch, pawnOrder, pawnOrderOld := map[string]interface{}{}, domain.PawnOrder{}, domain.PawnOrder{}
 	_, errID := patch["id"]
 
 	if err := c.Bind(&patch); err != nil && !errID {
-		return nil, errors.New("error binding JSON data, verify json format")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
+	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrderOld, patch["id"])
+
 	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("Products").Omit("Endorsements").Updates(&patch).Find(&pawnOrder).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if pawnOrder.ID == 0 {
-		return nil, errors.New("pawn order not found or json data does not match ")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, &pawnOrderOld, &pawnOrder)
 	return &pawnOrder, nil
 }
