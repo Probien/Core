@@ -52,8 +52,9 @@ func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error
 	}
 
 	data, _ := json.Marshal(&category)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", contextUserID.(int), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &category, nil
 }
 
@@ -72,8 +73,9 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (*domain.Category, error
 	}
 
 	deleted, _ := json.Marshal(&category)
-	//replace number 1 for employeeID session (JWT fix)
-	r.database.Exec("CALL savemovements(?,?,?,?)", 2, SP_DELETE, string(deleted[:]), SP_NO_CURR_DATA)
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	r.database.Exec("CALL savemovements(?,?,?,?)", contextUserID.(int), SP_DELETE, string(deleted[:]), SP_NO_CURR_DATA)
 	return &category, nil
 }
 
@@ -98,7 +100,8 @@ func (r *CategoryRepositoryImpl) Update(c *gin.Context) (*domain.Category, error
 	old, _ := json.Marshal(&categoryOld)
 	new, _ := json.Marshal(&category)
 
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_UPDATE, string(old[:]), string(new[:]))
 	return &category, nil
 }

@@ -10,7 +10,7 @@ type AuthCustomClaims struct {
 	Name      string `json:"name"`
 	IsAdmin   bool   `json:"is_admin"`
 	CreatedAt time.Time
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 type LoginCredentials struct {

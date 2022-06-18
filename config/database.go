@@ -43,6 +43,5 @@ func Migrate() {
 		&models.Endorsement{},
 		&models.SessionLog{},
 		&models.ModerationLog{},
-		&models.PaymentLog{},
 		&models.Profile{})
 }
