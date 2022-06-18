@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -50,8 +51,9 @@ func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	data, _ := json.Marshal(&category)
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, nil, &category)
+	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &category, nil
 }
 
@@ -65,10 +67,13 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (*domain.Category, error
 		return nil, errors.New(INVALID_ACTION)
 	}
 
-	if err := r.database.Model(&domain.Category{}).Unscoped().Delete(&category, &category.ID).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Delete(&category, &category.ID).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	deleted, _ := json.Marshal(&category)
+	//replace number 1 for employeeID session (JWT fix)
+	r.database.Exec("CALL savemovements(?,?,?,?)", 2, SP_DELETE, string(deleted[:]), SP_NO_CURR_DATA)
 	return &category, nil
 }
 
@@ -90,7 +95,10 @@ func (r *CategoryRepositoryImpl) Update(c *gin.Context) (*domain.Category, error
 		return nil, errors.New(CATEGORY_NOT_FOUND)
 	}
 
+	old, _ := json.Marshal(&categoryOld)
+	new, _ := json.Marshal(&category)
+
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, &categoryOld, &category)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
 	return &category, nil
 }

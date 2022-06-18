@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -82,8 +83,9 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	data, _ := json.Marshal(&employee)
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, nil, &employee)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &employee, nil
 }
 
@@ -105,7 +107,9 @@ func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error
 		return nil, errors.New(ERROR_BINDING)
 	}
 
+	old, _ := json.Marshal(&employeeOld)
+	new, _ := json.Marshal(&employee)
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, &employeeOld, &employee)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
 	return &employee, nil
 }

@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -52,7 +53,8 @@ func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement,
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	data, _ := json.Marshal(&endorsement)
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, nil, &endorsement)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &endorsement, nil
 }

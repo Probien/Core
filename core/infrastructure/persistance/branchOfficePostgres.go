@@ -75,7 +75,10 @@ func (r *BranchOfficeRepositoryImp) Update(c *gin.Context) (*domain.BranchOffice
 		return nil, errors.New(BRANCH_NOT_FOUND)
 	}
 
+	old, _ := json.Marshal(&branchOfficeOld)
+	new, _ := json.Marshal(&branchOffice)
+
 	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, &branchOfficeOld, &branchOffice)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
 	return &branchOffice, nil
 }
