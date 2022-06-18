@@ -4,8 +4,7 @@ import "time"
 
 type ModerationLog struct {
 	ID            uint `gorm:"primaryKey"`
-	EmployeeID    uint
-	Employee      Employee `gorm:"foreignKey:EmployeeID"`
+	TriggeredBy   uint
 	Action        string
 	PreviousValue string
 	CurrentValue  string

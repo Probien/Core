@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -23,18 +24,18 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 	employee, loginCredentials := domain.Employee{}, auth.LoginCredentials{}
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Find(&employee).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Preload("Profile").Find(&employee).Error; err != nil {
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if employee.ID == 0 {
-		return nil, errors.New("inexistent employee with that email")
+		return nil, errors.New(EMPLOYEE_NOT_FOUND)
 
 	} else if err := bcrypt.CompareHashAndPassword([]byte(employee.Password), []byte(loginCredentials.Password)); err != nil {
-		return nil, errors.New("incorrect credentials")
+		return nil, errors.New(INVALID_CREDENTIALS)
 	}
 
 	go r.database.Exec("CALL savesession(?)", employee.ID)
@@ -46,15 +47,15 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 	var employee domain.Employee
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
 	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Preload("PawnOrdersDone.Customer").Preload("SessionLogs").Preload("Endorsements").Find(&employee).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if employee.ID == 0 {
-		return nil, errors.New("employee with that email not found")
+		return nil, errors.New(EMPLOYEE_NOT_FOUND)
 	}
 	return &employee, nil
 }
@@ -63,7 +64,7 @@ func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
 	if err := r.database.Model(domain.Employee{}).Preload("Profile").Find(&employees).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	return &employees, nil
@@ -73,33 +74,42 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
 	if err := c.ShouldBindJSON(&employee); err != nil || employee.BranchOfficeID == 0 {
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 	auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
 
 	if err := r.database.Model(&domain.Employee{}).Omit("PawnOrdersDone").Omit("SessionLogs").Omit("EndorsementsDone").Create(&employee).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
+	data, _ := json.Marshal(&employee)
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &employee, nil
 }
 
 func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error) {
-	patch, employee := map[string]interface{}{}, domain.Employee{}
+	patch, employee, employeeOld := map[string]interface{}{}, domain.Employee{}, domain.Employee{}
 	_, errID := patch["id"]
 
 	if err := c.Bind(&patch); err != nil && !errID {
-		return nil, errors.New("error binding JSON data, verify json format")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
+	r.database.Model(&domain.Employee{}).Find(&employeeOld, patch["id"])
+
 	if err := r.database.Model(&domain.Employee{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&employee).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if employee.ID == 0 {
-		return nil, errors.New("employee not found or json data does not match ")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
+	old, _ := json.Marshal(&employeeOld)
+	new, _ := json.Marshal(&employee)
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
 	return &employee, nil
 }

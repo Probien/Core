@@ -1,6 +1,7 @@
 package persistance
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -21,7 +22,7 @@ func (r *BranchOfficeRepositoryImp) GetAll() (*[]domain.BranchOffice, error) {
 	var branchOffices []domain.BranchOffice
 
 	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffices).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 	return &branchOffices, nil
 }
@@ -30,11 +31,11 @@ func (r *BranchOfficeRepositoryImp) GetById(c *gin.Context) (*domain.BranchOffic
 	var branchOffice domain.BranchOffice
 
 	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffice, c.Param("id")).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if branchOffice.ID == 0 {
-		return nil, errors.New("branch office not found")
+		return nil, errors.New(BRANCH_NOT_FOUND)
 	}
 	return &branchOffice, nil
 }
@@ -43,29 +44,41 @@ func (r *BranchOfficeRepositoryImp) Create(c *gin.Context) (*domain.BranchOffice
 	var branchOffice domain.BranchOffice
 
 	if err := c.ShouldBindJSON(&branchOffice); err != nil {
-		return nil, errors.New("error binding JSON data, verify fields")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
 	if err := r.database.Model(&domain.BranchOffice{}).Omit("Employees").Create(&branchOffice).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
+
+	data, _ := json.Marshal(&branchOffice)
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &branchOffice, nil
 }
 
 func (r *BranchOfficeRepositoryImp) Update(c *gin.Context) (*domain.BranchOffice, error) {
-	patch, branchOffice := map[string]interface{}{}, domain.BranchOffice{}
+	patch, branchOffice, branchOfficeOld := map[string]interface{}{}, domain.BranchOffice{}, domain.BranchOffice{}
 	_, errID := patch["id"]
 
 	if err := c.Bind(&patch); err != nil && !errID {
-		return nil, errors.New("error binding JSON data, verify json format")
+		return nil, errors.New(ERROR_BINDING)
 	}
 
+	r.database.Model(&domain.BranchOffice{}).Find(&branchOfficeOld, patch["id"])
+
 	if err := r.database.Model(&domain.BranchOffice{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&branchOffice).Error; err != nil {
-		return nil, errors.New("failed to establish a connection with our database services")
+		return nil, errors.New(ERROR_PROCCESS)
 	}
 
 	if branchOffice.ID == 0 {
-		return nil, errors.New("branch office not found")
+		return nil, errors.New(BRANCH_NOT_FOUND)
 	}
+
+	old, _ := json.Marshal(&branchOfficeOld)
+	new, _ := json.Marshal(&branchOffice)
+
+	//replace number 1 for employeeID session (JWT fix)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
 	return &branchOffice, nil
 }
