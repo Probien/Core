@@ -1,6 +1,7 @@
 package application
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/config"
@@ -15,17 +16,16 @@ import (
 type EmployeeInteractor struct {
 }
 
-func (EI *EmployeeInteractor) GenerateToken(data *domain.Employee, tokenizer chan<- string) {
-
+func (EI *EmployeeInteractor) GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 	claims := &auth.AuthCustomClaims{
-		Name:      data.Profile.Name,
-		IsAdmin:   data.IsAdmin,
-		CreatedAt: data.CreatedAt,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 60).Unix(),
+		Name:      employee.Profile.Name,
+		IsAdmin:   employee.IsAdmin,
+		CreatedAt: time.Now(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
 			Issuer:    "Probien",
-			Subject:   data.Profile.Name + data.Profile.FirstName + data.Profile.SecondName,
-			IssuedAt:  time.Now().Unix(),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Subject:   strconv.Itoa(int(employee.ID)),
 		},
 	}
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

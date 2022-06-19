@@ -56,8 +56,9 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 	}
 
 	data, _ := json.Marshal(&pawnOrder)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &pawnOrder, nil
 }
 
@@ -81,7 +82,8 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 
 	old, _ := json.Marshal(&pawnOrderOld)
 	new, _ := json.Marshal(&pawnOrder)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_UPDATE, string(old[:]), string(new[:]))
 	return &pawnOrder, nil
 }

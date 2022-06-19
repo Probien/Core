@@ -19,11 +19,11 @@ func AuthHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
 			interactor.GenerateToken(employee, tokenizer)
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully logged in", Data: &employee, Token: <-tokenizer})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
 		}
 	})
 

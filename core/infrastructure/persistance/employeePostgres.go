@@ -84,8 +84,9 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	}
 
 	data, _ := json.Marshal(&employee)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &employee, nil
 }
 
@@ -109,7 +110,8 @@ func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error
 
 	old, _ := json.Marshal(&employeeOld)
 	new, _ := json.Marshal(&employee)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_UPDATE, string(old[:]), string(new[:]))
 	return &employee, nil
 }

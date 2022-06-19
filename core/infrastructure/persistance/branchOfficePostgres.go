@@ -52,8 +52,9 @@ func (r *BranchOfficeRepositoryImp) Create(c *gin.Context) (*domain.BranchOffice
 	}
 
 	data, _ := json.Marshal(&branchOffice)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", contextUserID.(uint), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &branchOffice, nil
 }
 
@@ -78,7 +79,8 @@ func (r *BranchOfficeRepositoryImp) Update(c *gin.Context) (*domain.BranchOffice
 	old, _ := json.Marshal(&branchOfficeOld)
 	new, _ := json.Marshal(&branchOffice)
 
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_UPDATE, string(old[:]), string(new[:]))
 	return &branchOffice, nil
 }

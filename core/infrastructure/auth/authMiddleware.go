@@ -2,8 +2,8 @@ package auth
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
@@ -12,33 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func AuthJWT() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		data := AuthCustomClaims{}
-
-		if len(authHeader) > 0 && authHeader != "Bearer" {
-
-			splitToken := strings.Split(authHeader, "Bearer")
-			encodedToken := strings.TrimSpace(splitToken[1])
-			token, err := validateAndParseToken(encodedToken, &data)
-			log.Print(err)
-
-			if token.Valid {
-				c.Next()
-			} else {
-				c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Invalid token"})
-				c.AbortWithStatus(http.StatusUnauthorized)
-			}
-
-		} else {
-			c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
-			c.AbortWithStatus(http.StatusUnauthorized)
-		}
-	}
-}
-
-func RoutesAndAuthority(isAdmin bool) gin.HandlerFunc {
+func JwtAuth(isAdmin bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		authHeader := c.GetHeader("Authorization")
@@ -47,16 +21,18 @@ func RoutesAndAuthority(isAdmin bool) gin.HandlerFunc {
 		if len(authHeader) > 0 && authHeader != "Bearer" {
 			splitToken := strings.Split(authHeader, "Bearer")
 			encodedToken := strings.TrimSpace(splitToken[1])
-			validateAndParseToken(encodedToken, &data)
+			token, _ := validateAndParseToken(encodedToken, &data)
 
-			if data.IsAdmin == isAdmin {
+			if token.Valid && data.IsAdmin == isAdmin {
+				user_id, _ := strconv.Atoi(data.RegisteredClaims.Subject)
+				c.Set("user_id", user_id)
 				c.Next()
 			} else {
-				c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
+				c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Unauthorized, valid token is required"})
 				c.AbortWithStatus(http.StatusUnauthorized)
 			}
 		} else {
-			c.JSON(http.StatusUnauthorized, common.Response{Status: 500, Message: "Authorization is required", Data: "Unauthorized"})
+			c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Token is not present in the request header"})
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}

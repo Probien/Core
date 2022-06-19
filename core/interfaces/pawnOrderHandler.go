@@ -12,7 +12,7 @@ import (
 func PawnOrderHandler(v1 *gin.RouterGroup) {
 
 	pawnOrderHandlerV1 := *v1.Group("/pawn-orders")
-	pawnOrderHandlerV1.Use(auth.RoutesAndAuthority(false))
+	pawnOrderHandlerV1.Use(auth.JwtAuth(false))
 	interactor := application.PawnOrderInteractor{}
 
 	pawnOrderHandlerV1.POST("/", func(c *gin.Context) {
@@ -21,10 +21,10 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &pawnOrder})
+			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &pawnOrder})
 		}
 	})
 
@@ -34,10 +34,10 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &pawnOrders})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &pawnOrders})
 		}
 	})
 
@@ -47,10 +47,10 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &pawnOrder})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &pawnOrder})
 		}
 	})
 
@@ -60,10 +60,10 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully updated", Data: &pawnOrder})
+			c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &pawnOrder})
 		}
 	})
 }

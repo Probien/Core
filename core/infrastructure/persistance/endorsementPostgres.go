@@ -54,7 +54,8 @@ func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement,
 	}
 
 	data, _ := json.Marshal(&endorsement)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &endorsement, nil
 }

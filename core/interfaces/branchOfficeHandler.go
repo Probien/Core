@@ -12,7 +12,7 @@ import (
 func BranchOfficeHandler(v1 *gin.RouterGroup) {
 
 	branchOfficeHandlerv1 := *v1.Group("/branch-offices")
-	branchOfficeHandlerv1.Use(auth.RoutesAndAuthority(false))
+	branchOfficeHandlerv1.Use(auth.JwtAuth(false))
 	interactor := application.BranchOfficeInteractor{}
 
 	branchOfficeHandlerv1.POST("/", func(c *gin.Context) {
@@ -21,10 +21,10 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &branchOffice})
+			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &branchOffice})
 		}
 	})
 
@@ -34,9 +34,9 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
+				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &branchOffices})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &branchOffices})
 		}
 	})
 
@@ -46,10 +46,10 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &branchOffice})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &branchOffice})
 		}
 	})
 
@@ -59,10 +59,10 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully updated", Data: &branchOffice})
+			c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.CONSULTED, Data: &branchOffice})
 		}
 	})
 }

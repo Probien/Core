@@ -53,8 +53,9 @@ func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) 
 	}
 
 	data, _ := json.Marshal(&product)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_INSERT, SP_NO_PREV_DATA, string(data[:]))
 	return &product, nil
 }
 
@@ -78,7 +79,8 @@ func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) 
 
 	old, _ := json.Marshal(&productOld)
 	new, _ := json.Marshal(&product)
-	//replace number 1 for employeeID session (JWT fix)
-	go r.database.Exec("CALL savemovement(?,?,?,?)", 2, SP_UPDATE, string(old[:]), string(new[:]))
+	contextUserID, _ := c.Get("user_id")
+	//context user id, is the userID comming from jwt decoded
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SP_UPDATE, string(old[:]), string(new[:]))
 	return &product, nil
 }

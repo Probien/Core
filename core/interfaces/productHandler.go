@@ -11,7 +11,7 @@ import (
 
 func ProductHandler(v1 *gin.RouterGroup) {
 	productHandlerV1 := *v1.Group("/products")
-	productHandlerV1.Use(auth.RoutesAndAuthority(false))
+	productHandlerV1.Use(auth.JwtAuth(false))
 	interactor := application.ProductInteractor{}
 
 	productHandlerV1.POST("/", func(c *gin.Context) {
@@ -20,10 +20,10 @@ func ProductHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusCreated, Message: "successfully created", Data: &product})
+			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &product})
 		}
 	})
 
@@ -33,10 +33,10 @@ func ProductHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &products})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &products})
 		}
 	})
 
@@ -46,10 +46,10 @@ func ProductHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: "successfully consulted", Data: &product})
+			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &product})
 		}
 	})
 
@@ -59,10 +59,10 @@ func ProductHandler(v1 *gin.RouterGroup) {
 		if err != nil {
 			c.JSON(
 				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: "failed operation", Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusAccepted, Message: "successfully updated", Data: &product})
+			c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &product})
 		}
 	})
 
