@@ -38,3 +38,13 @@ require (
 	github.com/jackc/pgx/v4 v4.14.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 )
+
+require (
+	github.com/go-co-op/gocron v1.14.0
+	github.com/stretchr/testify v1.7.2 // indirect
+)
+
+require (
+	github.com/robfig/cron/v3 v3.0.1 // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+)
