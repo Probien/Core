@@ -13,12 +13,13 @@ import (
 func main() {
 	server := gin.Default()
 	config.ConnectDB()
-	//config.Migrate()
+	//config.Migrate() for migrate all models
 
 	router.Setup(server)
 	job := gocron.NewScheduler(time.UTC)
 
 	job.Every(1).Day().Do(func() {
+		config.Database.Exec("CALL update_orders()")
 		log.Print("calling stored procedure for update orders")
 	})
 
