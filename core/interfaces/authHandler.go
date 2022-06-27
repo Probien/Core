@@ -3,10 +3,15 @@ package interfaces
 import (
 	"net/http"
 
+	"context"
+
+	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/application"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
+
+var bgctx = context.Background()
 
 func AuthHandler(v1 *gin.RouterGroup) {
 
@@ -27,8 +32,8 @@ func AuthHandler(v1 *gin.RouterGroup) {
 		}
 	})
 
-	security.POST("/recover-password", func(ctx *gin.Context) {
-
+	security.POST("/logout", func(ctx *gin.Context) {
+		config.Client.Get(bgctx, "")
 	})
 
 }
