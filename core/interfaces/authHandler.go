@@ -1,7 +1,9 @@
 package interfaces
 
 import (
+	"log"
 	"net/http"
+	"strings"
 
 	"context"
 
@@ -9,9 +11,10 @@ import (
 	"github.com/JairDavid/Probien-Backend/core/application"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 )
 
-var bgctx = context.Background()
+var ctx = context.Background()
 
 func AuthHandler(v1 *gin.RouterGroup) {
 
@@ -32,8 +35,14 @@ func AuthHandler(v1 *gin.RouterGroup) {
 		}
 	})
 
-	security.POST("/logout", func(ctx *gin.Context) {
-		config.Client.Get(bgctx, "")
+	security.POST("/logout", func(c *gin.Context) {
+		header := c.GetHeader("Authorization")
+		splitToken := strings.Split(header, "Bearer")
+		encodedToken := strings.TrimSpace(splitToken[1])
+		_, err := config.Client.Get(ctx, encodedToken).Result()
+		if err == redis.Nil {
+			log.Print(err)
+		}
 	})
 
 }
