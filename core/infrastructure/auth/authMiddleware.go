@@ -5,12 +5,34 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
+
+func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
+	claims := &AuthCustomClaims{
+		Name:      employee.Profile.Name,
+		IsAdmin:   employee.IsAdmin,
+		CreatedAt: time.Now(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
+			Issuer:    "Probien",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Subject:   strconv.Itoa(int(employee.ID)),
+		},
+	}
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token, err := t.SignedString([]byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"))
+	if err != nil {
+		panic(err)
+	}
+	tokenizer <- token
+}
 
 func JwtAuth(isAdmin bool) gin.HandlerFunc {
 	return func(c *gin.Context) {

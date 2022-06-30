@@ -1,20 +1,13 @@
 package interfaces
 
 import (
-	"log"
 	"net/http"
-	"strings"
 
-	"context"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
 )
-
-var ctx = context.Background()
 
 func AuthHandler(v1 *gin.RouterGroup) {
 
@@ -30,19 +23,14 @@ func AuthHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			interactor.GenerateToken(employee, tokenizer)
+			auth.GenerateToken(employee, tokenizer)
 			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
 		}
 	})
 
 	security.POST("/logout", func(c *gin.Context) {
-		header := c.GetHeader("Authorization")
-		splitToken := strings.Split(header, "Bearer")
-		encodedToken := strings.TrimSpace(splitToken[1])
-		_, err := config.Client.Get(ctx, encodedToken).Result()
-		if err == redis.Nil {
-			log.Print(err)
-		}
+
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LOGOUT_DONE, Data: common.OUT})
 	})
 
 }
