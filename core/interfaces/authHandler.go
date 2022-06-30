@@ -15,7 +15,7 @@ func AuthHandler(v1 *gin.RouterGroup) {
 	interactor := application.EmployeeInteractor{}
 
 	security.POST("/login", func(c *gin.Context) {
-		tokenizer := make(chan string, 1)
+		tokenizer, session := make(chan string, 1), make(chan auth.SessionCredentials, 1)
 		employee, err := interactor.Login(c)
 		if err != nil {
 			c.JSON(
@@ -23,7 +23,10 @@ func AuthHandler(v1 *gin.RouterGroup) {
 				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 			)
 		} else {
-			auth.GenerateToken(employee, tokenizer)
+			go auth.GenerateToken(employee, tokenizer)
+			go auth.GenerateSessionID(employee, session)
+			sessionCoockie := <-session
+			c.SetCookie("SID", sessionCoockie.ID, 60*1, "/", "localhost", true, true)
 			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
 		}
 	})
