@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -50,20 +49,18 @@ func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredenti
 
 func JwtAuth(isAdmin bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		checker := make(chan string, 1)
 		coockie, _ := c.Cookie("SID")
+		go existCoockie(coockie, checker)
 		authHeader := c.GetHeader("Authorization")
 		data := AuthCustomClaims{}
 
 		if len(authHeader) > 0 && authHeader != "Bearer" {
 			splitToken := strings.Split(authHeader, "Bearer")
 			encodedToken := strings.TrimSpace(splitToken[1])
-			val, _ := config.Client.Get(context.Background(), coockie).Result()
-			//marshall val from redis to be able compare both strings
-			log.Print(val)
-			log.Print(coockie)
 			token, _ := validateAndParseToken(encodedToken, &data)
 
-			if token.Valid && data.IsAdmin == isAdmin && val == coockie {
+			if token.Valid && data.IsAdmin == isAdmin && <-checker == coockie {
 
 				//extract user_id from parsed token for stored procedures
 				user_id, _ := strconv.Atoi(data.RegisteredClaims.Subject)
@@ -100,4 +97,11 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 		return []byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"), nil
 	})
 
+}
+
+func existCoockie(coockie string, checker chan<- string) {
+	var sessionID = SessionCredentials{}
+	val := config.Client.Get(context.Background(), coockie).Val()
+	json.Unmarshal([]byte(val), &sessionID)
+	checker <- sessionID.ID
 }
