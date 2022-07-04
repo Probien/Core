@@ -13,6 +13,12 @@ type AuthCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
+type SessionCredentials struct {
+	ID        string
+	Username  string
+	ExpiresAt time.Time
+}
+
 type LoginCredentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

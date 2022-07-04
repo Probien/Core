@@ -2,7 +2,9 @@ package common
 
 //define auth messages
 const (
-	LOGIN_DONE = "successfully logged in"
+	LOGIN_DONE  = "successfully logged in"
+	LOGOUT_DONE = "successfully logged out"
+	OUT         = "logged out"
 )
 
 //define http errors
