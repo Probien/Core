@@ -26,13 +26,14 @@ func AuthHandler(v1 *gin.RouterGroup) {
 			go auth.GenerateToken(employee, tokenizer)
 			go auth.GenerateSessionID(employee, session)
 			sessionCoockie := <-session
-			c.SetCookie("SID", sessionCoockie.ID, 60*1, "/", "localhost", true, true)
+			c.SetCookie("SID", sessionCoockie.ID, 60*30, "/", "localhost", true, true)
 			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
 		}
 	})
 
 	security.POST("/logout", func(c *gin.Context) {
-
+		auth.ClearSessionID(c)
+		c.SetCookie("SID", "", -1, "/", "localhost", true, true)
 		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LOGOUT_DONE, Data: common.OUT})
 	})
 

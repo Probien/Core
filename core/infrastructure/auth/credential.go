@@ -23,7 +23,3 @@ type LoginCredentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-
-func (Session SessionCredentials) isTimeValid() bool {
-	return Session.ExpiresAt.Before(time.Now())
-}

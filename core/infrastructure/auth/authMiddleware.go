@@ -41,26 +41,39 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 
 func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredentials) {
 	sessionID := uuid.NewV4()
-	sessionClaims := SessionCredentials{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 1)}
+	sessionClaims := SessionCredentials{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 30)}
 	sessionbBytes, _ := json.Marshal(sessionClaims)
-	go config.Client.Set(context.Background(), sessionID.String(), string(sessionbBytes[:]), time.Minute*1)
+	go config.Client.Set(context.Background(), sessionID.String(), string(sessionbBytes[:]), time.Minute*30)
 	session <- sessionClaims
+}
+
+func ClearSessionID(c *gin.Context) {
+	coockie, err := c.Cookie("SID")
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+	config.Client.Del(context.Background(), coockie)
+
 }
 
 func JwtAuth(isAdmin bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		checker := make(chan string, 1)
-		coockie, _ := c.Cookie("SID")
-		go existCoockie(coockie, checker)
-		authHeader := c.GetHeader("Authorization")
+		checker := make(chan bool, 1)
 		data := AuthCustomClaims{}
+		coockie, _ := c.Cookie("SID")
+		authHeader := c.GetHeader("Authorization")
+		go existCoockie(coockie, checker)
 
 		if len(authHeader) > 0 && authHeader != "Bearer" {
 			splitToken := strings.Split(authHeader, "Bearer")
 			encodedToken := strings.TrimSpace(splitToken[1])
 			token, _ := validateAndParseToken(encodedToken, &data)
 
-			if token.Valid && data.IsAdmin == isAdmin && <-checker == coockie {
+			if token.Valid && data.IsAdmin == isAdmin && <-checker {
 
 				//extract user_id from parsed token for stored procedures
 				user_id, _ := strconv.Atoi(data.RegisteredClaims.Subject)
@@ -99,9 +112,10 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 
 }
 
-func existCoockie(coockie string, checker chan<- string) {
+func existCoockie(coockie string, checker chan<- bool) {
 	var sessionID = SessionCredentials{}
 	val := config.Client.Get(context.Background(), coockie).Val()
 	json.Unmarshal([]byte(val), &sessionID)
-	checker <- sessionID.ID
+	checker <- val != "" && coockie == sessionID.ID
+
 }
