@@ -41,39 +41,39 @@ First, I had no idea how to structure the project, I come from java and have alw
 
 - Extras
   - When a customer doesn't make any endorsement after the deadline, all the client's things become property of probien.
-  - 
 
 ## Roadmap
 
-- Phase 1
-  - JWT Authentication :heavy_check_mark:
+- Phase 1 (Microservice 1)
+  - JWT & SessionID Authentication :heavy_check_mark:
   - Authorization Based on Roles :heavy_check_mark:
   - Database logs :heavy_check_mark:
-  - Transaction | CRUD Operations :clock330:
+  - Transaction | CRUD Operations :heavy_check_mark:
   - HTTP Tests :heavy_check_mark:
 
-- Phase 2
-  - E-mail Notifications :heavy_minus_sign:
-  - Recover Password :heavy_minus_sign:
-  - Reports By Pawn Shop Branch :heavy_minus_sign:
-  - Swagger Documentation :heavy_minus_sign:
+- Phase 2 (Microservice 2, Serverless possibly)
+  - Recover Password :clock330:
+  - E-mail Notifications :clock330:
+  
 
 - Phase 3
-  - Refactor code and bussiness logic
-  - (Possibly) add employee payments & extra features
-  - Start frontend...
+  - Swagger Documentation :heavy_minus_sign:
+  - Refactor code and bussiness logic :heavy_minus_sign:
+  - Start frontend... :heavy_minus_sign:
+  - (Possibly) Reports By Pawn Shop Branch :heavy_minus_sign:
+  - (Possibly) Add employee payments & extra features :heavy_minus_sign:
 
 ## Design
 ```
 
 config/
 ├─ database.go | Connection to postgresql using ORM
+├─ redis.go | Connection to redis cloud
 |
 ├─ migrations/
 │  ├─ stored procedures | Raw sql/
 │  ├─ models | Entity struct that represent mapping to data model/
 core/
-|
 ├─ application | Write business logic/
 ├─ domain | Entity struct that represent I/O JSON format/
 │  ├─ repository | Repository interface for infrastructure/
@@ -89,7 +89,7 @@ server.go
 
 ## Database Model (subject to change)
 
-<img src="https://i.ibb.co/QPsbgy0/database.png" alt="database" border="0">
+<img src="https://user-images.githubusercontent.com/67834146/177461447-59efbaa8-f04e-4003-96d8-1719af65025b.png" alt="database" border="0">
 
 ## Contributing
 
