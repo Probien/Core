@@ -1,0 +1,9 @@
+proposals:
+* Add dockerfile
+* Create github pipeline
+* Add env vars example
+* Intructions about how run
+* Work with git flow and avoid use master branch, master should be used to have all the changes tested in develop environment
+* Add go tests
+* Swagger 
+Optional

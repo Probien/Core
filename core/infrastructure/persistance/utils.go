@@ -1,5 +1,11 @@
 package persistance
 
+// only one const it's enough
+// const (
+//  all the consts
+// )
+// Should be named with other name different of utils
+
 //define constants for store procedure actions
 const (
 	SP_INSERT = "INSERT"

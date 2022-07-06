@@ -10,6 +10,7 @@ func main() {
 	server := gin.Default()
 
 	config.ConnectDB()
+	// Aproach: Run when I pass env arguments: go run main.go --migrate=true
 	//config.Migrate() for migrate all models
 	config.StartCronJobs()
 	config.ConnectRedis()
