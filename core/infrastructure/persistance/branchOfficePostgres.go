@@ -78,6 +78,7 @@ func (r *BranchOfficeRepositoryImp) Update(c *gin.Context) (*domain.BranchOffice
 
 	old, _ := json.Marshal(&branchOfficeOld)
 	new, _ := json.Marshal(&branchOffice)
+	// the &branchOffice will be empty if Marshal returns error
 
 	contextUserID, _ := c.Get("user_id")
 	//context user id, is the userID comming from jwt decoded

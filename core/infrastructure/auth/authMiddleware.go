@@ -31,6 +31,8 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 			Subject:   strconv.Itoa(int(employee.ID)),
 		},
 	}
+
+	// should be env var
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := t.SignedString([]byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"))
 	if err != nil {

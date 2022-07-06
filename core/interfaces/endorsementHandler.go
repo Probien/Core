@@ -15,6 +15,7 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 	endorsementHandlerV1.Use(auth.JwtAuth(false))
 	interactor := application.EndorsemenInteractor{}
 
+	// Maybe it's clearly if the func is declared as package function instead of here, it's more readible
 	endorsementHandlerV1.POST("/", func(c *gin.Context) {
 		endorsement, err := interactor.Create(c)
 
