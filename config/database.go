@@ -1,6 +1,7 @@
 package config
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -22,8 +23,7 @@ func ConnectDB() {
 	env := godotenv.Load("vars.env")
 	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URI_DEV")), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
 	if err != nil || env != nil {
-		log.Fatal(err)
-		log.Fatal(env)
+		log.Fatal(err.Error() + env.Error())
 	}
 
 	sqlDB, err := db.DB()
@@ -33,6 +33,7 @@ func ConnectDB() {
 
 	sqlDB.SetMaxIdleConns(1000)
 	sqlDB.SetMaxOpenConns(100)
+
 	Database = db
 }
 
@@ -50,8 +51,16 @@ func StartCronJobs() {
 	job.StartAsync()
 }
 
-//to migrate the models, add this function on main.go before setup all routes
+//to migrate the models and stored procedures, add flag -migrate=true
 func Migrate() {
+	sp1, sp1_err := ioutil.ReadFile("./config/migrations/stored procedures/sessions.sql")
+	sp2, sp2_err := ioutil.ReadFile("./config/migrations/stored procedures/moderation.sql")
+	sp3, sp3_err := ioutil.ReadFile("./config/migrations/stored procedures/order_dates.sql")
+
+	if sp1_err != nil || sp2_err != nil || sp3_err != nil {
+		panic(sp1_err.Error() + sp2_err.Error() + sp3_err.Error())
+	}
+
 	Database.AutoMigrate(
 		&models.Category{},
 		&models.Customer{},
@@ -63,5 +72,10 @@ func Migrate() {
 		&models.Endorsement{},
 		&models.SessionLog{},
 		&models.ModerationLog{},
-		&models.Profile{})
+		&models.Profile{},
+	)
+
+	Database.Exec(string(sp1))
+	Database.Exec(string(sp2))
+	Database.Exec(string(sp3))
 }
