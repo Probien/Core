@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -32,7 +33,7 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 		},
 	}
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := t.SignedString([]byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"))
+	token, err := t.SignedString([]byte(os.Getenv("PRIVATE_KEY")))
 	if err != nil {
 		panic(err)
 	}
@@ -107,7 +108,7 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte("DPzN3tMBaKsAPxvq8hWfaBHu5oeoj4bioNMQ6NzBSifkTthYAcoM67NzWTaZbPSDhGTkZhsdxyvYmNALanSoa3MH8CBW6Auv"), nil
+		return []byte(os.Getenv("PRIVATE_KEY")), nil
 	})
 
 }
