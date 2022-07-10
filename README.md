@@ -1,7 +1,7 @@
 
 <div align="center" style="display:flex;flex-direction:column;">
     <img width="300" src="https://imgdb.net/storage/uploads/495cc30ad5b741033ede8604cb0ef566cb48b5685a252f34de460850dabb82f6.png" alt="Probien logo"/>
-  <h2>Backend Service Written in Go - Services For a Pawn Shop Web Application</h2>
+  <h2>Microservice Core Written in Go - Services For a Pawn Shop Web Application</h2>
   <p>
     <a target="_blank" href="https://crowdin.com/project/excalidraw">
       <img src="https://img.shields.io/badge/License-GPL%20v3-yellow.svg">
@@ -13,12 +13,11 @@
   </p>
 </div>
 
-## Lessons Learned
+## Contributing
 
-What did you learn while building this project? What challenges did you face and how did you overcome them?
+Contributions are always welcome!
 
-First, I had no idea how to structure the project, I come from java and have always used the MVC pattern to build APIs, then I decided to learn another type of desing so I create this project with domain based approach [(DDD)](https://airbrake.io/blog/software-design/domain-driven-design) (Recomendations are welcome).
-
+This project is small, if you want to contribute improving code or add a new feature send a PR, make sure to add a description.
 
 ## Bussiness Logic
 
@@ -42,30 +41,8 @@ First, I had no idea how to structure the project, I come from java and have alw
 - Extras
   - When a customer doesn't make any endorsement after the deadline, all the client's things become property of probien.
 
-## Roadmap
-
-- Phase 1 (Microservice 1)
-  - JWT & SessionID Authentication :heavy_check_mark:
-  - Authorization Based on Roles :heavy_check_mark:
-  - Database logs :heavy_check_mark:
-  - Transaction | CRUD Operations :heavy_check_mark:
-  - HTTP Tests :heavy_check_mark:
-
-- Phase 2 (Microservice 2, Serverless possibly)
-  - Recover Password :clock330:
-  - E-mail Notifications :clock330:
-  
-
-- Phase 3
-  - Swagger Documentation :heavy_minus_sign:
-  - Refactor code and bussiness logic :heavy_minus_sign:
-  - Start frontend... :heavy_minus_sign:
-  - (Possibly) Reports By Pawn Shop Branch :heavy_minus_sign:
-  - (Possibly) Add employee payments & extra features :heavy_minus_sign:
-
 ## Design
 ```
-
 config/
 ├─ database.go | Connection to postgresql using ORM
 ├─ redis.go | Connection to redis cloud
@@ -91,10 +68,57 @@ server.go
 
 <img src="https://user-images.githubusercontent.com/67834146/177461447-59efbaa8-f04e-4003-96d8-1719af65025b.png" alt="database" border="0">
 
-## Contributing
+###
 
-Contributions are always welcome!
+# Getting started - Manually
 
-This project is small, if you want to contribute improving code or add a new feature send a PR, make sure to add a description.
+Please make sure to download and configure everything below to avoid problems.
+## Dependencies needed
+Gorm (ORM): 
+``` go get -u gorm.io/gorm ```
+
+Gin (Framework): ``` go get -u github.com/gin-gonic/gin ```
+
+Go-Cron (Cron jobs): ``` go get -u github.com/go-co-op/gocron ```
+
+Go-Redis: ``` go get -u github.com/go-redis/redis/v8 ```
+
+Go-Jwt: ``` go get -u github.com/golang-jwt/jwt/v4 ```
+
+Go-UUID: ``` go get -u github.com/satori/go.uuid ```
+
+Godotenv: ``` go get -u github.com/joho/godotenv ``` 
+
+## Environment vars
+You must create a .env file called vars.env into the root project, then add the following environment vars:
+
+```
+export PRIVATE_KEY="your private key to sign tokens"
+
+export DATABASE_URI_DEV="your database connection url for development"
+export DATABASE_URI_PDN="your database connection url for production"
+
+export REDIS_URI="your redis connection url"
+export REDIS_PASSWORD="your redis password"
+```
 
 
+If it is the first time you are running the application, you must add the flag  obligately, add it after command:
+
+| Flag | Type | Description|
+| :---: | :---:  | :---: | 
+| -migrate| boolean | Migrate datamodel structs and stored procedures to database
+
+```
+go run ./server.go -migrate=true
+```
+This will run the server, if you configured everything good, you will see the endpoints display on the console, at this point you can stop the server.
+
+
+After configure the env vars and migrated the models, run project usually with following command:
+```
+go run ./server.go
+```
+
+# Getting started - Docker
+- pending create dockerfile
