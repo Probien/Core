@@ -13,6 +13,12 @@
   </p>
 </div>
 
+## Contributing
+
+Contributions are always welcome!
+
+This project is small, if you want to contribute improving code or add a new feature send a PR, make sure to add a description.
+
 ## Bussiness Logic
 
 - Administrator
@@ -37,7 +43,6 @@
 
 ## Design
 ```
-
 config/
 ├─ database.go | Connection to postgresql using ORM
 ├─ redis.go | Connection to redis cloud
@@ -63,10 +68,57 @@ server.go
 
 <img src="https://user-images.githubusercontent.com/67834146/177461447-59efbaa8-f04e-4003-96d8-1719af65025b.png" alt="database" border="0">
 
-## Contributing
+###
 
-Contributions are always welcome!
+# Getting started - Manually
 
-This project is small, if you want to contribute improving code or add a new feature send a PR, make sure to add a description.
+Please make sure to download and configure everything below to avoid problems.
+## Dependencies needed
+Gorm (ORM): 
+``` go get -u gorm.io/gorm ```
+
+Gin (Framework): ``` go get -u github.com/gin-gonic/gin ```
+
+Go-Cron (Cron jobs): ``` go get -u github.com/go-co-op/gocron ```
+
+Go-Redis: ``` go get -u github.com/go-redis/redis/v8 ```
+
+Go-Jwt: ``` go get -u github.com/golang-jwt/jwt/v4 ```
+
+Go-UUID: ``` go get -u github.com/satori/go.uuid ```
+
+Godotenv: ``` go get -u github.com/joho/godotenv ``` 
+
+## Environment vars
+You must create a .env file called vars.env into the root project, then add the following environment vars:
+
+```
+export PRIVATE_KEY="your private key to sign tokens"
+
+export DATABASE_URI_DEV="your database connection url for development"
+export DATABASE_URI_PDN="your database connection url for production"
+
+export REDIS_URI="your redis connection url"
+export REDIS_PASSWORD="your redis password"
+```
 
 
+If it is the first time you are running the application, you must add the flag  obligately, add it after command:
+
+| Flag | Type | Description|
+| :---: | :---:  | :---: | 
+| -migrate| boolean | Migrate datamodel structs and stored procedures to database
+
+```
+go run ./server.go -migrate=true
+```
+This will run the server, if you configured everything good, you will see the endpoints display on the console, at this point you can stop the server.
+
+
+After configure the env vars and migrated the models, run project usually with following command:
+```
+go run ./server.go
+```
+
+# Getting started - Docker
+- pending create dockerfile
