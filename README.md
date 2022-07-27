@@ -41,7 +41,7 @@ This project is small, if you want to contribute improving code or add a new fea
 - Extras
   - When a customer doesn't make any endorsement after the deadline, all the client's things become property of probien.
 
-## Design
+## Design - Following DDD (Domain Driven Design)
 ```
 config/
 ├─ database.go | Connection to postgresql using ORM
@@ -66,7 +66,7 @@ server.go
 
 ## Database Model (subject to change)
 
-<img src="https://user-images.githubusercontent.com/67834146/177461447-59efbaa8-f04e-4003-96d8-1719af65025b.png" alt="database" border="0">
+<img src="https://user-images.githubusercontent.com/67834146/181162633-8c323f57-3a70-4cc1-a5ae-7e2fc399464c.png" alt="database" border="0">
 
 ###
 
