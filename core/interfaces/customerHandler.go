@@ -25,8 +25,8 @@ func CustomerHandler(v1 *gin.RouterGroup) {
 	customerHandlerV1.PATCH("/", customerRouter.updateCustomer)
 }
 
-func (ci *customerRouter) createCustomer(c *gin.Context) {
-	customer, err := ci.customerInteractor.Create(c)
+func (router *customerRouter) createCustomer(c *gin.Context) {
+	customer, err := router.customerInteractor.Create(c)
 
 	if err != nil {
 		c.JSON(
@@ -38,8 +38,8 @@ func (ci *customerRouter) createCustomer(c *gin.Context) {
 	}
 }
 
-func (ci *customerRouter) GetAllCustomers(c *gin.Context) {
-	customers, err := ci.customerInteractor.GetAll()
+func (router *customerRouter) GetAllCustomers(c *gin.Context) {
+	customers, err := router.customerInteractor.GetAll()
 
 	if err != nil {
 		c.JSON(
@@ -51,8 +51,8 @@ func (ci *customerRouter) GetAllCustomers(c *gin.Context) {
 	}
 }
 
-func (ci *customerRouter) getCustomerById(c *gin.Context) {
-	customer, err := ci.customerInteractor.GetById(c)
+func (router *customerRouter) getCustomerById(c *gin.Context) {
+	customer, err := router.customerInteractor.GetById(c)
 
 	if err != nil {
 		c.JSON(
@@ -64,8 +64,8 @@ func (ci *customerRouter) getCustomerById(c *gin.Context) {
 	}
 }
 
-func (ci *customerRouter) updateCustomer(c *gin.Context) {
-	customer, err := ci.customerInteractor.Update(c)
+func (router *customerRouter) updateCustomer(c *gin.Context) {
+	customer, err := router.customerInteractor.Update(c)
 
 	if err != nil {
 		c.JSON(

@@ -9,49 +9,56 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type endorsementRouter struct {
+	endorsementInteractor application.EndorsemenInteractor
+}
+
 func EndorsementHandler(v1 *gin.RouterGroup) {
 
+	var endorsementRouter endorsementRouter
 	endorsementHandlerV1 := *v1.Group("/endorsements")
 	endorsementHandlerV1.Use(auth.JwtAuth(false))
-	interactor := application.EndorsemenInteractor{}
 
-	endorsementHandlerV1.POST("/", func(c *gin.Context) {
-		endorsement, err := interactor.Create(c)
+	endorsementHandlerV1.POST("/", endorsementRouter.createEndorsement)
+	endorsementHandlerV1.GET("/", endorsementRouter.getAllEndorsements)
+	endorsementHandlerV1.GET("/:id", endorsementRouter.getEndorsementById)
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &endorsement})
-		}
-	})
+func (ei *endorsementRouter) createEndorsement(c *gin.Context) {
+	endorsement, err := ei.endorsementInteractor.Create(c)
 
-	endorsementHandlerV1.GET("/", func(c *gin.Context) {
-		endorsements, err := interactor.GetAll()
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &endorsement})
+	}
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &endorsements})
-		}
-	})
+func (ei *endorsementRouter) getAllEndorsements(c *gin.Context) {
+	endorsements, err := ei.endorsementInteractor.GetAll()
 
-	endorsementHandlerV1.GET("/:id", func(c *gin.Context) {
-		endorsement, err := interactor.GetById(c)
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &endorsements})
+	}
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &endorsement})
-		}
-	})
+func (ei *endorsementRouter) getEndorsementById(c *gin.Context) {
+	endorsement, err := ei.endorsementInteractor.GetById(c)
 
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &endorsement})
+	}
 }

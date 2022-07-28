@@ -25,8 +25,8 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 	branchOfficeHandlerv1.PATCH("/", branchRouter.updateBranch)
 }
 
-func (bi *branchRouter) createBranch(c *gin.Context) {
-	branchOffice, err := bi.branchInteractor.Create(c)
+func (router *branchRouter) createBranch(c *gin.Context) {
+	branchOffice, err := router.branchInteractor.Create(c)
 
 	if err != nil {
 		c.JSON(
@@ -38,8 +38,8 @@ func (bi *branchRouter) createBranch(c *gin.Context) {
 	}
 }
 
-func (bi *branchRouter) getAllBranches(c *gin.Context) {
-	branchOffices, err := bi.branchInteractor.GetAll()
+func (router *branchRouter) getAllBranches(c *gin.Context) {
+	branchOffices, err := router.branchInteractor.GetAll()
 
 	if err != nil {
 		c.JSON(
@@ -50,8 +50,8 @@ func (bi *branchRouter) getAllBranches(c *gin.Context) {
 	}
 }
 
-func (bi *branchRouter) getBranchById(c *gin.Context) {
-	branchOffice, err := bi.branchInteractor.GetById(c)
+func (router *branchRouter) getBranchById(c *gin.Context) {
+	branchOffice, err := router.branchInteractor.GetById(c)
 
 	if err != nil {
 		c.JSON(
@@ -63,8 +63,8 @@ func (bi *branchRouter) getBranchById(c *gin.Context) {
 	}
 }
 
-func (bi *branchRouter) updateBranch(c *gin.Context) {
-	branchOffice, err := bi.branchInteractor.Update(c)
+func (router *branchRouter) updateBranch(c *gin.Context) {
+	branchOffice, err := router.branchInteractor.Update(c)
 
 	if err != nil {
 		c.JSON(

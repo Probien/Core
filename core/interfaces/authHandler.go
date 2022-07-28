@@ -21,9 +21,9 @@ func AuthHandler(v1 *gin.RouterGroup) {
 	security.POST("/logout", authRouter.logout)
 }
 
-func (sec *authRouter) login(c *gin.Context) {
+func (router *authRouter) login(c *gin.Context) {
 	tokenizer, session := make(chan string, 1), make(chan auth.SessionCredentials, 1)
-	employee, err := sec.loginInteractor.Login(c)
+	employee, err := router.loginInteractor.Login(c)
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
@@ -38,7 +38,7 @@ func (sec *authRouter) login(c *gin.Context) {
 	}
 }
 
-func (sec *authRouter) logout(c *gin.Context) {
+func (router *authRouter) logout(c *gin.Context) {
 	auth.ClearSessionID(c)
 	c.SetCookie("SID", "", -1, "/", "localhost", true, true)
 	c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LOGOUT_DONE, Data: common.OUT})

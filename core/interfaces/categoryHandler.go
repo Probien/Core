@@ -26,8 +26,8 @@ func CategoryHandler(v1 *gin.RouterGroup) {
 	categoryHandlerV1.DELETE("/", categoryRouter.deleteCategory)
 }
 
-func (ci *categoryRouter) CreateCategory(c *gin.Context) {
-	category, err := ci.categoryInteractor.Create(c)
+func (router *categoryRouter) CreateCategory(c *gin.Context) {
+	category, err := router.categoryInteractor.Create(c)
 
 	if err != nil {
 		c.JSON(
@@ -39,8 +39,8 @@ func (ci *categoryRouter) CreateCategory(c *gin.Context) {
 	}
 }
 
-func (ci *categoryRouter) getAllCategories(c *gin.Context) {
-	categories, err := ci.categoryInteractor.GetAll()
+func (router *categoryRouter) getAllCategories(c *gin.Context) {
+	categories, err := router.categoryInteractor.GetAll()
 
 	if err != nil {
 		c.JSON(
@@ -52,8 +52,8 @@ func (ci *categoryRouter) getAllCategories(c *gin.Context) {
 	}
 }
 
-func (ci *categoryRouter) getCategoryById(c *gin.Context) {
-	category, err := ci.categoryInteractor.GetById(c)
+func (router *categoryRouter) getCategoryById(c *gin.Context) {
+	category, err := router.categoryInteractor.GetById(c)
 
 	if err != nil {
 		c.JSON(
@@ -65,8 +65,8 @@ func (ci *categoryRouter) getCategoryById(c *gin.Context) {
 	}
 }
 
-func (ci *categoryRouter) updateCategory(c *gin.Context) {
-	category, err := ci.categoryInteractor.Update(c)
+func (router *categoryRouter) updateCategory(c *gin.Context) {
+	category, err := router.categoryInteractor.Update(c)
 
 	if err != nil {
 		c.JSON(
@@ -78,8 +78,8 @@ func (ci *categoryRouter) updateCategory(c *gin.Context) {
 	}
 }
 
-func (ci *categoryRouter) deleteCategory(c *gin.Context) {
-	category, err := ci.categoryInteractor.Delete(c)
+func (router *categoryRouter) deleteCategory(c *gin.Context) {
+	category, err := router.categoryInteractor.Delete(c)
 
 	if err != nil {
 		c.JSON(
