@@ -9,62 +9,70 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type customerRouter struct {
+	customerInteractor application.CustomerInteractor
+}
+
 func CustomerHandler(v1 *gin.RouterGroup) {
 
+	var customerRouter customerRouter
 	customerHandlerV1 := *v1.Group("/customers")
 	customerHandlerV1.Use(auth.JwtAuth(false))
-	interactor := application.CustomerInteractor{}
 
-	customerHandlerV1.POST("/", func(c *gin.Context) {
-		customer, err := interactor.Create(c)
+	customerHandlerV1.POST("/", customerRouter.createCustomer)
+	customerHandlerV1.GET("/", customerRouter.GetAllCustomers)
+	customerHandlerV1.GET("/:id", customerRouter.getCustomerById)
+	customerHandlerV1.PATCH("/", customerRouter.updateCustomer)
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &customer})
-		}
-	})
+func (ci *customerRouter) createCustomer(c *gin.Context) {
+	customer, err := ci.customerInteractor.Create(c)
 
-	customerHandlerV1.GET("/", func(c *gin.Context) {
-		customers, err := interactor.GetAll()
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &customer})
+	}
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &customers})
-		}
-	})
+func (ci *customerRouter) GetAllCustomers(c *gin.Context) {
+	customers, err := ci.customerInteractor.GetAll()
 
-	customerHandlerV1.GET("/:id", func(c *gin.Context) {
-		customer, err := interactor.GetById(c)
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &customers})
+	}
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &customer})
-		}
-	})
+func (ci *customerRouter) getCustomerById(c *gin.Context) {
+	customer, err := ci.customerInteractor.GetById(c)
 
-	customerHandlerV1.PATCH("/", func(c *gin.Context) {
-		customer, err := interactor.Update(c)
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &customer})
+	}
+}
 
-		if err != nil {
-			c.JSON(
-				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &customer})
-		}
-	})
+func (ci *customerRouter) updateCustomer(c *gin.Context) {
+	customer, err := ci.customerInteractor.Update(c)
 
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &customer})
+	}
 }
