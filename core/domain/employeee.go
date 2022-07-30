@@ -13,6 +13,7 @@ type Employee struct {
 	PawnOrdersDone *[]PawnOrder   `json:"pawn_orders_done,omitempty"`
 	SessionLogs    *[]SessionLog  `json:"sessions,omitempty"`
 	Endorsements   *[]Endorsement `json:"endorsements_done,omitempty"`
+	Roles          []EmployeeRole `json:"roles,omitempty"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

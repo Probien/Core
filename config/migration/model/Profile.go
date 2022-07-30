@@ -1,4 +1,4 @@
-package models
+package model
 
 type Profile struct {
 	ID         uint `gorm:"primaryKey"`
