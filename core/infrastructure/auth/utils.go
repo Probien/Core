@@ -20,10 +20,16 @@ import (
 
 func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 
+	roles := make(map[string]string)
+
+	for k, v := range employee.Roles {
+		roles["role_"+strconv.Itoa(k)] = v.Role.RoleName
+	}
+
 	claims := &AuthCustomClaims{
-		Name:      employee.Profile.Name,
-		IsAdmin:   employee.IsAdmin,
-		CreatedAt: time.Now(),
+		Name:    employee.Profile.Name,
+		IsAdmin: employee.IsAdmin,
+		Roles:   roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
 			Issuer:    "Probien",
@@ -39,9 +45,9 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 	tokenizer <- token
 }
 
-func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredentials) {
+func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredential) {
 	sessionID := uuid.NewV4()
-	sessionClaims := SessionCredentials{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 30)}
+	sessionClaims := SessionCredential{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 30)}
 	sessionbBytes, _ := json.Marshal(sessionClaims)
 	go config.Client.Set(context.Background(), sessionID.String(), string(sessionbBytes[:]), time.Minute*30)
 	session <- sessionClaims
@@ -73,7 +79,7 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 }
 
 func existCoockie(coockie string, checker chan<- bool) {
-	var sessionID = SessionCredentials{}
+	var sessionID = SessionCredential{}
 	val := config.Client.Get(context.Background(), coockie).Val()
 	json.Unmarshal([]byte(val), &sessionID)
 	checker <- val != "" && coockie == sessionID.ID
