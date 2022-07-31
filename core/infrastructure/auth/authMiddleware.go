@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JwtAuth(isAdmin bool) gin.HandlerFunc {
+func JwtAuth(authorities ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		checker := make(chan bool, 1)
 		data := AuthCustomClaims{}
@@ -22,14 +22,12 @@ func JwtAuth(isAdmin bool) gin.HandlerFunc {
 			encodedToken := strings.TrimSpace(splitToken[1])
 			token, _ := validateAndParseToken(encodedToken, &data)
 
-			if token.Valid && data.IsAdmin == isAdmin && <-checker {
-
+			if token.Valid && checkAuthorities(authorities, &data) && <-checker {
 				//extract user_id from parsed token for stored procedures
 				user_id, _ := strconv.Atoi(data.RegisteredClaims.Subject)
 				//set user_id to request only for this context(request)
 				c.Set("user_id", user_id)
 				c.Next()
-
 			} else {
 				c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Unauthorized, valid token is required"})
 				c.AbortWithStatus(http.StatusUnauthorized)

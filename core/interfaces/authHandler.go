@@ -22,7 +22,7 @@ func AuthHandler(v1 *gin.RouterGroup) {
 }
 
 func (router *authRouter) login(c *gin.Context) {
-	tokenizer, session := make(chan string, 1), make(chan auth.SessionCredentials, 1)
+	tokenizer, session := make(chan string, 1), make(chan auth.SessionCredential, 1)
 	employee, err := router.loginInteractor.Login(c)
 	if err != nil {
 		c.JSON(

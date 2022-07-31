@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +16,6 @@ func LogHandler(v1 *gin.RouterGroup) {
 
 	var logRouter logRouter
 	logHandler := v1.Group("/logs")
-	logHandler.Use(auth.JwtAuth(true))
 
 	logHandler.GET("/sessions", logRouter.getAllSessions)
 	logHandler.GET("/sessions/:id", logRouter.getAllSessionsById)

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +16,6 @@ func CustomerHandler(v1 *gin.RouterGroup) {
 
 	var customerRouter customerRouter
 	customerHandlerV1 := *v1.Group("/customers")
-	customerHandlerV1.Use(auth.JwtAuth(false))
 
 	customerHandlerV1.POST("/", customerRouter.createCustomer)
 	customerHandlerV1.GET("/", customerRouter.GetAllCustomers)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -27,9 +28,7 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 	}
 
 	claims := &AuthCustomClaims{
-		Name:    employee.Profile.Name,
-		IsAdmin: employee.IsAdmin,
-		Roles:   roles,
+		Roles: roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
 			Issuer:    "Probien",
@@ -92,4 +91,16 @@ func EncryptPassword(data []byte, ch chan<- []byte) {
 		panic(err)
 	}
 	ch <- hash
+}
+
+func checkAuthorities(authorities []string, authCustomClaims *AuthCustomClaims) bool {
+	size := len(authorities) - 1
+
+	for _, v := range authCustomClaims.Roles {
+		log.Println(v)
+		if v == authorities[size] {
+			return true
+		}
+	}
+	return false
 }

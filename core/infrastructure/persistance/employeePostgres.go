@@ -21,7 +21,7 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) repository.IEmployeeRepository {
 }
 
 func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error) {
-	employee, loginCredentials := domain.Employee{}, auth.LoginCredentials{}
+	employee, loginCredentials := domain.Employee{}, auth.LoginCredential{}
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
 		return nil, errors.New(ERROR_BINDING)

@@ -17,7 +17,7 @@ func BranchOfficeHandler(v1 *gin.RouterGroup) {
 
 	var branchRouter branchRouter
 	branchOfficeHandlerv1 := *v1.Group("/branch-offices")
-	branchOfficeHandlerv1.Use(auth.JwtAuth(false))
+	branchOfficeHandlerv1.Use(auth.JwtAuth("ROLE_EMPLOYEE"))
 
 	branchOfficeHandlerv1.POST("/", branchRouter.createBranch)
 	branchOfficeHandlerv1.GET("/", branchRouter.getAllBranches)

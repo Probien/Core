@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +16,6 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 
 	var endorsementRouter endorsementRouter
 	endorsementHandlerV1 := *v1.Group("/endorsements")
-	endorsementHandlerV1.Use(auth.JwtAuth(false))
 
 	endorsementHandlerV1.POST("/", endorsementRouter.createEndorsement)
 	endorsementHandlerV1.GET("/", endorsementRouter.getAllEndorsements)

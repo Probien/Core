@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +16,6 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 
 	var pawnOrderRouter pawnOrderRouter
 	pawnOrderHandlerV1 := *v1.Group("/pawn-orders")
-	pawnOrderHandlerV1.Use(auth.JwtAuth(false))
 
 	pawnOrderHandlerV1.POST("/", pawnOrderRouter.createPawnOrder)
 	pawnOrderHandlerV1.GET("/", pawnOrderRouter.getAllPawnOrders)
