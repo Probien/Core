@@ -20,11 +20,16 @@ import (
 )
 
 func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
+	roles := make(map[string]string)
+
+	for k, v := range employee.Roles {
+		roles["role_"+strconv.Itoa(k)] = v.Role.RoleName
+	}
 
 	claims := &AuthCustomClaims{
-		Name:      employee.Profile.Name,
-		IsAdmin:   employee.IsAdmin,
-		CreatedAt: time.Now(),
+		Name:    employee.Profile.Name,
+		IsAdmin: employee.IsAdmin,
+		Roles:   roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
 			Issuer:    "Probien",

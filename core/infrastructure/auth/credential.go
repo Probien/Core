@@ -7,9 +7,9 @@ import (
 )
 
 type AuthCustomClaims struct {
-	Name      string `json:"name"`
-	IsAdmin   bool   `json:"is_admin"`
-	CreatedAt time.Time
+	Name    string            `json:"name"`
+	IsAdmin bool              `json:"is_admin"`
+	Roles   map[string]string `json:"roles"`
 	jwt.RegisteredClaims
 }
 
