@@ -21,13 +21,13 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) repository.IEmployeeRepository {
 }
 
 func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error) {
-	employee, loginCredentials := domain.Employee{}, auth.LoginCredentials{}
+	employee, loginCredentials := domain.Employee{}, auth.LoginCredential{}
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
 		return nil, errors.New(ERROR_BINDING)
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Preload("Profile").Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Preload("Profile").Preload("Roles.Role").Find(&employee).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
@@ -50,7 +50,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 		return nil, errors.New(ERROR_BINDING)
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Preload("PawnOrdersDone.Customer").Preload("SessionLogs").Preload("Endorsements").Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Preload("Roles.Role").Preload("PawnOrdersDone.Customer").Preload("SessionLogs").Preload("Endorsements").Find(&employee).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
@@ -63,7 +63,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
-	if err := r.database.Model(domain.Employee{}).Preload("Profile").Find(&employees).Error; err != nil {
+	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("Roles").Find(&employees).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 

@@ -7,19 +7,17 @@ import (
 )
 
 type AuthCustomClaims struct {
-	Name      string `json:"name"`
-	IsAdmin   bool   `json:"is_admin"`
-	CreatedAt time.Time
+	Roles map[string]string `json:"roles"`
 	jwt.RegisteredClaims
 }
 
-type SessionCredentials struct {
+type SessionCredential struct {
 	ID        string
 	Username  string
 	ExpiresAt time.Time
 }
 
-type LoginCredentials struct {
+type LoginCredential struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

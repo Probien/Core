@@ -13,7 +13,6 @@ func main() {
 	migrate := flag.Bool("migrate", false, "migrate datamodel structs and stored procedures to database")
 	flag.Parse()
 	server := gin.Default()
-
 	config.ConnectDB()
 
 	if *migrate {
