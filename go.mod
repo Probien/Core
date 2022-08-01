@@ -17,7 +17,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/gorm v1.23.4
+	gorm.io/gorm v1.23.8
 )
 
 require (
@@ -30,7 +30,7 @@ require (
 
 require (
 	github.com/go-co-op/gocron v1.14.0
-	gorm.io/driver/postgres v1.3.7
+	gorm.io/driver/postgres v1.3.8
 )
 
 require (

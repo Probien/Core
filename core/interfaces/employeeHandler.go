@@ -4,66 +4,71 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
 
+type employeeRouter struct {
+	employeeInteractor application.EmployeeInteractor
+}
+
 func EmployeeHandler(v1 *gin.RouterGroup) {
+	var employeeRouter employeeRouter
 
-	interactor := application.EmployeeInteractor{}
-	employeeHandlerV1 := *v1.Group("/employees")
-	employeeHandlerV1.Use(auth.JwtAuth(true))
+	v1.POST("/", employeeRouter.createEmployee)
+	v1.GET("/", employeeRouter.getAllEmployees)
+	v1.GET("/byEmail/", employeeRouter.getEmployeeByEmail)
+	v1.PATCH("/", employeeRouter.updateEmployee)
+}
 
-	employeeHandlerV1.POST("/", func(c *gin.Context) {
-		employee, err := interactor.Create(c)
+func (ei *employeeRouter) createEmployee(c *gin.Context) {
+	employee, err := ei.employeeInteractor.Create(c)
 
-		if err != nil {
-			c.JSON(
-				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &employee})
-		}
-	})
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &employee})
+	}
+}
 
-	employeeHandlerV1.GET("/", func(c *gin.Context) {
-		employees, err := interactor.GetAll()
+func (ei *employeeRouter) getAllEmployees(c *gin.Context) {
+	employees, err := ei.employeeInteractor.GetAll()
 
-		if err != nil {
-			c.JSON(
-				http.StatusInternalServerError,
-				common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employees})
-		}
-	})
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employees})
+	}
+}
 
-	employeeHandlerV1.GET("/byEmail/", func(c *gin.Context) {
-		employee, err := interactor.GetByEmail(c)
+func (ei *employeeRouter) getEmployeeByEmail(c *gin.Context) {
+	employee, err := ei.employeeInteractor.GetByEmail(c)
 
-		if err != nil {
-			c.JSON(
-				http.StatusNotFound,
-				common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee})
-		}
-	})
+	if err != nil {
+		c.JSON(
+			http.StatusNotFound,
+			common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee})
+	}
+}
 
-	employeeHandlerV1.PATCH("/", func(c *gin.Context) {
-		employee, err := interactor.Update(c)
+func (ei *employeeRouter) updateEmployee(c *gin.Context) {
+	employee, err := ei.employeeInteractor.Update(c)
 
-		if err != nil {
-			c.JSON(
-				http.StatusBadRequest,
-				common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-			)
-		} else {
-			c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &employee})
-		}
-	})
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	} else {
+		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &employee})
+	}
 }
