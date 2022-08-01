@@ -13,16 +13,14 @@ type logRouter struct {
 }
 
 func LogHandler(v1 *gin.RouterGroup) {
-
 	var logRouter logRouter
-	logHandler := v1.Group("/logs")
 
-	logHandler.GET("/sessions", logRouter.getAllSessions)
-	logHandler.GET("/sessions/:id", logRouter.getAllSessionsById)
-	logHandler.GET("/payments", logRouter.getAllPayments)
-	logHandler.GET("/payments/:id", logRouter.getAllPaymentsById)
-	logHandler.GET("/movements", logRouter.getAllMovements)
-	logHandler.GET("/movements/:id", logRouter.getAllMovementsById)
+	v1.GET("/sessions", logRouter.getAllSessions)
+	v1.GET("/sessions/:id", logRouter.getAllSessionsById)
+	v1.GET("/payments", logRouter.getAllPayments)
+	v1.GET("/payments/:id", logRouter.getAllPaymentsById)
+	v1.GET("/movements", logRouter.getAllMovements)
+	v1.GET("/movements/:id", logRouter.getAllMovementsById)
 }
 
 func (router *logRouter) getAllSessions(c *gin.Context) {

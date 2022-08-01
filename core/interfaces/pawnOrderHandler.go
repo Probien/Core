@@ -13,14 +13,12 @@ type pawnOrderRouter struct {
 }
 
 func PawnOrderHandler(v1 *gin.RouterGroup) {
-
 	var pawnOrderRouter pawnOrderRouter
-	pawnOrderHandlerV1 := *v1.Group("/pawn-orders")
 
-	pawnOrderHandlerV1.POST("/", pawnOrderRouter.createPawnOrder)
-	pawnOrderHandlerV1.GET("/", pawnOrderRouter.getAllPawnOrders)
-	pawnOrderHandlerV1.GET("/:id", pawnOrderRouter.getPawnOrderById)
-	pawnOrderHandlerV1.PATCH("/", pawnOrderRouter.updatePawnOrder)
+	v1.POST("/", pawnOrderRouter.createPawnOrder)
+	v1.GET("/", pawnOrderRouter.getAllPawnOrders)
+	v1.GET("/:id", pawnOrderRouter.getPawnOrderById)
+	v1.PATCH("/", pawnOrderRouter.updatePawnOrder)
 }
 
 func (router *pawnOrderRouter) createPawnOrder(c *gin.Context) {

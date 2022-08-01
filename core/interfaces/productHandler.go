@@ -12,7 +12,7 @@ type productRouter struct {
 	productInteractor application.ProductInteractor
 }
 
-func ProductHandler(v1 *gin.RouterGroup) {
+func ProductHandler(v1 *gin.RouterGroup) *gin.RouterGroup {
 
 	var productRouter productRouter
 	productHandlerV1 := *v1.Group("/products")
@@ -21,6 +21,7 @@ func ProductHandler(v1 *gin.RouterGroup) {
 	productHandlerV1.GET("/", productRouter.getAllProducts)
 	productHandlerV1.GET("/:id", productRouter.getProductById)
 	productHandlerV1.PATCH("/", productRouter.updateProduct)
+	return &productHandlerV1
 }
 
 func (router *productRouter) createProduct(c *gin.Context) {

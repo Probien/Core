@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -95,9 +94,7 @@ func EncryptPassword(data []byte, ch chan<- []byte) {
 
 func checkAuthorities(authorities []string, authCustomClaims *AuthCustomClaims) bool {
 	size := len(authorities) - 1
-
 	for _, v := range authCustomClaims.Roles {
-		log.Println(v)
 		if v == authorities[size] {
 			return true
 		}

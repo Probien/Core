@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -14,15 +13,13 @@ type branchRouter struct {
 }
 
 func BranchOfficeHandler(v1 *gin.RouterGroup) {
-
 	var branchRouter branchRouter
-	branchOfficeHandlerv1 := *v1.Group("/branch-offices")
-	branchOfficeHandlerv1.Use(auth.JwtAuth("ROLE_EMPLOYEE"))
 
-	branchOfficeHandlerv1.POST("/", branchRouter.createBranch)
-	branchOfficeHandlerv1.GET("/", branchRouter.getAllBranches)
-	branchOfficeHandlerv1.GET("/:id", branchRouter.getBranchById)
-	branchOfficeHandlerv1.PATCH("/", branchRouter.updateBranch)
+	v1.POST("/", branchRouter.createBranch)
+	v1.GET("/", branchRouter.getAllBranches)
+	v1.GET("/:id", branchRouter.getBranchById)
+	v1.PATCH("/", branchRouter.updateBranch)
+
 }
 
 func (router *branchRouter) createBranch(c *gin.Context) {

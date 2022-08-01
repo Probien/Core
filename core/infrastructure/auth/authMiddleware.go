@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JwtAuth(authorities ...string) gin.HandlerFunc {
+func JwtRbac(authorities ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		checker := make(chan bool, 1)
 		data := AuthCustomClaims{}

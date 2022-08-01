@@ -13,13 +13,11 @@ type endorsementRouter struct {
 }
 
 func EndorsementHandler(v1 *gin.RouterGroup) {
-
 	var endorsementRouter endorsementRouter
-	endorsementHandlerV1 := *v1.Group("/endorsements")
 
-	endorsementHandlerV1.POST("/", endorsementRouter.createEndorsement)
-	endorsementHandlerV1.GET("/", endorsementRouter.getAllEndorsements)
-	endorsementHandlerV1.GET("/:id", endorsementRouter.getEndorsementById)
+	v1.POST("/", endorsementRouter.createEndorsement)
+	v1.GET("/", endorsementRouter.getAllEndorsements)
+	v1.GET("/:id", endorsementRouter.getEndorsementById)
 }
 
 func (ei *endorsementRouter) createEndorsement(c *gin.Context) {

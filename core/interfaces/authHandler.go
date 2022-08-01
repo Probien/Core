@@ -15,10 +15,9 @@ type authRouter struct {
 
 func AuthHandler(v1 *gin.RouterGroup) {
 	var authRouter authRouter
-	security := *v1.Group("/auth")
 
-	security.POST("/login", authRouter.login)
-	security.POST("/logout", authRouter.logout)
+	v1.POST("/login", authRouter.login)
+	v1.POST("/logout", authRouter.logout)
 }
 
 func (router *authRouter) login(c *gin.Context) {

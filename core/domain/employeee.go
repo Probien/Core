@@ -7,7 +7,6 @@ type Employee struct {
 	Profile        *Profile       `json:"profile,omitempty"`
 	Email          string         `json:"email"`
 	Password       string         `json:"password"`
-	IsAdmin        bool           `json:"is_admin"`
 	IsActive       bool           `json:"is_active"`
 	BranchOfficeID uint           `json:"branch_office_id"`
 	PawnOrdersDone *[]PawnOrder   `json:"pawn_orders_done,omitempty"`

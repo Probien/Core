@@ -13,14 +13,12 @@ type customerRouter struct {
 }
 
 func CustomerHandler(v1 *gin.RouterGroup) {
-
 	var customerRouter customerRouter
-	customerHandlerV1 := *v1.Group("/customers")
 
-	customerHandlerV1.POST("/", customerRouter.createCustomer)
-	customerHandlerV1.GET("/", customerRouter.GetAllCustomers)
-	customerHandlerV1.GET("/:id", customerRouter.getCustomerById)
-	customerHandlerV1.PATCH("/", customerRouter.updateCustomer)
+	v1.POST("/", customerRouter.createCustomer)
+	v1.GET("/", customerRouter.GetAllCustomers)
+	v1.GET("/:id", customerRouter.getCustomerById)
+	v1.PATCH("/", customerRouter.updateCustomer)
 }
 
 func (router *customerRouter) createCustomer(c *gin.Context) {

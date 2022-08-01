@@ -13,14 +13,12 @@ type employeeRouter struct {
 }
 
 func EmployeeHandler(v1 *gin.RouterGroup) {
-
 	var employeeRouter employeeRouter
-	employeeHandlerV1 := *v1.Group("/employees")
 
-	employeeHandlerV1.POST("/", employeeRouter.createEmployee)
-	employeeHandlerV1.GET("/", employeeRouter.getAllEmployees)
-	employeeHandlerV1.GET("/byEmail/", employeeRouter.getEmployeeByEmail)
-	employeeHandlerV1.PATCH("/", employeeRouter.updateEmployee)
+	v1.POST("/", employeeRouter.createEmployee)
+	v1.GET("/", employeeRouter.getAllEmployees)
+	v1.GET("/byEmail/", employeeRouter.getEmployeeByEmail)
+	v1.PATCH("/", employeeRouter.updateEmployee)
 }
 
 func (ei *employeeRouter) createEmployee(c *gin.Context) {
