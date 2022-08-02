@@ -85,8 +85,10 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	}
 
 	for _, v := range employee.Roles {
-		r.database.Exec("INSERT INTO employee_roles(role_id, employee_id) VALUES(?,?)", employee.ID, v.RoleID)
+		r.database.Exec("INSERT INTO employee_roles(role_id, employee_id) VALUES(?,?)", v.RoleID, employee.ID)
 	}
+
+	r.database.Model(&employee).Preload("Roles.Role").Find(&employee)
 
 	data, _ := json.Marshal(&employee)
 	contextUserID, _ := c.Get("user_id")
