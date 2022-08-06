@@ -3,7 +3,7 @@ package persistance
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"time"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -33,6 +33,31 @@ func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, er
 	return &pawnOrder, nil
 }
 
+func (r *PawnOrderRepositoryImpl) GetByIdForUpdate(id uint) (*domain.PawnOrder, error) {
+	var pawnOrder domain.PawnOrder
+
+	if err := r.database.Model(&domain.PawnOrder{}).Find(&pawnOrder, id).Error; err != nil {
+		return nil, errors.New(ERROR_PROCCESS)
+	}
+
+	if pawnOrder.ID == 0 {
+		return nil, errors.New(PAWNORDER_NOT_FOUND)
+	}
+
+	pawnOrder.CutOffDay = pawnOrder.CutOffDay.AddDate(0, 0, 7)
+	if pawnOrder.Monthly {
+		pawnOrder.ExtensionDate = pawnOrder.CutOffDay.AddDate(0, 0, 3)
+	} else {
+		pawnOrder.ExtensionDate = pawnOrder.CutOffDay.AddDate(0, 0, 1)
+	}
+
+	if err := r.database.Model(&pawnOrder).Where("id = ?", pawnOrder.ID).Updates(map[string]interface{}{"cut_off_day": pawnOrder.CutOffDay, "extension_date": pawnOrder.ExtensionDate, "status_id": 1}).Error; err != nil {
+		return nil, errors.New(ERROR_PROCCESS)
+	}
+
+	return &pawnOrder, nil
+}
+
 func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
@@ -47,8 +72,14 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 	var pawnOrder domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
-		log.Print(err)
 		return nil, errors.New(ERROR_BINDING)
+	}
+	pawnOrder.CutOffDay = time.Now().AddDate(0, 0, 7)
+
+	if pawnOrder.Monthly {
+		pawnOrder.ExtensionDate = time.Now().AddDate(0, 0, 10)
+	} else {
+		pawnOrder.ExtensionDate = time.Now().AddDate(0, 0, 8)
 	}
 
 	if err := r.database.Model(&domain.PawnOrder{}).Omit("Employee").Omit("Customer").Omit("Status").Create(&pawnOrder).Error; err != nil {
