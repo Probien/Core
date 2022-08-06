@@ -20,8 +20,8 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 	v1.GET("/:id", endorsementRouter.getEndorsementById)
 }
 
-func (ei *endorsementRouter) createEndorsement(c *gin.Context) {
-	endorsement, err := ei.endorsementInteractor.Create(c)
+func (router *endorsementRouter) createEndorsement(c *gin.Context) {
+	endorsement, err := router.endorsementInteractor.Create(c)
 
 	if err != nil {
 		c.JSON(
@@ -33,8 +33,8 @@ func (ei *endorsementRouter) createEndorsement(c *gin.Context) {
 	}
 }
 
-func (ei *endorsementRouter) getAllEndorsements(c *gin.Context) {
-	endorsements, err := ei.endorsementInteractor.GetAll()
+func (router *endorsementRouter) getAllEndorsements(c *gin.Context) {
+	endorsements, err := router.endorsementInteractor.GetAll()
 
 	if err != nil {
 		c.JSON(
@@ -46,8 +46,8 @@ func (ei *endorsementRouter) getAllEndorsements(c *gin.Context) {
 	}
 }
 
-func (ei *endorsementRouter) getEndorsementById(c *gin.Context) {
-	endorsement, err := ei.endorsementInteractor.GetById(c)
+func (router *endorsementRouter) getEndorsementById(c *gin.Context) {
+	endorsement, err := router.endorsementInteractor.GetById(c)
 
 	if err != nil {
 		c.JSON(

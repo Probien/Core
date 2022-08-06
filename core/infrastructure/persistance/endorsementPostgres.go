@@ -11,11 +11,15 @@ import (
 )
 
 type EndorsementRepositoryImpl struct {
-	database *gorm.DB
+	database            *gorm.DB
+	pawnOrderRepository PawnOrderRepositoryImpl
 }
 
 func NewEndorsementRepositoryImpl(db *gorm.DB) repository.IEndorsementRepository {
-	return &EndorsementRepositoryImpl{database: db}
+	return &EndorsementRepositoryImpl{
+		database:            db,
+		pawnOrderRepository: PawnOrderRepositoryImpl{database: db},
+	}
 }
 
 func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement, error) {
@@ -47,6 +51,10 @@ func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement,
 
 	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 {
 		return nil, errors.New(ERROR_BINDING)
+	}
+
+	if _, err := r.pawnOrderRepository.GetByIdForUpdate(endorsement.PawnOrderID); err != nil {
+		return nil, err
 	}
 
 	if err := r.database.Model(&domain.Endorsement{}).Create(&endorsement).Error; err != nil {

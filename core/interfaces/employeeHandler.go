@@ -21,8 +21,8 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 	v1.PATCH("/", employeeRouter.updateEmployee)
 }
 
-func (ei *employeeRouter) createEmployee(c *gin.Context) {
-	employee, err := ei.employeeInteractor.Create(c)
+func (router *employeeRouter) createEmployee(c *gin.Context) {
+	employee, err := router.employeeInteractor.Create(c)
 
 	if err != nil {
 		c.JSON(
@@ -34,8 +34,8 @@ func (ei *employeeRouter) createEmployee(c *gin.Context) {
 	}
 }
 
-func (ei *employeeRouter) getAllEmployees(c *gin.Context) {
-	employees, err := ei.employeeInteractor.GetAll()
+func (router *employeeRouter) getAllEmployees(c *gin.Context) {
+	employees, err := router.employeeInteractor.GetAll()
 
 	if err != nil {
 		c.JSON(
@@ -47,8 +47,8 @@ func (ei *employeeRouter) getAllEmployees(c *gin.Context) {
 	}
 }
 
-func (ei *employeeRouter) getEmployeeByEmail(c *gin.Context) {
-	employee, err := ei.employeeInteractor.GetByEmail(c)
+func (router *employeeRouter) getEmployeeByEmail(c *gin.Context) {
+	employee, err := router.employeeInteractor.GetByEmail(c)
 
 	if err != nil {
 		c.JSON(
@@ -60,8 +60,8 @@ func (ei *employeeRouter) getEmployeeByEmail(c *gin.Context) {
 	}
 }
 
-func (ei *employeeRouter) updateEmployee(c *gin.Context) {
-	employee, err := ei.employeeInteractor.Update(c)
+func (router *employeeRouter) updateEmployee(c *gin.Context) {
+	employee, err := router.employeeInteractor.Update(c)
 
 	if err != nil {
 		c.JSON(
