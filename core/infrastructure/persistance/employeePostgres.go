@@ -63,7 +63,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
-	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("Roles").Find(&employees).Error; err != nil {
+	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("Roles.Role").Find(&employees).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
 
@@ -76,12 +76,19 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	if err := c.ShouldBindJSON(&employee); err != nil || employee.BranchOfficeID == 0 {
 		return nil, errors.New(ERROR_BINDING)
 	}
+
 	auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
 
-	if err := r.database.Model(&domain.Employee{}).Omit("PawnOrdersDone").Omit("SessionLogs").Omit("EndorsementsDone").Create(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Omit("PawnOrdersDone").Omit("SessionLogs").Omit("EndorsementsDone").Omit("Roles").Create(&employee).Error; err != nil {
 		return nil, errors.New(ERROR_PROCCESS)
 	}
+
+	for _, v := range employee.Roles {
+		r.database.Exec("INSERT INTO employee_roles(role_id, employee_id) VALUES(?,?)", v.RoleID, employee.ID)
+	}
+
+	r.database.Model(&employee).Preload("Roles.Role").Find(&employee)
 
 	data, _ := json.Marshal(&employee)
 	contextUserID, _ := c.Get("user_id")
