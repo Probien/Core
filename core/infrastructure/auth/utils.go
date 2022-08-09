@@ -46,13 +46,13 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredential) {
 	sessionID := uuid.NewV4()
 	sessionClaims := SessionCredential{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 30)}
-	sessionbBytes, _ := json.Marshal(sessionClaims)
-	go config.Client.Set(context.Background(), sessionID.String(), string(sessionbBytes[:]), time.Minute*30)
+	sessionBytes, _ := json.Marshal(sessionClaims)
+	go config.Client.Set(context.Background(), sessionID.String(), string(sessionBytes[:]), time.Minute*30)
 	session <- sessionClaims
 }
 
 func ClearSessionID(c *gin.Context) {
-	coockie, err := c.Cookie("SID")
+	cookie, err := c.Cookie("SID")
 
 	if err != nil {
 		c.JSON(
@@ -60,7 +60,7 @@ func ClearSessionID(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	}
-	config.Client.Del(context.Background(), coockie)
+	config.Client.Del(context.Background(), cookie)
 
 }
 
@@ -76,11 +76,11 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 
 }
 
-func existCoockie(coockie string, checker chan<- bool) {
+func existCookie(cookie string, checker chan<- bool) {
 	var sessionID = SessionCredential{}
-	val := config.Client.Get(context.Background(), coockie).Val()
+	val := config.Client.Get(context.Background(), cookie).Val()
 	json.Unmarshal([]byte(val), &sessionID)
-	checker <- val != "" && coockie == sessionID.ID
+	checker <- val != "" && cookie == sessionID.ID
 
 }
 
