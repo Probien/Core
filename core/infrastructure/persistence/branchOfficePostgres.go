@@ -39,11 +39,10 @@ func (r *BranchOfficeRepositoryImp) GetById(c *gin.Context) (*domain.BranchOffic
 	return &branchOffice, nil
 }
 
-//goland:noinspection ALL
 func (r *BranchOfficeRepositoryImp) Create(c *gin.Context) (*domain.BranchOffice, error) {
 	var branchOffice domain.BranchOffice
 
-	if err := c.ShouldBindJSON(branchOffice); err != nil {
+	if err := c.ShouldBindJSON(&branchOffice); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -58,12 +57,16 @@ func (r *BranchOfficeRepositoryImp) Create(c *gin.Context) (*domain.BranchOffice
 	return &branchOffice, nil
 }
 
-//goland:noinspection ALL
 func (r *BranchOfficeRepositoryImp) Update(c *gin.Context) (*domain.BranchOffice, error) {
 	patch, branchOffice, branchOfficeOld := map[string]interface{}{}, domain.BranchOffice{}, domain.BranchOffice{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, err
+	}
+
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if !errID {
 		return nil, ErrorBinding
 	}
 

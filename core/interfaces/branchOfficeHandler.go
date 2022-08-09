@@ -69,6 +69,6 @@ func (router *branchRouter) updateBranch(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.CONSULTED, Data: &branchOffice})
+		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &branchOffice})
 	}
 }

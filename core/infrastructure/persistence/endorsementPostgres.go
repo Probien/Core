@@ -48,7 +48,7 @@ func (r *EndorsementRepositoryImpl) GetAll() (*[]domain.Endorsement, error) {
 func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
-	if err := c.ShouldBindJSON(endorsement); err != nil || endorsement.PawnOrderID == 0 {
+	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 || endorsement.EmployeeID == 0 {
 		return nil, ErrorBinding
 	}
 

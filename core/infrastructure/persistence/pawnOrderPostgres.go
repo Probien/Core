@@ -70,7 +70,7 @@ func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
 func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := c.ShouldBindJSON(pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
+	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
 		return nil, ErrorBinding
 	}
 	pawnOrder.CutOffDay = time.Now().AddDate(0, 0, 7)
@@ -96,7 +96,7 @@ func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, err
 	patch, pawnOrder, pawnOrderOld := map[string]interface{}{}, domain.PawnOrder{}, domain.PawnOrder{}
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if err := c.Bind(&patch); err != nil && !errID {
 		return nil, ErrorBinding
 	}
 

@@ -42,7 +42,7 @@ func (r *CustomerRepositoryImpl) GetAll() (*[]domain.Customer, error) {
 
 func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error) {
 	var customer domain.Customer
-	if err := c.ShouldBindJSON(customer); err != nil {
+	if err := c.ShouldBindJSON(&customer); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -59,9 +59,14 @@ func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error
 
 func (r *CustomerRepositoryImpl) Update(c *gin.Context) (*domain.Customer, error) {
 	patch, customer, customerOld := map[string]interface{}{}, domain.Customer{}, domain.Customer{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, err
+	}
+
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if !errID {
 		return nil, ErrorBinding
 	}
 

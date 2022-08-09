@@ -22,7 +22,7 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) repository.IEmployeeRepository {
 func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error) {
 	employee, loginCredentials := domain.Employee{}, auth.LoginCredential{}
 
-	if err := c.ShouldBindJSON(loginCredentials); err != nil {
+	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -45,7 +45,7 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, error) {
 	var employee domain.Employee
 
-	if err := c.ShouldBindJSON(employee); err != nil {
+	if err := c.ShouldBindJSON(&employee); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -72,7 +72,7 @@ func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error) {
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
-	if err := c.ShouldBindJSON(employee); err != nil || employee.BranchOfficeID == 0 {
+	if err := c.ShouldBindJSON(&employee); err != nil || employee.BranchOfficeID == 0 {
 		return nil, ErrorBinding
 	}
 
@@ -98,9 +98,14 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 
 func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error) {
 	patch, employee, employeeOld := map[string]interface{}{}, domain.Employee{}, domain.Employee{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, err
+	}
+
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if !errID {
 		return nil, ErrorBinding
 	}
 

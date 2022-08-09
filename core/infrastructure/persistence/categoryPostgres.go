@@ -42,7 +42,7 @@ func (r *CategoryRepositoryImpl) GetAll() (*[]domain.Category, error) {
 func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error) {
 	var category domain.Category
 
-	if err := c.ShouldBindJSON(category); err != nil {
+	if err := c.ShouldBindJSON(&category); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -80,9 +80,14 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (*domain.Category, error
 
 func (r *CategoryRepositoryImpl) Update(c *gin.Context) (*domain.Category, error) {
 	patch, category, categoryOld := map[string]interface{}{}, domain.Category{}, domain.Category{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, err
+	}
+
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if !errID {
 		return nil, ErrorBinding
 	}
 

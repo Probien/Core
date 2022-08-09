@@ -16,9 +16,9 @@ const (
 var (
 	//define general errors
 	InvalidAction      = errors.New("[persistence] impossible to delete information with dependent data")
-	ErrorProcess       = errors.New("[persistence] could not execute process in our database services")
+	ErrorProcess       = errors.New("[persistence] could not execute process")
 	InvalidCredentials = errors.New("[authorization] incorrect credentials")
-	ErrorBinding       = errors.New("[parser] missing or invalid fields, verify JSON struct")
+	ErrorBinding       = errors.New("[validator] missing or invalid fields: verify JSON struct")
 
 	//define query errors for each model
 	BranchNotFound      = errors.New("[persistence] branch office not found")

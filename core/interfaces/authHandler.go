@@ -33,7 +33,7 @@ func (router *authRouter) login(c *gin.Context) {
 		go auth.GenerateSessionID(employee, session)
 		sessionCoockie := <-session
 		c.SetCookie("SID", sessionCoockie.ID, 60*30, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LOGIN_DONE, Data: &employee, Token: <-tokenizer})
 	}
 }
 

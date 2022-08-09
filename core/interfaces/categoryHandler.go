@@ -12,14 +12,14 @@ type categoryRouter struct {
 	categoryInteractor application.CategoryInteractor
 }
 
-func CategoryHandler(v1 *gin.RouterGroup){
+func CategoryHandler(v1 *gin.RouterGroup) {
 	var categoryRouter categoryRouter
 
 	v1.POST("/", categoryRouter.CreateCategory)
 	v1.GET("/", categoryRouter.getAllCategories)
 	v1.GET("/:id", categoryRouter.getCategoryById)
 	v1.PATCH("/", categoryRouter.updateCategory)
-	v1.DELETE("/", categoryRouter.deleteCategory)
+	v1.DELETE("/:id", categoryRouter.deleteCategory)
 }
 
 func (router *categoryRouter) CreateCategory(c *gin.Context) {

@@ -43,7 +43,7 @@ func (r *ProductRepositoryImpl) GetAll() (*[]domain.Product, error) {
 func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) {
 	var product domain.Product
 
-	if err := c.ShouldBindJSON(product); err != nil {
+	if err := c.ShouldBindJSON(&product); err != nil {
 		return nil, ErrorBinding
 	}
 
@@ -60,9 +60,14 @@ func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) 
 
 func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) {
 	patch, product, productOld := map[string]interface{}{}, domain.Product{}, domain.Product{}
+
+	if err := c.Bind(&patch); err != nil {
+		return nil, ErrorBinding
+	}
+
 	_, errID := patch["id"]
 
-	if err := c.Bind(patch); err != nil && !errID {
+	if !errID {
 		return nil, ErrorBinding
 	}
 
