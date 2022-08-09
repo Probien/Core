@@ -43,13 +43,19 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 }
 
 func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, error) {
-	var employee domain.Employee
+	body, employee := map[string]interface{}{}, domain.Employee{}
 
-	if err := c.ShouldBindJSON(&employee); err != nil {
+	if err := c.ShouldBindJSON(&body); err != nil {
+		return nil, err
+	}
+
+	_, email := body["email"]
+
+	if !email {
 		return nil, ErrorBinding
 	}
 
-	if err := r.database.Model(&domain.Employee{}).Where("email = ?", employee.Email).Preload("Profile").Preload("Roles.Role").Preload("PawnOrdersDone.Customer").Preload("SessionLogs").Preload("Endorsements").Find(&employee).Error; err != nil {
+	if err := r.database.Model(&domain.Employee{}).Where("email = ?", body["email"]).Preload("Profile").Preload("Roles.Role").Find(&employee).Error; err != nil {
 		return nil, ErrorProcess
 	}
 
@@ -72,11 +78,11 @@ func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
 func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error) {
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
-	if err := c.ShouldBindJSON(&employee); err != nil || employee.BranchOfficeID == 0 {
+	if err := c.ShouldBindJSON(&employee); err != nil {
 		return nil, ErrorBinding
 	}
 
-	auth.EncryptPassword([]byte(employee.Password), crypt)
+	go auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
 
 	if err := r.database.Model(&domain.Employee{}).Omit("PawnOrdersDone").Omit("SessionLogs").Omit("EndorsementsDone").Omit("Roles").Create(&employee).Error; err != nil {

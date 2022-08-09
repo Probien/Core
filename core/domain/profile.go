@@ -2,7 +2,7 @@ package domain
 
 type Profile struct {
 	ID         uint   `json:"id"`
-	EmployeeID uint   `json:"employee_id" binding:"required"`
+	EmployeeID uint   `json:"employee_id"`
 	Name       string `json:"name" binding:"required"`
 	FirstName  string `json:"first_name" binding:"required"`
 	SecondName string `json:"second_name" binding:"required"`
