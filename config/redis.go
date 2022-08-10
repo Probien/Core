@@ -20,8 +20,7 @@ func ConnectRedis() {
 	})
 
 	if rsc != nil && err != nil {
-		log.Fatal(rsc)
-		log.Fatal(err)
+		log.Fatal(rsc, err)
 	}
 	Client = rsc
 }
