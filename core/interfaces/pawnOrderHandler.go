@@ -27,10 +27,10 @@ func (router *pawnOrderRouter) createPawnOrder(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.CREATED, Data: &pawnOrder})
+		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.Created, Data: &pawnOrder})
 	}
 }
 
@@ -40,10 +40,10 @@ func (router *pawnOrderRouter) getAllPawnOrders(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
-			common.Response{Status: http.StatusInternalServerError, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &pawnOrders})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &pawnOrders})
 	}
 }
 
@@ -53,10 +53,10 @@ func (router *pawnOrderRouter) getPawnOrderById(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusNotFound,
-			common.Response{Status: http.StatusNotFound, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusNotFound, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &pawnOrder})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &pawnOrder})
 	}
 }
 
@@ -66,9 +66,9 @@ func (router *pawnOrderRouter) updatePawnOrder(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.UPDATED, Data: &pawnOrder})
+		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.Updated, Data: &pawnOrder})
 	}
 }

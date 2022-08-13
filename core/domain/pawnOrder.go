@@ -4,14 +4,14 @@ import "time"
 
 type PawnOrder struct {
 	ID            uint           `json:"id"`
-	EmployeeID    uint           `json:"employee_id"`
+	EmployeeID    uint           `json:"employee_id" binding:"required"`
 	Employee      *Employee      `json:"employee,omitempty"`
-	CustomerID    uint           `json:"customer_id"`
+	CustomerID    uint           `json:"customer_id" binding:"required"`
 	Customer      *Customer      `json:"customer,omitempty"`
-	StatusID      uint           `json:"status_id"`
+	StatusID      uint           `json:"status_id" binding:"required"`
 	Status        *Status        `json:"status,omitempty"`
-	TotalAmount   float64        `json:"total_amount"`
-	Monthly       bool           `json:"monthly"`
+	TotalAmount   float64        `json:"total_amount" binding:"required"`
+	Monthly       bool           `json:"monthly" binding:"required"`
 	Products      *[]Product     `json:"products,omitempty"`
 	Endorsements  *[]Endorsement `json:"endorsements_done,omitempty"`
 	CutOffDay     time.Time      `json:"cutoff_date"`
