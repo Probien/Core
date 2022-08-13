@@ -26,19 +26,19 @@ func (router *authRouter) login(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
 		go auth.GenerateToken(employee, tokenizer)
 		go auth.GenerateSessionID(employee, session)
 		sessionCoockie := <-session
 		c.SetCookie("SID", sessionCoockie.ID, 60*30, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &employee, Token: <-tokenizer})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LoginDone, Data: &employee, Token: <-tokenizer})
 	}
 }
 
 func (router *authRouter) logout(c *gin.Context) {
 	auth.ClearSessionID(c)
 	c.SetCookie("SID", "", -1, "/", "localhost", true, true)
-	c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LOGOUT_DONE, Data: common.OUT})
+	c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LogoutDone, Data: "Done"})
 }

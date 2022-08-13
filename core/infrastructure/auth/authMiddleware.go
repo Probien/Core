@@ -13,9 +13,9 @@ func JwtRbac(authorities ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		checker := make(chan bool, 1)
 		data := AuthCustomClaims{}
-		coockie, _ := c.Cookie("SID")
+		cookie, _ := c.Cookie("SID")
 		authHeader := c.GetHeader("Authorization")
-		go existCoockie(coockie, checker)
+		go existCookie(cookie, checker)
 
 		if len(authHeader) > 0 && authHeader != "Bearer" {
 			splitToken := strings.Split(authHeader, "Bearer")
@@ -24,9 +24,9 @@ func JwtRbac(authorities ...string) gin.HandlerFunc {
 
 			if token.Valid && checkAuthorities(authorities, &data) && <-checker {
 				//extract user_id from parsed token for stored procedures
-				user_id, _ := strconv.Atoi(data.RegisteredClaims.Subject)
+				userId, _ := strconv.Atoi(data.RegisteredClaims.Subject)
 				//set user_id to request only for this context(request)
-				c.Set("user_id", user_id)
+				c.Set("user_id", userId)
 				c.Next()
 			} else {
 				c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Unauthorized, valid token is required"})

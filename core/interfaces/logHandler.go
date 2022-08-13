@@ -28,10 +28,10 @@ func (router *logRouter) getAllSessions(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &sessions})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &sessions})
 	}
 
 }
@@ -42,10 +42,10 @@ func (router *logRouter) getAllSessionsById(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &sessions})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &sessions})
 	}
 }
 
@@ -55,10 +55,10 @@ func (router *logRouter) getAllPayments(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &payments})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &payments})
 	}
 }
 
@@ -68,10 +68,10 @@ func (router *logRouter) getAllPaymentsById(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &payments})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &payments})
 	}
 }
 
@@ -81,10 +81,10 @@ func (router *logRouter) getAllMovements(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &movements})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &movements})
 	}
 }
 
@@ -94,9 +94,9 @@ func (router *logRouter) getAllMovementsById(c *gin.Context) {
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FAILED_HTTP_OPERATION, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.CONSULTED, Data: &movements})
+		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &movements})
 	}
 }
