@@ -121,4 +121,8 @@ go run ./server.go
 ```
 
 # Getting started - Docker
-- pending create dockerfile
+Only execute the following command
+```
+docker build -t probien-backend .
+docker run -it --rm --name probien-core probien-backend
+```
