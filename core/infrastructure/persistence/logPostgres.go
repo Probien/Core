@@ -15,7 +15,7 @@ func NewLogsRepositoryImp(db *gorm.DB) repository.IlogsRepository {
 	return &LogsRepositoryImp{database: db}
 }
 
-func (r *LogsRepositoryImp) GetAllSessions() (*[]domain.SessionLog, error) {
+func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error) {
 	var sessions []domain.SessionLog
 
 	if err := r.database.Model(&domain.SessionLog{}).Preload("Employee").Find(&sessions).Error; err != nil {
@@ -35,7 +35,7 @@ func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domai
 	return &sessions, nil
 }
 
-func (r *LogsRepositoryImp) GetAllPayments() (*[]domain.PaymentLog, error) {
+func (r *LogsRepositoryImp) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
 	var payments []domain.PaymentLog
 
 	if err := r.database.Model(&domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
@@ -55,7 +55,7 @@ func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domai
 	return &payments, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovements() (*[]domain.ModerationLog, error) {
+func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
 
 	if err := r.database.Model(&domain.ModerationLog{}).Find(&movements).Error; err != nil {

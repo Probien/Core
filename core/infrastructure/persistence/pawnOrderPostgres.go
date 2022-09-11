@@ -57,7 +57,7 @@ func (r *PawnOrderRepositoryImpl) GetByIdForUpdate(id uint) (*domain.PawnOrder, 
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) GetAll() (*[]domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
 
 	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {

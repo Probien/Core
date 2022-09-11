@@ -15,9 +15,9 @@ func (PI *PawnOrderInteractor) GetById(c *gin.Context) (*domain.PawnOrder, error
 	return repository.GetById(c)
 }
 
-func (PI *PawnOrderInteractor) GetAll() (*[]domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) GetAll(c *gin.Context) (*[]domain.PawnOrder, error) {
 	repository := persistence.NewPawnOrderRepositoryImpl(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (PI *PawnOrderInteractor) Create(c *gin.Context) (*domain.PawnOrder, error) {

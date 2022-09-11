@@ -8,7 +8,7 @@ import (
 type IEmployeeRepository interface {
 	Login(c *gin.Context) (*domain.Employee, error)
 	GetByEmail(c *gin.Context) (*domain.Employee, error)
-	GetAll() (*[]domain.Employee, error)
+	GetAll(c *gin.Context) (*[]domain.Employee, error)
 	Create(c *gin.Context) (*domain.Employee, error)
 	Update(c *gin.Context) (*domain.Employee, error)
 }

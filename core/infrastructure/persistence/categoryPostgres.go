@@ -30,7 +30,7 @@ func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*domain.Category, erro
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) GetAll() (*[]domain.Category, error) {
+func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, error) {
 	var categories []domain.Category
 
 	if err := r.database.Model(&domain.Category{}).Find(&categories).Error; err != nil {

@@ -34,7 +34,7 @@ func (router *endorsementRouter) createEndorsement(c *gin.Context) {
 }
 
 func (router *endorsementRouter) getAllEndorsements(c *gin.Context) {
-	endorsements, err := router.endorsementInteractor.GetAll()
+	endorsements, err := router.endorsementInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

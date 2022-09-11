@@ -7,7 +7,7 @@ import (
 
 type IProductRepository interface {
 	GetById(c *gin.Context) (*domain.Product, error)
-	GetAll() (*[]domain.Product, error)
+	GetAll(c *gin.Context) (*[]domain.Product, error)
 	Create(c *gin.Context) (*domain.Product, error)
 	Update(c *gin.Context) (*domain.Product, error)
 }

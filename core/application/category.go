@@ -16,9 +16,9 @@ func (CI *CategoryInteractor) GetById(c *gin.Context) (*domain.Category, error) 
 	return repository.GetById(c)
 }
 
-func (CI *CategoryInteractor) GetAll() (*[]domain.Category, error) {
+func (CI *CategoryInteractor) GetAll(c *gin.Context) (*[]domain.Category, error) {
 	repository := persistence.NewCategoryRepositoryImpl(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (CI *CategoryInteractor) Create(c *gin.Context) (*domain.Category, error) {

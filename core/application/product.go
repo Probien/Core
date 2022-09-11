@@ -15,9 +15,9 @@ func (PI *ProductInteractor) GetById(c *gin.Context) (*domain.Product, error) {
 	return repository.GetById(c)
 }
 
-func (PI *ProductInteractor) GetAll() (*[]domain.Product, error) {
+func (PI *ProductInteractor) GetAll(c *gin.Context) (*[]domain.Product, error) {
 	repository := persistence.NewProductRepositoryImpl(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (PI *ProductInteractor) Create(c *gin.Context) (*domain.Product, error) {

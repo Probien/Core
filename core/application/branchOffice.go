@@ -10,9 +10,9 @@ import (
 type BranchOfficeInteractor struct {
 }
 
-func (BI *BranchOfficeInteractor) GetAll() (*[]domain.BranchOffice, error) {
+func (BI *BranchOfficeInteractor) GetAll(c *gin.Context) (*[]domain.BranchOffice, error) {
 	repository := persistence.NewBranchOfficeRepositoryImp(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (BI *BranchOfficeInteractor) GetById(c *gin.Context) (*domain.BranchOffice, error) {

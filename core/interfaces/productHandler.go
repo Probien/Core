@@ -36,7 +36,7 @@ func (router *productRouter) createProduct(c *gin.Context) {
 }
 
 func (router *productRouter) getAllProducts(c *gin.Context) {
-	products, err := router.productInteractor.GetAll()
+	products, err := router.productInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

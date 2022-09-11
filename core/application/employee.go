@@ -21,9 +21,9 @@ func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (*domain.Employee, erro
 	return repository.GetByEmail(c)
 }
 
-func (EI *EmployeeInteractor) GetAll() (*[]domain.Employee, error) {
+func (EI *EmployeeInteractor) GetAll(c *gin.Context) (*[]domain.Employee, error) {
 	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (EI *EmployeeInteractor) Create(c *gin.Context) (*domain.Employee, error) {

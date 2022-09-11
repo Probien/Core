@@ -30,7 +30,7 @@ func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, erro
 	return &customer, nil
 }
 
-func (r *CustomerRepositoryImpl) GetAll() (*[]domain.Customer, error) {
+func (r *CustomerRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Customer, error) {
 	var customers []domain.Customer
 
 	if err := r.database.Model(domain.Customer{}).Preload("PawnOrders").Find(&customers).Error; err != nil {

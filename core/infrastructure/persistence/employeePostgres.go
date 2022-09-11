@@ -65,7 +65,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 	return &employee, nil
 }
 
-func (r *EmployeeRepositoryImpl) GetAll() (*[]domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, error) {
 	var employees []domain.Employee
 
 	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("Roles.Role").Find(&employees).Error; err != nil {

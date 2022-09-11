@@ -17,7 +17,7 @@ func NewBranchOfficeRepositoryImp(db *gorm.DB) repository.IBranchOfficeRepositor
 	return &BranchOfficeRepositoryImp{database: db}
 }
 
-func (r *BranchOfficeRepositoryImp) GetAll() (*[]domain.BranchOffice, error) {
+func (r *BranchOfficeRepositoryImp) GetAll(c *gin.Context) (*[]domain.BranchOffice, error) {
 	var branchOffices []domain.BranchOffice
 
 	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffices).Error; err != nil {

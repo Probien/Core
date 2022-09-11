@@ -30,7 +30,7 @@ func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error)
 	return &product, nil
 }
 
-func (r *ProductRepositoryImpl) GetAll() (*[]domain.Product, error) {
+func (r *ProductRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Product, error) {
 	var products []domain.Product
 
 	if err := r.database.Model(&domain.Product{}).Find(&products).Error; err != nil {

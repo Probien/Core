@@ -16,9 +16,9 @@ func (CI *CustomerInteractor) GetById(c *gin.Context) (*domain.Customer, error) 
 	return repository.GetById(c)
 }
 
-func (CI *CustomerInteractor) GetAll() (*[]domain.Customer, error) {
+func (CI *CustomerInteractor) GetAll(c *gin.Context) (*[]domain.Customer, error) {
 	repository := persistence.NewCustomerRepositoryImpl(config.Database)
-	return repository.GetAll()
+	return repository.GetAll(c)
 }
 
 func (CI *CustomerInteractor) Create(c *gin.Context) (*domain.Customer, error) {

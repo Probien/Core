@@ -35,7 +35,7 @@ func (router *customerRouter) createCustomer(c *gin.Context) {
 }
 
 func (router *customerRouter) GetAllCustomers(c *gin.Context) {
-	customers, err := router.customerInteractor.GetAll()
+	customers, err := router.customerInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

@@ -35,7 +35,7 @@ func (router *employeeRouter) createEmployee(c *gin.Context) {
 }
 
 func (router *employeeRouter) getAllEmployees(c *gin.Context) {
-	employees, err := router.employeeInteractor.GetAll()
+	employees, err := router.employeeInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

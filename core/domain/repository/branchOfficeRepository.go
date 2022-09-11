@@ -6,7 +6,7 @@ import (
 )
 
 type IBranchOfficeRepository interface {
-	GetAll() (*[]domain.BranchOffice, error)
+	GetAll(c *gin.Context) (*[]domain.BranchOffice, error)
 	GetById(c *gin.Context) (*domain.BranchOffice, error)
 	Create(c *gin.Context) (*domain.BranchOffice, error)
 	Update(c *gin.Context) (*domain.BranchOffice, error)

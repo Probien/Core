@@ -35,7 +35,7 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 	return &endorsement, nil
 }
 
-func (r *EndorsementRepositoryImpl) GetAll() (*[]domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsement, error) {
 	var endorsements []domain.Endorsement
 
 	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsements).Error; err != nil {

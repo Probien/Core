@@ -36,7 +36,7 @@ func (router *categoryRouter) CreateCategory(c *gin.Context) {
 }
 
 func (router *categoryRouter) getAllCategories(c *gin.Context) {
-	categories, err := router.categoryInteractor.GetAll()
+	categories, err := router.categoryInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

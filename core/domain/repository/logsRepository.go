@@ -6,12 +6,12 @@ import (
 )
 
 type IlogsRepository interface {
-	GetAllSessions() (*[]domain.SessionLog, error)
+	GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error)
 	GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error)
 
-	GetAllPayments() (*[]domain.PaymentLog, error)
+	GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error)
 	GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error)
 
-	GetAllMovements() (*[]domain.ModerationLog, error)
+	GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error)
 	GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error)
 }

@@ -35,7 +35,7 @@ func (router *pawnOrderRouter) createPawnOrder(c *gin.Context) {
 }
 
 func (router *pawnOrderRouter) getAllPawnOrders(c *gin.Context) {
-	pawnOrders, err := router.pawnOrderInteractor.GetAll()
+	pawnOrders, err := router.pawnOrderInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(

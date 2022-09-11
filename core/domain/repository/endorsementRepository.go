@@ -7,6 +7,6 @@ import (
 
 type IEndorsementRepository interface {
 	GetById(c *gin.Context) (*domain.Endorsement, error)
-	GetAll() (*[]domain.Endorsement, error)
+	GetAll(c *gin.Context) (*[]domain.Endorsement, error)
 	Create(c *gin.Context) (*domain.Endorsement, error)
 }

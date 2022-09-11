@@ -7,7 +7,7 @@ import (
 
 type ICustomerRepository interface {
 	GetById(c *gin.Context) (*domain.Customer, error)
-	GetAll() (*[]domain.Customer, error)
+	GetAll(c *gin.Context) (*[]domain.Customer, error)
 	Create(c *gin.Context) (*domain.Customer, error)
 	Update(c *gin.Context) (*domain.Customer, error)
 }
