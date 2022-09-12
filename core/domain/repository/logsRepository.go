@@ -6,7 +6,7 @@ import (
 )
 
 type IlogsRepository interface {
-	GetAllSessions(c *gin.Context) (*[]domain.SessionLog, error)
+	GetAllSessions(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error)
 	GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error)
 
 	GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error)

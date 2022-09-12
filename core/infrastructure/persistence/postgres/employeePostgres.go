@@ -1,7 +1,8 @@
-package persistence
+package postgres
 
 import (
 	"encoding/json"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -23,18 +24,18 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 	employee, loginCredentials := domain.Employee{}, auth.LoginCredential{}
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
-		return nil, ErrorBinding
+		return nil, persistence.ErrorBinding
 	}
 
 	if err := r.database.Model(&domain.Employee{}).Where("email = ?", loginCredentials.Email).Preload("Profile").Preload("Roles.Role").Find(&employee).Error; err != nil {
-		return nil, ErrorProcess
+		return nil, persistence.ErrorProcess
 	}
 
 	if employee.ID == 0 {
-		return nil, EmployeeNotFound
+		return nil, persistence.EmployeeNotFound
 
 	} else if err := bcrypt.CompareHashAndPassword([]byte(employee.Password), []byte(loginCredentials.Password)); err != nil {
-		return nil, InvalidCredentials
+		return nil, persistence.InvalidCredentials
 	}
 
 	go r.database.Exec("CALL savesession(?)", employee.ID)
@@ -52,15 +53,15 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 	_, email := body["email"]
 
 	if !email {
-		return nil, ErrorBinding
+		return nil, persistence.ErrorBinding
 	}
 
 	if err := r.database.Model(&domain.Employee{}).Where("email = ?", body["email"]).Preload("Profile").Preload("Roles.Role").Find(&employee).Error; err != nil {
-		return nil, ErrorProcess
+		return nil, persistence.ErrorProcess
 	}
 
 	if employee.ID == 0 {
-		return nil, EmployeeNotFound
+		return nil, persistence.EmployeeNotFound
 	}
 	return &employee, nil
 }
@@ -69,7 +70,7 @@ func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, err
 	var employees []domain.Employee
 
 	if err := r.database.Model(domain.Employee{}).Preload("Profile").Preload("Roles.Role").Find(&employees).Error; err != nil {
-		return nil, ErrorProcess
+		return nil, persistence.ErrorProcess
 	}
 
 	return &employees, nil
@@ -79,14 +80,14 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
-		return nil, ErrorBinding
+		return nil, persistence.ErrorBinding
 	}
 
 	go auth.EncryptPassword([]byte(employee.Password), crypt)
 	employee.Password = string(<-crypt)
 
 	if err := r.database.Model(&domain.Employee{}).Omit("PawnOrdersDone").Omit("SessionLogs").Omit("EndorsementsDone").Omit("Roles").Create(&employee).Error; err != nil {
-		return nil, ErrorProcess
+		return nil, persistence.ErrorProcess
 	}
 
 	for _, v := range employee.Roles {
@@ -98,7 +99,7 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	data, _ := json.Marshal(&employee)
 	contextUserID, _ := c.Get("user_id")
 	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SpInsert, SpNoPrevData, string(data[:]))
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
 	return &employee, nil
 }
 
@@ -112,23 +113,23 @@ func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error
 	_, errID := patch["id"]
 
 	if !errID {
-		return nil, ErrorBinding
+		return nil, persistence.ErrorBinding
 	}
 
 	r.database.Model(&domain.Employee{}).Find(&employeeOld, patch["id"])
 
 	if err := r.database.Model(&domain.Employee{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&employee).Error; err != nil {
-		return nil, ErrorProcess
+		return nil, persistence.ErrorProcess
 	}
 
 	if employee.ID == 0 {
-		return nil, EmployeeNotFound
+		return nil, persistence.EmployeeNotFound
 	}
 
 	old, _ := json.Marshal(&employeeOld)
 	current, _ := json.Marshal(&employee)
 	contextUserID, _ := c.Get("user_id")
 	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), SpUpdate, string(old[:]), string(current[:]))
+	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpUpdate, string(old[:]), string(current[:]))
 	return &employee, nil
 }
