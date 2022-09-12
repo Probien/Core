@@ -17,8 +17,6 @@ func LogHandler(v1 *gin.RouterGroup) {
 
 	v1.GET("/sessions", logRouter.getAllSessions)
 	v1.GET("/sessions/:id", logRouter.getAllSessionsById)
-	v1.GET("/payments", logRouter.getAllPayments)
-	v1.GET("/payments/:id", logRouter.getAllPaymentsById)
 	v1.GET("/movements", logRouter.getAllMovements)
 	v1.GET("/movements/:id", logRouter.getAllMovementsById)
 }
@@ -46,32 +44,6 @@ func (router *logRouter) getAllSessionsById(c *gin.Context) {
 		)
 	} else {
 		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &sessions})
-	}
-}
-
-func (router *logRouter) getAllPayments(c *gin.Context) {
-	payments, err := router.logInteractor.GetAllPayments(c)
-
-	if err != nil {
-		c.JSON(
-			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-		)
-	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &payments})
-	}
-}
-
-func (router *logRouter) getAllPaymentsById(c *gin.Context) {
-	payments, err := router.logInteractor.GetAllPaymentsByCustomerId(c)
-
-	if err != nil {
-		c.JSON(
-			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-		)
-	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &payments})
 	}
 }
 

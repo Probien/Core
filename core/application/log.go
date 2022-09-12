@@ -19,16 +19,6 @@ func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.
 	return repository.GetAllSessionsByEmployeeId(c)
 }
 
-func (li *LogsInteractor) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllPayments(c)
-}
-
-func (li *LogsInteractor) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllPaymentsByCustomerId(c)
-}
-
 func (li *LogsInteractor) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
 	return repository.GetAllMovements(c)

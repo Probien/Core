@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"math"
-	"strconv"
 )
 
 type BranchOfficeRepositoryImp struct {
@@ -25,18 +24,11 @@ func (r *BranchOfficeRepositoryImp) GetAll(c *gin.Context) (*[]domain.BranchOffi
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("branch_offices").Count(&totalRows)
-	if len(c.Query("page")) == 0 || c.Query("page") == "0" {
-		paginationResult["page"] = 1
-	}
-
-	paginationResult["page"], _ = strconv.Atoi(c.Query("page"))
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	paginationResult["previous"] = paginationResult["page"].(int) - 1
-	paginationResult["next"] = paginationResult["page"].(int) + 1
-
-	if err := r.database.Model(&domain.BranchOffice{}).Preload("Employees").Find(&branchOffices).Limit(10).Offset(paginationResult["page"].(int) * 10).Error; err != nil {
+	if err := r.database.Model(&domain.BranchOffice{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Employees").Find(&branchOffices).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
+
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &branchOffices, nil
 }
 

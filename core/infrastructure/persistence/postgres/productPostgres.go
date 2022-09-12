@@ -3,6 +3,7 @@ package postgres
 import (
 	"encoding/json"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
+	"math"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -33,11 +34,15 @@ func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error)
 
 func (r *ProductRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Product, error) {
 	var products []domain.Product
+	var totalRows int64
+	paginationResult := map[string]interface{}{}
 
-	if err := r.database.Model(&domain.Product{}).Find(&products).Error; err != nil {
+	go r.database.Table("products").Count(&totalRows)
+	if err := r.database.Model(&domain.Product{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&products).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &products, nil
 }
 

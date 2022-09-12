@@ -3,6 +3,7 @@ package postgres
 import (
 	"encoding/json"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
+	"math"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
@@ -60,11 +61,15 @@ func (r *PawnOrderRepositoryImpl) GetByIdForUpdate(id uint) (*domain.PawnOrder, 
 
 func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, error) {
 	var pawnOrders []domain.PawnOrder
+	var totalRows int64
+	paginationResult := map[string]interface{}{}
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
+	go r.database.Table("pawn_orders").Count(&totalRows)
+	if err := r.database.Model(&domain.PawnOrder{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &pawnOrders, nil
 }
 

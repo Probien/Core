@@ -26,56 +26,49 @@ func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog
 	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
+
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &sessions, paginationResult, nil
 }
 
 func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
 	var sessions []domain.SessionLog
+	var totalRows int64
+	paginationResult := map[string]interface{}{}
 
-	if err := r.database.Model(&domain.SessionLog{}).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
+	go r.database.Table("session_logs").Count(&totalRows)
+	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &sessions, nil
-}
-
-func (r *LogsRepositoryImp) GetAllPayments(c *gin.Context) (*[]domain.PaymentLog, error) {
-	var payments []domain.PaymentLog
-
-	if err := r.database.Model(&domain.PaymentLog{}).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
-
-	return &payments, nil
-}
-
-func (r *LogsRepositoryImp) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
-	var payments []domain.PaymentLog
-
-	if err := r.database.Model(&domain.PaymentLog{}).Where("customer_id = ?", c.Param("id")).Preload("Employee").Preload("Customer").Find(&payments).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
-
-	return &payments, nil
 }
 
 func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
+	var totalRows int64
+	paginationResult := map[string]interface{}{}
 
-	if err := r.database.Model(&domain.ModerationLog{}).Find(&movements).Error; err != nil {
+	go r.database.Table("moderation_logs").Count(&totalRows)
+	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&movements).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &movements, nil
 }
 
 func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
 	var movements []domain.ModerationLog
+	var totalRows int64
+	paginationResult := map[string]interface{}{}
 
-	if err := r.database.Model(&domain.ModerationLog{}).Where("user_id", c.Param("id")).Find(&movements).Error; err != nil {
+	go r.database.Table("moderation_logs").Count(&totalRows)
+	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("user_id", c.Param("id")).Find(&movements).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &movements, nil
 }
