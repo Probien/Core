@@ -15,7 +15,7 @@ func (PI *ProductInteractor) GetById(c *gin.Context) (*domain.Product, error) {
 	return repository.GetById(c)
 }
 
-func (PI *ProductInteractor) GetAll(c *gin.Context) (*[]domain.Product, error) {
+func (PI *ProductInteractor) GetAll(c *gin.Context) (*[]domain.Product, map[string]interface{}, error) {
 	repository := postgres.NewProductRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

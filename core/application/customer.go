@@ -16,7 +16,7 @@ func (CI *CustomerInteractor) GetById(c *gin.Context) (*domain.Customer, error) 
 	return repository.GetById(c)
 }
 
-func (CI *CustomerInteractor) GetAll(c *gin.Context) (*[]domain.Customer, error) {
+func (CI *CustomerInteractor) GetAll(c *gin.Context) (*[]domain.Customer, map[string]interface{}, error) {
 	repository := postgres.NewCustomerRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

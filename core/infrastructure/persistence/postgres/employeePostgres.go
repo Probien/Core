@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"encoding/json"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"math"
+
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -67,7 +68,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 	return &employee, nil
 }
 
-func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, map[string]interface{}, error) {
 	var employees []domain.Employee
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -75,11 +76,11 @@ func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, err
 	go r.database.Table("employees").Count(&totalRows)
 
 	if err := r.database.Model(domain.Employee{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Profile").Preload("Roles.Role").Find(&employees).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &employees, nil
+	return &employees, paginationResult, nil
 }
 
 func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error) {

@@ -2,12 +2,13 @@ package postgres
 
 import (
 	"encoding/json"
+	"math"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"math"
 )
 
 type BranchOfficeRepositoryImp struct {
@@ -18,18 +19,18 @@ func NewBranchOfficeRepositoryImp(db *gorm.DB) repository.IBranchOfficeRepositor
 	return &BranchOfficeRepositoryImp{database: db}
 }
 
-func (r *BranchOfficeRepositoryImp) GetAll(c *gin.Context) (*[]domain.BranchOffice, error) {
+func (r *BranchOfficeRepositoryImp) GetAll(c *gin.Context) (*[]domain.BranchOffice, map[string]interface{}, error) {
 	var branchOffices []domain.BranchOffice
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("branch_offices").Count(&totalRows)
 	if err := r.database.Model(&domain.BranchOffice{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Employees").Find(&branchOffices).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &branchOffices, nil
+	return &branchOffices, paginationResult, nil
 }
 
 func (r *BranchOfficeRepositoryImp) GetById(c *gin.Context) (*domain.BranchOffice, error) {

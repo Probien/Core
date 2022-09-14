@@ -21,7 +21,7 @@ func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (*domain.Employee, erro
 	return repository.GetByEmail(c)
 }
 
-func (EI *EmployeeInteractor) GetAll(c *gin.Context) (*[]domain.Employee, error) {
+func (EI *EmployeeInteractor) GetAll(c *gin.Context) (*[]domain.Employee, map[string]interface{}, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

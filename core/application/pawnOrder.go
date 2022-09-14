@@ -15,7 +15,7 @@ func (PI *PawnOrderInteractor) GetById(c *gin.Context) (*domain.PawnOrder, error
 	return repository.GetById(c)
 }
 
-func (PI *PawnOrderInteractor) GetAll(c *gin.Context) (*[]domain.PawnOrder, error) {
+func (PI *PawnOrderInteractor) GetAll(c *gin.Context) (*[]domain.PawnOrder, map[string]interface{}, error) {
 	repository := postgres.NewPawnOrderRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

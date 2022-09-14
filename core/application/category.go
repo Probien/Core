@@ -16,7 +16,7 @@ func (CI *CategoryInteractor) GetById(c *gin.Context) (*domain.Category, error) 
 	return repository.GetById(c)
 }
 
-func (CI *CategoryInteractor) GetAll(c *gin.Context) (*[]domain.Category, error) {
+func (CI *CategoryInteractor) GetAll(c *gin.Context) (*[]domain.Category, map[string]interface{}, error) {
 	repository := postgres.NewCategoryRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

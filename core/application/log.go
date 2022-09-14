@@ -14,17 +14,17 @@ func (li *LogsInteractor) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, 
 	return repository.GetAllSessions(c)
 }
 
-func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
+func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
 	return repository.GetAllSessionsByEmployeeId(c)
 }
 
-func (li *LogsInteractor) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
+func (li *LogsInteractor) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
 	return repository.GetAllMovements(c)
 }
 
-func (li *LogsInteractor) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
+func (li *LogsInteractor) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
 	return repository.GetAllMovementsByEmployeeId(c)
 }

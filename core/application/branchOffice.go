@@ -10,7 +10,7 @@ import (
 type BranchOfficeInteractor struct {
 }
 
-func (BI *BranchOfficeInteractor) GetAll(c *gin.Context) (*[]domain.BranchOffice, error) {
+func (BI *BranchOfficeInteractor) GetAll(c *gin.Context) (*[]domain.BranchOffice, map[string]interface{}, error) {
 	repository := postgres.NewBranchOfficeRepositoryImp(config.Database)
 	return repository.GetAll(c)
 }

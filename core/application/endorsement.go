@@ -15,7 +15,7 @@ func (EI *EndorsemenInteractor) GetById(c *gin.Context) (*domain.Endorsement, er
 	return repository.GetById(c)
 }
 
-func (EI *EndorsemenInteractor) GetAll(c *gin.Context) (*[]domain.Endorsement, error) {
+func (EI *EndorsemenInteractor) GetAll(c *gin.Context) (*[]domain.Endorsement, map[string]interface{}, error) {
 	repository := postgres.NewEndorsementRepositoryImpl(config.Database)
 	return repository.GetAll(c)
 }

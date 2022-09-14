@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"encoding/json"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"math"
+
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -32,18 +33,18 @@ func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*domain.Category, erro
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, error) {
+func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, map[string]interface{}, error) {
 	var categories []domain.Category
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("categories").Count(&totalRows)
 	if err := r.database.Model(&domain.Category{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&categories).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &categories, nil
+	return &categories, paginationResult, nil
 }
 
 func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error) {

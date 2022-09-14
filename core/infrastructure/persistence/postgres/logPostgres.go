@@ -1,12 +1,13 @@
 package postgres
 
 import (
+	"math"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"math"
 )
 
 type LogsRepositoryImp struct {
@@ -31,44 +32,44 @@ func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog
 	return &sessions, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
+func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
 	var sessions []domain.SessionLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("session_logs").Count(&totalRows)
 	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &sessions, nil
+	return &sessions, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error) {
+func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	var movements []domain.ModerationLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("moderation_logs").Count(&totalRows)
 	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&movements).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &movements, nil
+	return &movements, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
+func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	var movements []domain.ModerationLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("moderation_logs").Count(&totalRows)
 	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("user_id", c.Param("id")).Find(&movements).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &movements, nil
+	return &movements, paginationResult, nil
 }

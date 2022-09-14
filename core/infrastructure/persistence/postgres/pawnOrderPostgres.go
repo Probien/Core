@@ -2,9 +2,10 @@ package postgres
 
 import (
 	"encoding/json"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"math"
 	"time"
+
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -59,18 +60,18 @@ func (r *PawnOrderRepositoryImpl) GetByIdForUpdate(id uint) (*domain.PawnOrder, 
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, map[string]interface{}, error) {
 	var pawnOrders []domain.PawnOrder
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("pawn_orders").Count(&totalRows)
 	if err := r.database.Model(&domain.PawnOrder{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &pawnOrders, nil
+	return &pawnOrders, paginationResult, nil
 }
 
 func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, error) {

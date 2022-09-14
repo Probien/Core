@@ -7,8 +7,8 @@ import (
 
 type IlogsRepository interface {
 	GetAllSessions(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error)
-	GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error)
+	GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error)
 
-	GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, error)
-	GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error)
+	GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error)
+	GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error)
 }

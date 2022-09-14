@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"encoding/json"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 	"math"
+
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
@@ -37,18 +38,18 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 	return &endorsement, nil
 }
 
-func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsement, map[string]interface{}, error) {
 	var endorsements []domain.Endorsement
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
 	go r.database.Table("endorsements").Count(&totalRows)
 	if err := r.database.Model(&domain.Endorsement{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&endorsements).Error; err != nil {
-		return nil, persistence.ErrorProcess
+		return nil, nil, persistence.ErrorProcess
 	}
 
 	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
-	return &endorsements, nil
+	return &endorsements, paginationResult, nil
 }
 
 func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement, error) {
