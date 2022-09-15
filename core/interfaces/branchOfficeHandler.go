@@ -36,13 +36,13 @@ func (router *branchRouter) createBranch(c *gin.Context) {
 }
 
 func (router *branchRouter) getAllBranches(c *gin.Context) {
-	branchOffices, err := router.branchInteractor.GetAll(c)
+	branchOffices, paginationResult, err := router.branchInteractor.GetAll(c)
 	if err != nil {
 		c.JSON(
 			http.StatusInternalServerError,
 			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
 	} else {
-		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: 120, CurrentPage: 1, Data: branchOffices, Previous: "localhost:9000/probien/api/v1/branch-offices/?page=2", Next: "localhost:9000/probien/api/v1/branch-offices/?page=2"})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &branchOffices, Previous: "localhost:9000/probien/api/v1/branch-offices/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/branch-offices/?page=" + paginationResult["next"].(string)})
 	}
 }
 

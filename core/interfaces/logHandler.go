@@ -29,13 +29,13 @@ func (router *logRouter) getAllSessions(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: sessions, Previous: "localhost:9000/probien/api/v1/logs/sessions/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/logs/sessions/?page=" + paginationResult["next"].(string)})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &sessions, Previous: "localhost:9000/probien/api/v1/logs/sessions/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/logs/sessions/?page=" + paginationResult["next"].(string)})
 	}
 
 }
 
 func (router *logRouter) getAllSessionsById(c *gin.Context) {
-	sessions, err := router.logInteractor.GetAllSessionsByEmployeeId(c)
+	sessions, paginationResult, err := router.logInteractor.GetAllSessionsByEmployeeId(c)
 
 	if err != nil {
 		c.JSON(
@@ -43,12 +43,12 @@ func (router *logRouter) getAllSessionsById(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &sessions})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &sessions, Previous: "localhost:9000/probien/api/v1/logs/sessions/" + c.Param("id") + "/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/logs/sessions/" + c.Param("id") + "/?page=" + paginationResult["next"].(string)})
 	}
 }
 
 func (router *logRouter) getAllMovements(c *gin.Context) {
-	movements, err := router.logInteractor.GetAllMovements(c)
+	movements, paginationResult, err := router.logInteractor.GetAllMovements(c)
 
 	if err != nil {
 		c.JSON(
@@ -56,12 +56,12 @@ func (router *logRouter) getAllMovements(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &movements})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &movements, Previous: "localhost:9000/probien/api/v1/logs/movements/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/logs/movements/?page=" + paginationResult["next"].(string)})
 	}
 }
 
 func (router *logRouter) getAllMovementsById(c *gin.Context) {
-	movements, err := router.logInteractor.GetAllMovementsByEmployeeId(c)
+	movements, paginationResult, err := router.logInteractor.GetAllMovementsByEmployeeId(c)
 
 	if err != nil {
 		c.JSON(
@@ -69,6 +69,6 @@ func (router *logRouter) getAllMovementsById(c *gin.Context) {
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &movements})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &movements, Previous: "localhost:9000/probien/api/v1/logs/movements/" + c.Param("id") + "/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/logs/movements/" + c.Param("id") + "/?page=" + paginationResult["next"].(string)})
 	}
 }

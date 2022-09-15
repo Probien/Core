@@ -13,4 +13,6 @@ const (
 	Consulted = "successfully consulted"
 	Deleted   = "successfully deleted"
 	Updated   = "successfully updated"
+
+	PaginationUrl = "localhost:9000/probien/api/v1/branch-offices/?page="
 )

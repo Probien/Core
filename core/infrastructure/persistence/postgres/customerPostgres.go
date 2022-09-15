@@ -38,12 +38,13 @@ func (r *CustomerRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Customer, map
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
-	go r.database.Table("customers").Count(&totalRows)
+	r.database.Table("customers").Count(&totalRows)
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+
 	if err := r.database.Model(domain.Customer{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("PawnOrders").Find(&customers).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &customers, paginationResult, nil
 }
 

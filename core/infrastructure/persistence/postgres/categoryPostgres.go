@@ -38,12 +38,13 @@ func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, map
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
-	go r.database.Table("categories").Count(&totalRows)
+	r.database.Table("categories").Count(&totalRows)
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+
 	if err := r.database.Model(&domain.Category{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&categories).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &categories, paginationResult, nil
 }
 

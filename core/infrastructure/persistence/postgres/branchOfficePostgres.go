@@ -24,12 +24,13 @@ func (r *BranchOfficeRepositoryImp) GetAll(c *gin.Context) (*[]domain.BranchOffi
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
-	go r.database.Table("branch_offices").Count(&totalRows)
+	r.database.Table("branch_offices").Count(&totalRows)
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+
 	if err := r.database.Model(&domain.BranchOffice{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Employees").Find(&branchOffices).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &branchOffices, paginationResult, nil
 }
 

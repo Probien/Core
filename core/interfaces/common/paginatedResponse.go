@@ -9,13 +9,3 @@ type PaginatedResponse struct {
 	Previous     string      `json:"previous"`
 	Next         string      `json:"next"`
 }
-
-/*
-12
-
-12 / 5 =
-5
-5
-5
-math.Ceil
-*/

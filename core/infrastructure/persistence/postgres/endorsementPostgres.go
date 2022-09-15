@@ -43,12 +43,13 @@ func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsemen
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
 
-	go r.database.Table("endorsements").Count(&totalRows)
+	r.database.Table("endorsements").Count(&totalRows)
+	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+
 	if err := r.database.Model(&domain.Endorsement{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&endorsements).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows / 10))
 	return &endorsements, paginationResult, nil
 }
 

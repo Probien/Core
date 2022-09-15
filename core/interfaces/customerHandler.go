@@ -35,7 +35,7 @@ func (router *customerRouter) createCustomer(c *gin.Context) {
 }
 
 func (router *customerRouter) GetAllCustomers(c *gin.Context) {
-	customers, err := router.customerInteractor.GetAll(c)
+	customers, paginationResult, err := router.customerInteractor.GetAll(c)
 
 	if err != nil {
 		c.JSON(
@@ -43,7 +43,7 @@ func (router *customerRouter) GetAllCustomers(c *gin.Context) {
 			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &customers})
+		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &customers, Previous: "localhost:9000/probien/api/v1/customers/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/probien/api/v1/customers/?page=" + paginationResult["next"].(string)})
 	}
 }
 
