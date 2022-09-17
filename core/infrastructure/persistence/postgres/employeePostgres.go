@@ -74,7 +74,7 @@ func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, map
 	paginationResult := map[string]interface{}{}
 
 	r.database.Table("employees").Count(&totalRows)
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
 	if err := r.database.Model(domain.Employee{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Profile").Preload("Roles.Role").Find(&employees).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess

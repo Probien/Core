@@ -39,7 +39,7 @@ func (r *ProductRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Product, map[s
 	paginationResult := map[string]interface{}{}
 
 	r.database.Table("products").Count(&totalRows)
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
 	if err := r.database.Model(&domain.Product{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&products).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess

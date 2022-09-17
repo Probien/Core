@@ -66,7 +66,7 @@ func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, m
 	paginationResult := map[string]interface{}{}
 
 	r.database.Table("pawn_orders").Count(&totalRows)
-	paginationResult["total_pages"] = math.Ceil(float64(totalRows) / 10)
+	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
 	if err := r.database.Model(&domain.PawnOrder{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
