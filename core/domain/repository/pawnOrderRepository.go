@@ -1,14 +1,15 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
 )
 
 type IPawnOrderRepository interface {
-	GetById(c *gin.Context) (*domain.PawnOrder, error)
+	GetById(id int) (*domain.PawnOrder, error)
 	GetByIdForUpdate(id uint) (*domain.PawnOrder, error)
-	GetAll(c *gin.Context) (*[]domain.PawnOrder, map[string]interface{}, error)
-	Create(c *gin.Context) (*domain.PawnOrder, error)
-	Update(c *gin.Context) (*domain.PawnOrder, error)
+	GetAll(params url.Values) (*[]domain.PawnOrder, map[string]interface{}, error)
+	Create(pawnOrderDto *domain.PawnOrder) (*domain.PawnOrder, error)
+	Update(pawnOrderDto map[string]interface{}) (*domain.PawnOrder, error)
 }

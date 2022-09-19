@@ -1,5 +1,7 @@
 package common
 
+import "errors"
+
 const (
 	//define auth messages
 	LoginDone  = "successfully logged in"
@@ -15,4 +17,8 @@ const (
 	Updated   = "successfully updated"
 
 	PaginationUrl = "localhost:9000/probien/api/v1/branch-offices/?page="
+)
+
+var (
+	ErrorBinding = errors.New("[validator] missing or invalid fields: verify JSON struct")
 )

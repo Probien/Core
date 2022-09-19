@@ -1,14 +1,16 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 )
 
 type IEmployeeRepository interface {
-	Login(c *gin.Context) (*domain.Employee, error)
-	GetByEmail(c *gin.Context) (*domain.Employee, error)
-	GetAll(c *gin.Context) (*[]domain.Employee, map[string]interface{}, error)
-	Create(c *gin.Context) (*domain.Employee, error)
-	Update(c *gin.Context) (*domain.Employee, error)
+	Login(loginCredential auth.LoginCredential) (*domain.Employee, error)
+	GetByEmail(email string) (*domain.Employee, error)
+	GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error)
+	Create(employeeDto *domain.Employee) (*domain.Employee, error)
+	Update(employeeDto map[string]interface{}) (*domain.Employee, error)
 }

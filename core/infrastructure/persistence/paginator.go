@@ -1,16 +1,16 @@
 package persistence
 
 import (
+	"net/url"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func Paginate(c *gin.Context, paginate map[string]interface{}) func(db *gorm.DB) *gorm.DB {
+func Paginate(params url.Values, paginate map[string]interface{}) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 
-		requestCurrentPage, _ := strconv.Atoi(c.Query("page"))
+		requestCurrentPage, _ := strconv.Atoi(params.Get("page"))
 		pages := paginate["total_pages"].(float64)
 
 		//option by defaul: Start with the page number 1
@@ -22,7 +22,7 @@ func Paginate(c *gin.Context, paginate map[string]interface{}) func(db *gorm.DB)
 		//previous: 1
 		//page: 1
 		//next: 2
-		if len(c.Query("page")) == 0 && pages > 1 {
+		if len(params.Get("page")) == 0 && pages > 1 {
 			paginate["next"] = "2"
 			return db.Offset(0).Limit(10)
 		}

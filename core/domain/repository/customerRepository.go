@@ -1,13 +1,14 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
 )
 
 type ICustomerRepository interface {
-	GetById(c *gin.Context) (*domain.Customer, error)
-	GetAll(c *gin.Context) (*[]domain.Customer, map[string]interface{}, error)
-	Create(c *gin.Context) (*domain.Customer, error)
-	Update(c *gin.Context) (*domain.Customer, error)
+	GetById(id int) (*domain.Customer, error)
+	GetAll(params url.Values) (*[]domain.Customer, map[string]interface{}, error)
+	Create(customerDto *domain.Customer) (*domain.Customer, error)
+	Update(customerDto map[string]interface{}) (*domain.Customer, error)
 }

@@ -1,33 +1,34 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
-	"github.com/gin-gonic/gin"
 )
 
 type BranchOfficeInteractor struct {
 }
 
-func (BI *BranchOfficeInteractor) GetAll(c *gin.Context) (*[]domain.BranchOffice, map[string]interface{}, error) {
+func (BI *BranchOfficeInteractor) GetAll(params url.Values) (*[]domain.BranchOffice, map[string]interface{}, error) {
 	repository := postgres.NewBranchOfficeRepositoryImp(config.Database)
-	return repository.GetAll(c)
+	return repository.GetAll(params)
 }
 
-func (BI *BranchOfficeInteractor) GetById(c *gin.Context) (*domain.BranchOffice, error) {
+func (BI *BranchOfficeInteractor) GetById(id int) (*domain.BranchOffice, error) {
 	repository := postgres.NewBranchOfficeRepositoryImp(config.Database)
-	return repository.GetById(c)
+	return repository.GetById(id)
 
 }
 
-func (BI *BranchOfficeInteractor) Create(c *gin.Context) (*domain.BranchOffice, error) {
+func (BI *BranchOfficeInteractor) Create(branchOfficeDto *domain.BranchOffice, userSessionId int) (*domain.BranchOffice, error) {
 	repository := postgres.NewBranchOfficeRepositoryImp(config.Database)
-	return repository.Create(c)
+	return repository.Create(branchOfficeDto, userSessionId)
 
 }
-func (BI *BranchOfficeInteractor) Update(c *gin.Context) (*domain.BranchOffice, error) {
+func (BI *BranchOfficeInteractor) Update(id int, patch map[string]interface{}, userSessionId int) (*domain.BranchOffice, error) {
 	repository := postgres.NewBranchOfficeRepositoryImp(config.Database)
-	return repository.Update(c)
+	return repository.Update(id, patch, userSessionId)
 
 }

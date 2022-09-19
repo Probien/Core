@@ -1,14 +1,15 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
 )
 
 type IlogsRepository interface {
-	GetAllSessions(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error)
-	GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error)
+	GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error)
+	GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error)
 
-	GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error)
-	GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error)
+	GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error)
+	GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error)
 }
