@@ -9,6 +9,6 @@ import (
 type ICustomerRepository interface {
 	GetById(id int) (*domain.Customer, error)
 	GetAll(params url.Values) (*[]domain.Customer, map[string]interface{}, error)
-	Create(customerDto *domain.Customer) (*domain.Customer, error)
-	Update(customerDto map[string]interface{}) (*domain.Customer, error)
+	Create(customerDto *domain.Customer, userSessionId int) (*domain.Customer, error)
+	Update(id int, customerDto map[string]interface{}, userSessionId int) (*domain.Customer, error)
 }

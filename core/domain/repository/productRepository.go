@@ -9,6 +9,6 @@ import (
 type IProductRepository interface {
 	GetById(id int) (*domain.Product, error)
 	GetAll(params url.Values) (*[]domain.Product, map[string]interface{}, error)
-	Create(productDto *domain.Product) (*domain.Product, error)
-	Update(productDto map[string]interface{}) (*domain.Product, error)
+	Create(productDto *domain.Product, userSessionId int) (*domain.Product, error)
+	Update(id int, productDto map[string]interface{}, userSessionId int) (*domain.Product, error)
 }

@@ -1,30 +1,31 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
-	"github.com/gin-gonic/gin"
 )
 
 type LogsInteractor struct{}
 
-func (li *LogsInteractor) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessions(c)
+	return repository.GetAllSessions(params)
 }
 
-func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessionsByEmployeeId(c)
+	return repository.GetAllSessionsByEmployeeId(id)
 }
 
-func (li *LogsInteractor) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovements(c)
+	return repository.GetAllMovements(params)
 }
 
-func (li *LogsInteractor) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovementsByEmployeeId(c)
+	return repository.GetAllMovementsByEmployeeId(id)
 }

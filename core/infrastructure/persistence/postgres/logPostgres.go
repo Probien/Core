@@ -2,11 +2,11 @@ package postgres
 
 import (
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewLogsRepositoryImp(db *gorm.DB) repository.IlogsRepository {
 	return &LogsRepositoryImp{database: db}
 }
 
-func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
 	var sessions []domain.SessionLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -33,7 +33,7 @@ func (r *LogsRepositoryImp) GetAllSessions(c *gin.Context) (*[]domain.SessionLog
 	return &sessions, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error) {
 	var sessions []domain.SessionLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -48,7 +48,7 @@ func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domai
 	return &sessions, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	var movements []domain.ModerationLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -63,7 +63,7 @@ func (r *LogsRepositoryImp) GetAllMovements(c *gin.Context) (*[]domain.Moderatio
 	return &movements, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	var movements []domain.ModerationLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}

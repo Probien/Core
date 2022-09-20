@@ -1,32 +1,32 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
-
-	"github.com/gin-gonic/gin"
 )
 
 type CustomerInteractor struct {
 }
 
-func (CI *CustomerInteractor) GetById(c *gin.Context) (*domain.Customer, error) {
+func (CI *CustomerInteractor) GetById(id int) (*domain.Customer, error) {
 	repository := postgres.NewCustomerRepositoryImpl(config.Database)
-	return repository.GetById(c)
+	return repository.GetById(id)
 }
 
-func (CI *CustomerInteractor) GetAll(c *gin.Context) (*[]domain.Customer, map[string]interface{}, error) {
+func (CI *CustomerInteractor) GetAll(params url.Values) (*[]domain.Customer, map[string]interface{}, error) {
 	repository := postgres.NewCustomerRepositoryImpl(config.Database)
-	return repository.GetAll(c)
+	return repository.GetAll(params)
 }
 
-func (CI *CustomerInteractor) Create(c *gin.Context) (*domain.Customer, error) {
+func (CI *CustomerInteractor) Create(customerDto *domain.Customer, userSessionId int) (*domain.Customer, error) {
 	repository := postgres.NewCustomerRepositoryImpl(config.Database)
-	return repository.Create(c)
+	return repository.Create(customerDto, userSessionId)
 }
 
-func (CI *CustomerInteractor) Update(c *gin.Context) (*domain.Customer, error) {
+func (CI *CustomerInteractor) Update(id int, customerDto map[string]interface{}, userSessionId int) (*domain.Customer, error) {
 	repository := postgres.NewCustomerRepositoryImpl(config.Database)
-	return repository.Update(c)
+	return repository.Update(id, customerDto, userSessionId)
 }

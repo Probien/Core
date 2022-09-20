@@ -3,13 +3,13 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
-	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -22,7 +22,7 @@ func NewEmployeeRepositoryImpl(db *gorm.DB) repository.IEmployeeRepository {
 	return &EmployeeRepositoryImpl{database: db}
 }
 
-func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) Login(loginCredential auth.LoginCredential) (*domain.Employee, error) {
 	employee, loginCredentials := domain.Employee{}, auth.LoginCredential{}
 
 	if err := c.ShouldBindJSON(&loginCredentials); err != nil {
@@ -45,7 +45,7 @@ func (r *EmployeeRepositoryImpl) Login(c *gin.Context) (*domain.Employee, error)
 	return &employee, nil
 }
 
-func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) GetByEmail(email string) (*domain.Employee, error) {
 	body, employee := map[string]interface{}{}, domain.Employee{}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -68,7 +68,7 @@ func (r *EmployeeRepositoryImpl) GetByEmail(c *gin.Context) (*domain.Employee, e
 	return &employee, nil
 }
 
-func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, map[string]interface{}, error) {
+func (r *EmployeeRepositoryImpl) GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error) {
 	var employees []domain.Employee
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -83,7 +83,7 @@ func (r *EmployeeRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Employee, map
 	return &employees, paginationResult, nil
 }
 
-func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) Create(employeeDto *domain.Employee) (*domain.Employee, error) {
 	crypt, employee := make(chan []byte, 1), domain.Employee{}
 
 	if err := c.ShouldBindJSON(&employee); err != nil {
@@ -110,7 +110,7 @@ func (r *EmployeeRepositoryImpl) Create(c *gin.Context) (*domain.Employee, error
 	return &employee, nil
 }
 
-func (r *EmployeeRepositoryImpl) Update(c *gin.Context) (*domain.Employee, error) {
+func (r *EmployeeRepositoryImpl) Update(employeeDto map[string]interface{}) (*domain.Employee, error) {
 	patch, employee, employeeOld := map[string]interface{}{}, domain.Employee{}, domain.Employee{}
 
 	if err := c.Bind(&patch); err != nil {

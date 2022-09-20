@@ -3,12 +3,12 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ func NewCustomerRepositoryImpl(db *gorm.DB) repository.ICustomerRepository {
 	return &CustomerRepositoryImpl{database: db}
 }
 
-func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, error) {
+func (r *CustomerRepositoryImpl) GetById(id int) (*domain.Customer, error) {
 	var customer domain.Customer
 
 	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders.Products").Preload("PawnOrders.Endorsements").Find(&customer, c.Param("id")).Error; err != nil {
@@ -33,7 +33,7 @@ func (r *CustomerRepositoryImpl) GetById(c *gin.Context) (*domain.Customer, erro
 	return &customer, nil
 }
 
-func (r *CustomerRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Customer, map[string]interface{}, error) {
+func (r *CustomerRepositoryImpl) GetAll(params url.Values) (*[]domain.Customer, map[string]interface{}, error) {
 	var customers []domain.Customer
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -48,7 +48,7 @@ func (r *CustomerRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Customer, map
 	return &customers, paginationResult, nil
 }
 
-func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error) {
+func (r *CustomerRepositoryImpl) Create(customerDto *domain.Customer) (*domain.Customer, error) {
 	var customer domain.Customer
 	if err := c.ShouldBindJSON(&customer); err != nil {
 		return nil, persistence.ErrorBinding
@@ -65,7 +65,7 @@ func (r *CustomerRepositoryImpl) Create(c *gin.Context) (*domain.Customer, error
 	return &customer, nil
 }
 
-func (r *CustomerRepositoryImpl) Update(c *gin.Context) (*domain.Customer, error) {
+func (r *CustomerRepositoryImpl) Update(customerDto map[string]interface{}) (*domain.Customer, error) {
 	patch, customer, customerOld := map[string]interface{}{}, domain.Customer{}, domain.Customer{}
 
 	if err := c.Bind(&patch); err != nil {

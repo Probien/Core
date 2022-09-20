@@ -1,37 +1,38 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
-
-	"github.com/gin-gonic/gin"
 )
 
 type EmployeeInteractor struct {
 }
 
-func (EI *EmployeeInteractor) Login(c *gin.Context) (*domain.Employee, error) {
+func (EI *EmployeeInteractor) Login(loginCredential auth.LoginCredential) (*domain.Employee, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Login(c)
+	return repository.Login(loginCredential)
 }
 
-func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (*domain.Employee, error) {
+func (EI *EmployeeInteractor) GetByEmail(email string) (*domain.Employee, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetByEmail(c)
+	return repository.GetByEmail(email)
 }
 
-func (EI *EmployeeInteractor) GetAll(c *gin.Context) (*[]domain.Employee, map[string]interface{}, error) {
+func (EI *EmployeeInteractor) GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetAll(c)
+	return repository.GetAll(params)
 }
 
-func (EI *EmployeeInteractor) Create(c *gin.Context) (*domain.Employee, error) {
+func (EI *EmployeeInteractor) Create(employeeDto *domain.Employee, userSessionId int) (*domain.Employee, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Create(c)
+	return repository.Create(employeeDto, userSessionId)
 }
 
-func (EI *EmployeeInteractor) Update(c *gin.Context) (*domain.Employee, error) {
+func (EI *EmployeeInteractor) Update(id int, employeeDto map[string]interface{}, userSessionId int) (*domain.Employee, error) {
 	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Update(c)
+	return repository.Update(id, employeeDto, userSessionId)
 }

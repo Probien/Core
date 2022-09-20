@@ -3,12 +3,12 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +24,7 @@ func NewEndorsementRepositoryImpl(db *gorm.DB) repository.IEndorsementRepository
 	}
 }
 
-func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) GetById(id int) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
 	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsement, c.Param("id")).Error; err != nil {
@@ -38,7 +38,7 @@ func (r *EndorsementRepositoryImpl) GetById(c *gin.Context) (*domain.Endorsement
 	return &endorsement, nil
 }
 
-func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsement, map[string]interface{}, error) {
+func (r *EndorsementRepositoryImpl) GetAll(params url.Values) (*[]domain.Endorsement, map[string]interface{}, error) {
 	var endorsements []domain.Endorsement
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -53,7 +53,7 @@ func (r *EndorsementRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Endorsemen
 	return &endorsements, paginationResult, nil
 }
 
-func (r *EndorsementRepositoryImpl) Create(c *gin.Context) (*domain.Endorsement, error) {
+func (r *EndorsementRepositoryImpl) Create(endorsementDto *domain.Endorsement) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
 	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 || endorsement.EmployeeID == 0 {

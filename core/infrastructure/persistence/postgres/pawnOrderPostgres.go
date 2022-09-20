@@ -3,13 +3,13 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +21,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.IPawnOrderRepository {
 	return &PawnOrderRepositoryImpl{database: db}
 }
 
-func (r *PawnOrderRepositoryImpl) GetById(c *gin.Context) (*domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) GetById(id int) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
 	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, c.Param("id")).Error; err != nil {
@@ -60,7 +60,7 @@ func (r *PawnOrderRepositoryImpl) GetByIdForUpdate(id uint) (*domain.PawnOrder, 
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, map[string]interface{}, error) {
+func (r *PawnOrderRepositoryImpl) GetAll(params url.Values) (*[]domain.PawnOrder, map[string]interface{}, error) {
 	var pawnOrders []domain.PawnOrder
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -75,7 +75,7 @@ func (r *PawnOrderRepositoryImpl) GetAll(c *gin.Context) (*[]domain.PawnOrder, m
 	return &pawnOrders, paginationResult, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) Create(pawnOrderDto *domain.PawnOrder) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
@@ -100,7 +100,7 @@ func (r *PawnOrderRepositoryImpl) Create(c *gin.Context) (*domain.PawnOrder, err
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Update(c *gin.Context) (*domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) Update(pawnOrderDto map[string]interface{}) (*domain.PawnOrder, error) {
 	patch, pawnOrder, pawnOrderOld := map[string]interface{}{}, domain.PawnOrder{}, domain.PawnOrder{}
 	_, errID := patch["id"]
 

@@ -3,12 +3,12 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ func NewCategoryRepositoryImpl(db *gorm.DB) repository.ICategoryRepository {
 	return &CategoryRepositoryImpl{database: db}
 }
 
-func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*domain.Category, error) {
+func (r *CategoryRepositoryImpl) GetById(id int) (*domain.Category, error) {
 	var category domain.Category
 
 	if err := r.database.Model(&domain.Category{}).Preload("Products").Find(&category, c.Param("id")).Error; err != nil {
@@ -33,7 +33,7 @@ func (r *CategoryRepositoryImpl) GetById(c *gin.Context) (*domain.Category, erro
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, map[string]interface{}, error) {
+func (r *CategoryRepositoryImpl) GetAll(params url.Values) (*[]domain.Category, map[string]interface{}, error) {
 	var categories []domain.Category
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -48,7 +48,7 @@ func (r *CategoryRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Category, map
 	return &categories, paginationResult, nil
 }
 
-func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error) {
+func (r *CategoryRepositoryImpl) Create(categoryDto *domain.Category) (*domain.Category, error) {
 	var category domain.Category
 
 	if err := c.ShouldBindJSON(&category); err != nil {
@@ -66,7 +66,7 @@ func (r *CategoryRepositoryImpl) Create(c *gin.Context) (*domain.Category, error
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (*domain.Category, error) {
+func (r *CategoryRepositoryImpl) Delete(id int) (*domain.Category, error) {
 	var category domain.Category
 
 	r.database.Model(&domain.Category{}).Find(&category, c.Param("id"))
@@ -87,7 +87,7 @@ func (r *CategoryRepositoryImpl) Delete(c *gin.Context) (*domain.Category, error
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) Update(c *gin.Context) (*domain.Category, error) {
+func (r *CategoryRepositoryImpl) Update(categoryDto map[string]interface{}) (*domain.Category, error) {
 	patch, category, categoryOld := map[string]interface{}{}, domain.Category{}, domain.Category{}
 
 	if err := c.Bind(&patch); err != nil {
