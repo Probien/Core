@@ -27,7 +27,7 @@ func NewEndorsementRepositoryImpl(db *gorm.DB) repository.IEndorsementRepository
 func (r *EndorsementRepositoryImpl) GetById(id int) (*domain.Endorsement, error) {
 	var endorsement domain.Endorsement
 
-	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsement, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Endorsement{}).Find(&endorsement, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
@@ -46,31 +46,25 @@ func (r *EndorsementRepositoryImpl) GetAll(params url.Values) (*[]domain.Endorse
 	r.database.Table("endorsements").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.Endorsement{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&endorsements).Error; err != nil {
+	if err := r.database.Model(&domain.Endorsement{}).Scopes(persistence.Paginate(params, paginationResult)).Find(&endorsements).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
 	return &endorsements, paginationResult, nil
 }
 
-func (r *EndorsementRepositoryImpl) Create(endorsementDto *domain.Endorsement) (*domain.Endorsement, error) {
-	var endorsement domain.Endorsement
+func (r *EndorsementRepositoryImpl) Create(endorsementDto *domain.Endorsement, userSessionId int) (*domain.Endorsement, error) {
 
-	if err := c.ShouldBindJSON(&endorsement); err != nil || endorsement.PawnOrderID == 0 || endorsement.EmployeeID == 0 {
-		return nil, persistence.ErrorBinding
-	}
-
-	if _, err := r.pawnOrderRepository.GetByIdForUpdate(endorsement.PawnOrderID); err != nil {
+	if _, err := r.pawnOrderRepository.GetByIdForUpdate(endorsementDto.PawnOrderID); err != nil {
 		return nil, err
 	}
 
-	if err := r.database.Model(&domain.Endorsement{}).Create(&endorsement).Error; err != nil {
+	if err := r.database.Model(&domain.Endorsement{}).Create(&endorsementDto).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
-	data, _ := json.Marshal(&endorsement)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
-	return &endorsement, nil
+	data, _ := json.Marshal(&endorsementDto)
+
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
+	return endorsementDto, nil
 }

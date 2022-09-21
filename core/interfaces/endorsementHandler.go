@@ -2,8 +2,10 @@ package interfaces
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +23,18 @@ func EndorsementHandler(v1 *gin.RouterGroup) {
 }
 
 func (router *endorsementRouter) createEndorsement(c *gin.Context) {
-	endorsement, err := router.endorsementInteractor.Create(c)
+	var endorsementDto domain.Endorsement
+	//Obtained from decoded token (middleware)
+	userSessionId, _ := c.Get("user_id")
+
+	if errBinding := c.ShouldBindJSON(&endorsementDto); errBinding != nil || endorsementDto.PawnOrderID == 0 || endorsementDto.EmployeeID == 0 {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	endorsement, err := router.endorsementInteractor.Create(&endorsementDto, userSessionId.(int))
 
 	if err != nil {
 		c.JSON(
@@ -34,7 +47,8 @@ func (router *endorsementRouter) createEndorsement(c *gin.Context) {
 }
 
 func (router *endorsementRouter) getAllEndorsements(c *gin.Context) {
-	endorsements, paginationResult, err := router.endorsementInteractor.GetAll(c)
+	params := c.Request.URL.Query()
+	endorsements, paginationResult, err := router.endorsementInteractor.GetAll(params)
 
 	if err != nil {
 		c.JSON(
@@ -47,7 +61,8 @@ func (router *endorsementRouter) getAllEndorsements(c *gin.Context) {
 }
 
 func (router *endorsementRouter) getEndorsementById(c *gin.Context) {
-	endorsement, err := router.endorsementInteractor.GetById(c)
+	id, _ := strconv.Atoi(c.Param("id"))
+	endorsement, err := router.endorsementInteractor.GetById(id)
 
 	if err != nil {
 		c.JSON(

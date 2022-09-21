@@ -59,7 +59,7 @@ func (r *BranchOfficeRepositoryImp) Create(branchOfficeDto *domain.BranchOffice,
 	return branchOfficeDto, nil
 }
 
-func (r *BranchOfficeRepositoryImp) Update(id int, patch map[string]interface{}, userSessionId int) (*domain.BranchOffice, error) {
+func (r *BranchOfficeRepositoryImp) Update(id int, branchOfficeDto map[string]interface{}, userSessionId int) (*domain.BranchOffice, error) {
 	branchOffice, branchOfficeOld := domain.BranchOffice{}, domain.BranchOffice{}
 
 	r.database.Model(&domain.BranchOffice{}).Find(&branchOfficeOld, id)
@@ -68,7 +68,7 @@ func (r *BranchOfficeRepositoryImp) Update(id int, patch map[string]interface{},
 		return nil, persistence.BranchNotFound
 	}
 
-	if err := r.database.Model(&domain.BranchOffice{}).Where("id = ?", id).Updates(&patch).Find(&branchOffice).Error; err != nil {
+	if err := r.database.Model(&domain.BranchOffice{}).Where("id = ?", id).Updates(&branchOfficeDto).Find(&branchOffice).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 

@@ -75,7 +75,7 @@ func (r *PawnOrderRepositoryImpl) GetAll(params url.Values) (*[]domain.PawnOrder
 	return &pawnOrders, paginationResult, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Create(pawnOrderDto *domain.PawnOrder) (*domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) Create(pawnOrderDto *domain.PawnOrder, userSessionId int) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
 	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
@@ -100,7 +100,7 @@ func (r *PawnOrderRepositoryImpl) Create(pawnOrderDto *domain.PawnOrder) (*domai
 	return &pawnOrder, nil
 }
 
-func (r *PawnOrderRepositoryImpl) Update(pawnOrderDto map[string]interface{}) (*domain.PawnOrder, error) {
+func (r *PawnOrderRepositoryImpl) Update(id int, pawnOrderDto map[string]interface{}, userSessionId int) (*domain.PawnOrder, error) {
 	patch, pawnOrder, pawnOrderOld := map[string]interface{}{}, domain.PawnOrder{}, domain.PawnOrder{}
 	_, errID := patch["id"]
 

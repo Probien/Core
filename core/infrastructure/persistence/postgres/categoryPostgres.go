@@ -23,7 +23,7 @@ func NewCategoryRepositoryImpl(db *gorm.DB) repository.ICategoryRepository {
 func (r *CategoryRepositoryImpl) GetById(id int) (*domain.Category, error) {
 	var category domain.Category
 
-	if err := r.database.Model(&domain.Category{}).Preload("Products").Find(&category, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Preload("Products").Find(&category, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
@@ -41,80 +41,61 @@ func (r *CategoryRepositoryImpl) GetAll(params url.Values) (*[]domain.Category, 
 	r.database.Table("categories").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.Category{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&categories).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Scopes(persistence.Paginate(params, paginationResult)).Find(&categories).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
 	return &categories, paginationResult, nil
 }
 
-func (r *CategoryRepositoryImpl) Create(categoryDto *domain.Category) (*domain.Category, error) {
-	var category domain.Category
+func (r *CategoryRepositoryImpl) Create(categoryDto *domain.Category, userSessionId int) (*domain.Category, error) {
 
-	if err := c.ShouldBindJSON(&category); err != nil {
-		return nil, persistence.ErrorBinding
-	}
-
-	if err := r.database.Model(&domain.Category{}).Create(&category).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Create(&categoryDto).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
-	data, _ := json.Marshal(&category)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
-	return &category, nil
+	data, _ := json.Marshal(&categoryDto)
+	go r.database.Exec("CALL savemovement(?, ?, ?, ?)", userSessionId, persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
+
+	return categoryDto, nil
 }
 
-func (r *CategoryRepositoryImpl) Delete(id int) (*domain.Category, error) {
+func (r *CategoryRepositoryImpl) Delete(id int, userSessionId int) (*domain.Category, error) {
 	var category domain.Category
 
-	r.database.Model(&domain.Category{}).Find(&category, c.Param("id"))
+	r.database.Model(&domain.Category{}).Find(&category, id)
+
 	if category.ID == 0 {
 		return nil, persistence.CategoryNotFound
 	} else if len(category.Products) > 0 {
 		return nil, persistence.InvalidAction
 	}
 
-	if err := r.database.Model(&domain.Category{}).Delete(&category, &category.ID).Error; err != nil {
+	if err := r.database.Model(&domain.Category{}).Delete(&category, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
 	deleted, _ := json.Marshal(&category)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpDelete, string(deleted[:]), persistence.SpNoCurrData)
+	r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpDelete, string(deleted[:]), persistence.SpNoCurrData)
 	return &category, nil
 }
 
-func (r *CategoryRepositoryImpl) Update(categoryDto map[string]interface{}) (*domain.Category, error) {
-	patch, category, categoryOld := map[string]interface{}{}, domain.Category{}, domain.Category{}
+func (r *CategoryRepositoryImpl) Update(id int, categoryDto map[string]interface{}, userSessionId int) (*domain.Category, error) {
+	category, categoryOld := domain.Category{}, domain.Category{}
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, err
-	}
-
-	_, errID := patch["id"]
-
-	if !errID {
-		return nil, persistence.ErrorBinding
-	}
-
-	r.database.Model(&domain.Category{}).Find(&categoryOld, patch["id"])
-
-	if err := r.database.Model(&domain.Category{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&category).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
+	r.database.Model(&domain.Category{}).Find(&categoryOld, id)
 
 	if category.ID == 0 {
 		return nil, persistence.CategoryNotFound
 	}
 
+	if err := r.database.Model(&domain.Category{}).Where("id = ?", id).Updates(&categoryDto).Find(&category).Error; err != nil {
+		return nil, persistence.ErrorProcess
+	}
+
 	old, _ := json.Marshal(&categoryOld)
 	current, _ := json.Marshal(&category)
 
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpUpdate, string(old[:]), string(current[:]))
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpUpdate, string(old[:]), string(current[:]))
 	return &category, nil
 }

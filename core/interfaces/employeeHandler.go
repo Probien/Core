@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +23,18 @@ func EmployeeHandler(v1 *gin.RouterGroup) {
 }
 
 func (router *employeeRouter) createEmployee(c *gin.Context) {
-	employee, err := router.employeeInteractor.Create(c)
+	var employeeDto *domain.Employee
+	//Obtained from decoded token (middleware)
+	userSessionId, _ := c.Get("user_id")
+
+	if errBinding := c.ShouldBindJSON(&employeeDto); errBinding != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	employee, err := router.employeeInteractor.Create(employeeDto, userSessionId.(int))
 
 	if err != nil {
 		c.JSON(
@@ -35,7 +47,8 @@ func (router *employeeRouter) createEmployee(c *gin.Context) {
 }
 
 func (router *employeeRouter) getAllEmployees(c *gin.Context) {
-	employees, paginationResult, err := router.employeeInteractor.GetAll(c)
+	params := c.Request.URL.Query()
+	employees, paginationResult, err := router.employeeInteractor.GetAll(params)
 
 	if err != nil {
 		c.JSON(
@@ -48,7 +61,24 @@ func (router *employeeRouter) getAllEmployees(c *gin.Context) {
 }
 
 func (router *employeeRouter) getEmployeeByEmail(c *gin.Context) {
-	employee, err := router.employeeInteractor.GetByEmail(c)
+	var requestEmailBody map[string]string
+	if errBinding := c.ShouldBindJSON(&requestEmailBody); errBinding != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	email, existEmail := requestEmailBody["email"]
+
+	if !existEmail {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding, Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	employee, err := router.employeeInteractor.GetByEmail(email)
 
 	if err != nil {
 		c.JSON(
@@ -61,7 +91,27 @@ func (router *employeeRouter) getEmployeeByEmail(c *gin.Context) {
 }
 
 func (router *employeeRouter) updateEmployee(c *gin.Context) {
-	employee, err := router.employeeInteractor.Update(c)
+	requestBodyWithId := map[string]interface{}{}
+	//Obtained from decoded token (middleware)
+	userSessionId, _ := c.Get("user_id")
+
+	if errBinding := c.Bind(&requestBodyWithId); errBinding != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	id, errID := requestBodyWithId["id"]
+
+	if !errID {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding, Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+	}
+
+	employee, err := router.employeeInteractor.Update(id.(int), requestBodyWithId, userSessionId.(int))
 
 	if err != nil {
 		c.JSON(

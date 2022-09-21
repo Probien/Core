@@ -23,7 +23,7 @@ func NewCustomerRepositoryImpl(db *gorm.DB) repository.ICustomerRepository {
 func (r *CustomerRepositoryImpl) GetById(id int) (*domain.Customer, error) {
 	var customer domain.Customer
 
-	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders.Products").Preload("PawnOrders.Endorsements").Find(&customer, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Customer{}).Preload("PawnOrders.Products").Preload("PawnOrders.Endorsements").Find(&customer, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
@@ -41,57 +41,41 @@ func (r *CustomerRepositoryImpl) GetAll(params url.Values) (*[]domain.Customer, 
 	r.database.Table("customers").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(domain.Customer{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("PawnOrders").Find(&customers).Error; err != nil {
+	if err := r.database.Model(domain.Customer{}).Scopes(persistence.Paginate(params, paginationResult)).Preload("PawnOrders").Find(&customers).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
 	return &customers, paginationResult, nil
 }
 
-func (r *CustomerRepositoryImpl) Create(customerDto *domain.Customer) (*domain.Customer, error) {
-	var customer domain.Customer
-	if err := c.ShouldBindJSON(&customer); err != nil {
-		return nil, persistence.ErrorBinding
-	}
+func (r *CustomerRepositoryImpl) Create(customerDto *domain.Customer, userSessionId int) (*domain.Customer, error) {
 
-	if err := r.database.Model(&domain.Customer{}).Create(&customer).Error; err != nil {
+	if err := r.database.Model(&domain.Customer{}).Create(&customerDto).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
-	data, _ := json.Marshal(&customer)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
-	return &customer, nil
+	data, _ := json.Marshal(&customerDto)
+
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
+	return customerDto, nil
 }
 
-func (r *CustomerRepositoryImpl) Update(customerDto map[string]interface{}) (*domain.Customer, error) {
-	patch, customer, customerOld := map[string]interface{}{}, domain.Customer{}, domain.Customer{}
+func (r *CustomerRepositoryImpl) Update(id int, customerDto map[string]interface{}, userSessionId int) (*domain.Customer, error) {
+	customer, customerOld := domain.Customer{}, domain.Customer{}
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, err
-	}
-
-	_, errID := patch["id"]
-
-	if !errID {
-		return nil, persistence.ErrorBinding
-	}
-
-	r.database.Model(&domain.Customer{}).Find(&customerOld, patch["id"])
-
-	if err := r.database.Model(&domain.Customer{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&customer).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
+	r.database.Model(&domain.Customer{}).Find(&customerOld, id)
 
 	if customer.ID == 0 {
 		return nil, persistence.CustomerNotFound
 	}
 
+	if err := r.database.Model(&domain.Customer{}).Where("id = ?", id).Updates(&customerDto).Find(&customer).Error; err != nil {
+		return nil, persistence.ErrorProcess
+	}
+
 	old, _ := json.Marshal(&customerOld)
 	current, _ := json.Marshal(&customer)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpUpdate, string(old[:]), string(current[:]))
+
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpUpdate, string(old[:]), string(current[:]))
 	return &customer, nil
 }

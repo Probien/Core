@@ -3,12 +3,12 @@ package postgres
 import (
 	"encoding/json"
 	"math"
+	"net/url"
 
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
 
 	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/domain/repository"
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ func NewProductRepositoryImpl(db *gorm.DB) repository.IProductRepository {
 	return &ProductRepositoryImpl{database: db}
 }
 
-func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error) {
+func (r *ProductRepositoryImpl) GetById(id int) (*domain.Product, error) {
 	var product domain.Product
 
 	if err := r.database.Model(&domain.Product{}).Find(&product, c.Param("id")).Error; err != nil {
@@ -33,7 +33,7 @@ func (r *ProductRepositoryImpl) GetById(c *gin.Context) (*domain.Product, error)
 	return &product, nil
 }
 
-func (r *ProductRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Product, map[string]interface{}, error) {
+func (r *ProductRepositoryImpl) GetAll(params url.Values) (*[]domain.Product, map[string]interface{}, error) {
 	var products []domain.Product
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -48,7 +48,7 @@ func (r *ProductRepositoryImpl) GetAll(c *gin.Context) (*[]domain.Product, map[s
 	return &products, paginationResult, nil
 }
 
-func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) {
+func (r *ProductRepositoryImpl) Create(productDto *domain.Product, userSessionId int) (*domain.Product, error) {
 	var product domain.Product
 
 	if err := c.ShouldBindJSON(&product); err != nil {
@@ -66,7 +66,7 @@ func (r *ProductRepositoryImpl) Create(c *gin.Context) (*domain.Product, error) 
 	return &product, nil
 }
 
-func (r *ProductRepositoryImpl) Update(c *gin.Context) (*domain.Product, error) {
+func (r *ProductRepositoryImpl) Update(id int, productDto map[string]interface{}, userSessionId int) (*domain.Product, error) {
 	patch, product, productOld := map[string]interface{}{}, domain.Product{}, domain.Product{}
 
 	if err := c.Bind(&patch); err != nil {
