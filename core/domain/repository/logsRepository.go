@@ -8,8 +8,8 @@ import (
 
 type IlogsRepository interface {
 	GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error)
-	GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error)
+	GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error)
 
 	GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error)
-	GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error)
+	GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error)
 }

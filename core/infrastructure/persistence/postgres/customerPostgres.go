@@ -65,7 +65,7 @@ func (r *CustomerRepositoryImpl) Update(id int, customerDto map[string]interface
 
 	r.database.Model(&domain.Customer{}).Find(&customerOld, id)
 
-	if customer.ID == 0 {
+	if customerOld.ID == 0 {
 		return nil, persistence.CustomerNotFound
 	}
 

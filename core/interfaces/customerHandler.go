@@ -29,16 +29,17 @@ func (router *customerRouter) createCustomer(c *gin.Context) {
 	userSessionId, _ := c.Get("user_id")
 
 	if errBinding := c.ShouldBindJSON(&customerDto); errBinding != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
+		return
 	}
 
 	customer, err := router.customerInteractor.Create(&customerDto, userSessionId.(int))
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -52,7 +53,7 @@ func (router *customerRouter) GetAllCustomers(c *gin.Context) {
 	customers, paginationResult, err := router.customerInteractor.GetAll(params)
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
 			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -66,7 +67,7 @@ func (router *customerRouter) getCustomerById(c *gin.Context) {
 	customer, err := router.customerInteractor.GetById(id)
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusNotFound,
 			common.Response{Status: http.StatusNotFound, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -81,25 +82,27 @@ func (router *customerRouter) updateCustomer(c *gin.Context) {
 	userSessionId, _ := c.Get("user_id")
 
 	if errBinding := c.Bind(&requestBodyWithId); errBinding != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
+		return
 	}
 
 	id, errID := requestBodyWithId["id"]
 
 	if !errID {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding, Help: "https://probien/api/v1/swagger-ui.html"},
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
+		return
 	}
 
-	customer, err := router.customerInteractor.Update(id.(int), requestBodyWithId, userSessionId.(int))
+	customer, err := router.customerInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)

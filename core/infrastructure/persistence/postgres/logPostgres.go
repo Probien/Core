@@ -26,14 +26,14 @@ func (r *LogsRepositoryImp) GetAllSessions(params url.Values) (*[]domain.Session
 	r.database.Table("session_logs").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Employee").Find(&sessions).Error; err != nil {
+	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(params, paginationResult)).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
 	return &sessions, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
 	var sessions []domain.SessionLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -41,7 +41,7 @@ func (r *LogsRepositoryImp) GetAllSessionsByEmployeeId(id int) (*[]domain.Sessio
 	r.database.Table("session_logs").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("employee_id = ?", c.Param("id")).Preload("Employee").Find(&sessions).Error; err != nil {
+	if err := r.database.Model(&domain.SessionLog{}).Scopes(persistence.Paginate(params, paginationResult)).Where("employee_id = ?", id).Preload("Employee").Find(&sessions).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
@@ -56,14 +56,14 @@ func (r *LogsRepositoryImp) GetAllMovements(params url.Values) (*[]domain.Modera
 	r.database.Table("moderation_logs").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&movements).Error; err != nil {
+	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(params, paginationResult)).Find(&movements).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
 	return &movements, paginationResult, nil
 }
 
-func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	var movements []domain.ModerationLog
 	var totalRows int64
 	paginationResult := map[string]interface{}{}
@@ -71,7 +71,7 @@ func (r *LogsRepositoryImp) GetAllMovementsByEmployeeId(id int) (*[]domain.Moder
 	go r.database.Table("moderation_logs").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(c, paginationResult)).Where("user_id", c.Param("id")).Find(&movements).Error; err != nil {
+	if err := r.database.Model(&domain.ModerationLog{}).Scopes(persistence.Paginate(params, paginationResult)).Where("user_id", id).Find(&movements).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 

@@ -98,7 +98,7 @@ func (r *EmployeeRepositoryImpl) Update(id int, employeeDto map[string]interface
 
 	r.database.Model(&domain.Employee{}).Find(&employeeOld, id)
 
-	if employee.ID == 0 {
+	if employeeOld.ID == 0 {
 		return nil, persistence.EmployeeNotFound
 	}
 

@@ -24,7 +24,7 @@ func NewPawnOrderRepositoryImpl(db *gorm.DB) repository.IPawnOrderRepository {
 func (r *PawnOrderRepositoryImpl) GetById(id int) (*domain.PawnOrder, error) {
 	var pawnOrder domain.PawnOrder
 
-	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Preload("Employee").Preload("Customer").Preload("Status").Preload("Endorsements").Preload("Products").Find(&pawnOrder, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
@@ -68,7 +68,7 @@ func (r *PawnOrderRepositoryImpl) GetAll(params url.Values) (*[]domain.PawnOrder
 	r.database.Table("pawn_orders").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.PawnOrder{}).Scopes(persistence.Paginate(c, paginationResult)).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Scopes(persistence.Paginate(params, paginationResult)).Preload("Customer").Preload("Employee").Preload("Status").Find(&pawnOrders).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
@@ -76,52 +76,39 @@ func (r *PawnOrderRepositoryImpl) GetAll(params url.Values) (*[]domain.PawnOrder
 }
 
 func (r *PawnOrderRepositoryImpl) Create(pawnOrderDto *domain.PawnOrder, userSessionId int) (*domain.PawnOrder, error) {
-	var pawnOrder domain.PawnOrder
+	pawnOrderDto.CutOffDay = time.Now().AddDate(0, 0, 7)
 
-	if err := c.ShouldBindJSON(&pawnOrder); err != nil || pawnOrder.CustomerID == 0 {
-		return nil, persistence.ErrorBinding
-	}
-	pawnOrder.CutOffDay = time.Now().AddDate(0, 0, 7)
-
-	if pawnOrder.Monthly {
-		pawnOrder.ExtensionDate = time.Now().AddDate(0, 0, 10)
+	if pawnOrderDto.Monthly {
+		pawnOrderDto.ExtensionDate = time.Now().AddDate(0, 0, 10)
 	} else {
-		pawnOrder.ExtensionDate = time.Now().AddDate(0, 0, 8)
+		pawnOrderDto.ExtensionDate = time.Now().AddDate(0, 0, 8)
 	}
 
-	if err := r.database.Model(&domain.PawnOrder{}).Omit("Employee").Omit("Customer").Omit("Status").Create(&pawnOrder).Error; err != nil {
+	if err := r.database.Model(&domain.PawnOrder{}).Omit("Employee").Omit("Customer").Omit("Status").Create(&pawnOrderDto).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
-	data, _ := json.Marshal(&pawnOrder)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
-	return &pawnOrder, nil
+	data, _ := json.Marshal(&pawnOrderDto)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
+	return pawnOrderDto, nil
 }
 
 func (r *PawnOrderRepositoryImpl) Update(id int, pawnOrderDto map[string]interface{}, userSessionId int) (*domain.PawnOrder, error) {
-	patch, pawnOrder, pawnOrderOld := map[string]interface{}{}, domain.PawnOrder{}, domain.PawnOrder{}
-	_, errID := patch["id"]
+	pawnOrder, pawnOrderOld := domain.PawnOrder{}, domain.PawnOrder{}
 
-	if err := c.Bind(&patch); err != nil && !errID {
-		return nil, persistence.ErrorBinding
-	}
+	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrderOld, id)
 
-	r.database.Model(&domain.PawnOrder{}).Find(&pawnOrderOld, patch["id"])
-
-	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", patch["id"]).Omit("Products").Omit("Endorsements").Updates(&patch).Find(&pawnOrder).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
-
-	if pawnOrder.ID == 0 {
+	if pawnOrderOld.ID == 0 {
 		return nil, persistence.PawnOrderNotFound
+	}
+
+	if err := r.database.Model(&domain.PawnOrder{}).Where("id = ?", id).Omit("Products").Omit("Endorsements").Updates(&pawnOrderDto).Find(&pawnOrder).Error; err != nil {
+		return nil, persistence.ErrorProcess
 	}
 
 	old, _ := json.Marshal(&pawnOrderOld)
 	current, _ := json.Marshal(&pawnOrder)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpUpdate, string(old[:]), string(current[:]))
+
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpUpdate, string(old[:]), string(current[:]))
 	return &pawnOrder, nil
 }

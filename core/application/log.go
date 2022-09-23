@@ -15,9 +15,9 @@ func (li *LogsInteractor) GetAllSessions(params url.Values) (*[]domain.SessionLo
 	return repository.GetAllSessions(params)
 }
 
-func (li *LogsInteractor) GetAllSessionsByEmployeeId(id int) (*[]domain.SessionLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessionsByEmployeeId(id)
+	return repository.GetAllSessionsByEmployeeId(id, params)
 }
 
 func (li *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
@@ -25,7 +25,7 @@ func (li *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.Moderati
 	return repository.GetAllMovements(params)
 }
 
-func (li *LogsInteractor) GetAllMovementsByEmployeeId(id int) (*[]domain.ModerationLog, map[string]interface{}, error) {
+func (li *LogsInteractor) GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
 	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovementsByEmployeeId(id)
+	return repository.GetAllMovementsByEmployeeId(id, params)
 }

@@ -85,7 +85,7 @@ func (r *CategoryRepositoryImpl) Update(id int, categoryDto map[string]interface
 
 	r.database.Model(&domain.Category{}).Find(&categoryOld, id)
 
-	if category.ID == 0 {
+	if categoryOld.ID == 0 {
 		return nil, persistence.CategoryNotFound
 	}
 

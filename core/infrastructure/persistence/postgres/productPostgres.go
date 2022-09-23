@@ -23,7 +23,7 @@ func NewProductRepositoryImpl(db *gorm.DB) repository.IProductRepository {
 func (r *ProductRepositoryImpl) GetById(id int) (*domain.Product, error) {
 	var product domain.Product
 
-	if err := r.database.Model(&domain.Product{}).Find(&product, c.Param("id")).Error; err != nil {
+	if err := r.database.Model(&domain.Product{}).Find(&product, id).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
@@ -41,7 +41,7 @@ func (r *ProductRepositoryImpl) GetAll(params url.Values) (*[]domain.Product, ma
 	r.database.Table("products").Count(&totalRows)
 	paginationResult["total_pages"] = math.Floor(float64(totalRows) / 10)
 
-	if err := r.database.Model(&domain.Product{}).Scopes(persistence.Paginate(c, paginationResult)).Find(&products).Error; err != nil {
+	if err := r.database.Model(&domain.Product{}).Scopes(persistence.Paginate(params, paginationResult)).Find(&products).Error; err != nil {
 		return nil, nil, persistence.ErrorProcess
 	}
 
@@ -49,50 +49,32 @@ func (r *ProductRepositoryImpl) GetAll(params url.Values) (*[]domain.Product, ma
 }
 
 func (r *ProductRepositoryImpl) Create(productDto *domain.Product, userSessionId int) (*domain.Product, error) {
-	var product domain.Product
 
-	if err := c.ShouldBindJSON(&product); err != nil {
-		return nil, persistence.ErrorBinding
-	}
-
-	if err := r.database.Model(&domain.Product{}).Create(&product).Error; err != nil {
+	if err := r.database.Model(&domain.Product{}).Create(&productDto).Error; err != nil {
 		return nil, persistence.ErrorProcess
 	}
 
-	data, _ := json.Marshal(&product)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
-	return &product, nil
+	data, _ := json.Marshal(&productDto)
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpInsert, persistence.SpNoPrevData, string(data[:]))
+	return productDto, nil
 }
 
 func (r *ProductRepositoryImpl) Update(id int, productDto map[string]interface{}, userSessionId int) (*domain.Product, error) {
-	patch, product, productOld := map[string]interface{}{}, domain.Product{}, domain.Product{}
+	product, productOld := domain.Product{}, domain.Product{}
 
-	if err := c.Bind(&patch); err != nil {
-		return nil, persistence.ErrorBinding
-	}
+	r.database.Model(&domain.Product{}).Find(&productOld, id)
 
-	_, errID := patch["id"]
-
-	if !errID {
-		return nil, persistence.ErrorBinding
-	}
-
-	r.database.Model(&domain.Product{}).Find(&productOld, patch["id"])
-
-	if err := r.database.Model(&domain.Product{}).Where("id = ?", patch["id"]).Updates(&patch).Find(&product).Error; err != nil {
-		return nil, persistence.ErrorProcess
-	}
-
-	if product.ID == 0 {
+	if productOld.ID == 0 {
 		return nil, persistence.ProductNotFound
+	}
+
+	if err := r.database.Model(&domain.Product{}).Where("id = ?", id).Updates(&productDto).Find(&product).Error; err != nil {
+		return nil, persistence.ErrorProcess
 	}
 
 	old, _ := json.Marshal(&productOld)
 	current, _ := json.Marshal(&product)
-	contextUserID, _ := c.Get("user_id")
-	//context user id, is the userID comming from jwt decoded
-	go r.database.Exec("CALL savemovement(?,?,?,?)", contextUserID.(int), persistence.SpUpdate, string(old[:]), string(current[:]))
+
+	go r.database.Exec("CALL savemovement(?,?,?,?)", userSessionId, persistence.SpUpdate, string(old[:]), string(current[:]))
 	return &product, nil
 }

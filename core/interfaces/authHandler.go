@@ -25,16 +25,17 @@ func (router *authRouter) login(c *gin.Context) {
 	var loginCredentials auth.LoginCredential
 
 	if errBinding := c.ShouldBindJSON(&loginCredentials); errBinding != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
+		return
 	}
 
 	employee, err := router.loginInteractor.Login(loginCredentials)
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)

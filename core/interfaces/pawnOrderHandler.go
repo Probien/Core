@@ -2,8 +2,10 @@ package interfaces
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
+	"github.com/JairDavid/Probien-Backend/core/domain"
 	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 )
@@ -22,10 +24,22 @@ func PawnOrderHandler(v1 *gin.RouterGroup) {
 }
 
 func (router *pawnOrderRouter) createPawnOrder(c *gin.Context) {
-	pawnOrder, err := router.pawnOrderInteractor.Create(c)
+	var pawnOrderDto domain.PawnOrder
+	//Obtained from decoded token (middleware)
+	userSessionId, _ := c.Get("user_id")
+
+	if errBinding := c.ShouldBindJSON(&pawnOrderDto); errBinding != nil || pawnOrderDto.CustomerID == 0 {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+		return
+	}
+
+	pawnOrder, err := router.pawnOrderInteractor.Create(&pawnOrderDto, userSessionId.(int))
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -35,10 +49,11 @@ func (router *pawnOrderRouter) createPawnOrder(c *gin.Context) {
 }
 
 func (router *pawnOrderRouter) getAllPawnOrders(c *gin.Context) {
-	pawnOrders, paginationResult, err := router.pawnOrderInteractor.GetAll(c)
+	params := c.Request.URL.Query()
+	pawnOrders, paginationResult, err := router.pawnOrderInteractor.GetAll(params)
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
 			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -48,10 +63,11 @@ func (router *pawnOrderRouter) getAllPawnOrders(c *gin.Context) {
 }
 
 func (router *pawnOrderRouter) getPawnOrderById(c *gin.Context) {
-	pawnOrder, err := router.pawnOrderInteractor.GetById(c)
+	id, _ := strconv.Atoi(c.Param("id"))
+	pawnOrder, err := router.pawnOrderInteractor.GetById(id)
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusNotFound,
 			common.Response{Status: http.StatusNotFound, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
@@ -61,10 +77,32 @@ func (router *pawnOrderRouter) getPawnOrderById(c *gin.Context) {
 }
 
 func (router *pawnOrderRouter) updatePawnOrder(c *gin.Context) {
-	pawnOrder, err := router.pawnOrderInteractor.Update(c)
+	requestBodyWithId := map[string]interface{}{}
+	//Obtained from decoded token (middleware)
+	userSessionId, _ := c.Get("user_id")
+
+	if errBinding := c.Bind(&requestBodyWithId); errBinding != nil {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+		return
+	}
+
+	id, errID := requestBodyWithId["id"]
+
+	if !errID {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+		return
+	}
+
+	pawnOrder, err := router.pawnOrderInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
 
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
