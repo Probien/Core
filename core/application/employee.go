@@ -1,37 +1,38 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
-
-	"github.com/gin-gonic/gin"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
 )
 
 type EmployeeInteractor struct {
 }
 
-func (EI *EmployeeInteractor) Login(c *gin.Context) (*domain.Employee, error) {
-	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Login(c)
+func (EI *EmployeeInteractor) Login(loginCredential auth.LoginCredential) (*domain.Employee, error) {
+	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
+	return repository.Login(loginCredential)
 }
 
-func (EI *EmployeeInteractor) GetByEmail(c *gin.Context) (*domain.Employee, error) {
-	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetByEmail(c)
+func (EI *EmployeeInteractor) GetByEmail(email string) (*domain.Employee, error) {
+	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
+	return repository.GetByEmail(email)
 }
 
-func (EI *EmployeeInteractor) GetAll() (*[]domain.Employee, error) {
-	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetAll()
+func (EI *EmployeeInteractor) GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error) {
+	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
+	return repository.GetAll(params)
 }
 
-func (EI *EmployeeInteractor) Create(c *gin.Context) (*domain.Employee, error) {
-	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Create(c)
+func (EI *EmployeeInteractor) Create(employeeDto *domain.Employee, userSessionId int) (*domain.Employee, error) {
+	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
+	return repository.Create(employeeDto, userSessionId)
 }
 
-func (EI *EmployeeInteractor) Update(c *gin.Context) (*domain.Employee, error) {
-	repository := persistence.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Update(c)
+func (EI *EmployeeInteractor) Update(id int, employeeDto map[string]interface{}, userSessionId int) (*domain.Employee, error) {
+	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
+	return repository.Update(id, employeeDto, userSessionId)
 }

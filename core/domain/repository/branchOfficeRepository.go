@@ -1,13 +1,14 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
 )
 
 type IBranchOfficeRepository interface {
-	GetAll() (*[]domain.BranchOffice, error)
-	GetById(c *gin.Context) (*domain.BranchOffice, error)
-	Create(c *gin.Context) (*domain.BranchOffice, error)
-	Update(c *gin.Context) (*domain.BranchOffice, error)
+	GetAll(params url.Values) (*[]domain.BranchOffice, map[string]interface{}, error)
+	GetById(id int) (*domain.BranchOffice, error)
+	Create(branchOfficeDto *domain.BranchOffice, userSessionId int) (*domain.BranchOffice, error)
+	Update(id int, patch map[string]interface{}, userSessionId int) (*domain.BranchOffice, error)
 }

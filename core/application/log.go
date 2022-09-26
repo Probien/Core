@@ -1,40 +1,31 @@
 package application
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence"
-	"github.com/gin-gonic/gin"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
 )
 
 type LogsInteractor struct{}
 
-func (li *LogsInteractor) GetAllSessions() (*[]domain.SessionLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessions()
+func (li *LogsInteractor) GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
+	repository := postgres.NewLogsRepositoryImp(config.Database)
+	return repository.GetAllSessions(params)
 }
 
-func (li *LogsInteractor) GetAllSessionsByEmployeeId(c *gin.Context) (*[]domain.SessionLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessionsByEmployeeId(c)
+func (li *LogsInteractor) GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
+	repository := postgres.NewLogsRepositoryImp(config.Database)
+	return repository.GetAllSessionsByEmployeeId(id, params)
 }
 
-func (li *LogsInteractor) GetAllPayments() (*[]domain.PaymentLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllPayments()
+func (li *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
+	repository := postgres.NewLogsRepositoryImp(config.Database)
+	return repository.GetAllMovements(params)
 }
 
-func (li *LogsInteractor) GetAllPaymentsByCustomerId(c *gin.Context) (*[]domain.PaymentLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllPaymentsByCustomerId(c)
-}
-
-func (li *LogsInteractor) GetAllMovements() (*[]domain.ModerationLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovements()
-}
-
-func (li *LogsInteractor) GetAllMovementsByEmployeeId(c *gin.Context) (*[]domain.ModerationLog, error) {
-	repository := persistence.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovementsByEmployeeId(c)
+func (li *LogsInteractor) GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
+	repository := postgres.NewLogsRepositoryImp(config.Database)
+	return repository.GetAllMovementsByEmployeeId(id, params)
 }

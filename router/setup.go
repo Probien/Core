@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Setup :Security all routes with user roles
 func Setup(server *gin.Engine) {
 	api := server.Group("/probien/api/v1")
 	{

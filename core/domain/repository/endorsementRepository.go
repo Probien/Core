@@ -1,12 +1,13 @@
 package repository
 
 import (
+	"net/url"
+
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/gin-gonic/gin"
 )
 
 type IEndorsementRepository interface {
-	GetById(c *gin.Context) (*domain.Endorsement, error)
-	GetAll() (*[]domain.Endorsement, error)
-	Create(c *gin.Context) (*domain.Endorsement, error)
+	GetById(id int) (*domain.Endorsement, error)
+	GetAll(params url.Values) (*[]domain.Endorsement, map[string]interface{}, error)
+	Create(endorsementDto *domain.Endorsement, userSessionId int) (*domain.Endorsement, error)
 }
