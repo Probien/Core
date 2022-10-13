@@ -49,7 +49,16 @@ func (router *authRouter) login(c *gin.Context) {
 }
 
 func (router *authRouter) logout(c *gin.Context) {
-	auth.ClearSessionID(c)
+	err := auth.ClearSessionID(c)
 	c.SetCookie("SID", "", -1, "/", "localhost", true, true)
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+		)
+		return
+	}
+
 	c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.LogoutDone, Data: "Done"})
 }

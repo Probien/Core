@@ -4,14 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"os"
 	"strconv"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	uuid "github.com/satori/go.uuid"
@@ -51,17 +49,15 @@ func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredenti
 	session <- sessionClaims
 }
 
-func ClearSessionID(c *gin.Context) {
+func ClearSessionID(c *gin.Context) error {
 	cookie, err := c.Cookie("SID")
 
 	if err != nil {
-		c.JSON(
-			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
-		)
+		return err
 	}
+	
 	config.Client.Del(context.Background(), cookie)
-
+	return nil
 }
 
 func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClaims) (*jwt.Token, error) {
