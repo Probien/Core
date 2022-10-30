@@ -55,7 +55,7 @@ func ClearSessionID(c *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	
+
 	config.Client.Del(context.Background(), cookie)
 	return nil
 }
@@ -89,10 +89,11 @@ func EncryptPassword(data []byte, ch chan<- []byte) {
 }
 
 func checkAuthorities(authorities []string, authCustomClaims *AuthCustomClaims) bool {
-	size := len(authorities) - 1
-	for _, v := range authCustomClaims.Roles {
-		if v == authorities[size] {
-			return true
+	for i := 0; i < len(authorities); i++ {
+		for _, role := range authCustomClaims.Roles {
+			if role == authorities[i] {
+				return true
+			}
 		}
 	}
 	return false
