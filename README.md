@@ -1,7 +1,7 @@
 
 <div align="center" style="display:flex;flex-direction:column;">
     <img width="300" src="https://imgdb.net/storage/uploads/495cc30ad5b741033ede8604cb0ef566cb48b5685a252f34de460850dabb82f6.png" alt="Probien logo"/>
-  <h2>Microservice Core Written in Go - Services For a Pawn Shop Web Application</h2>
+  <h2>Core Service Written in Go - Services For a Pawn Shop Web Application</h2>
   <p>
     <a target="_blank" href="https://crowdin.com/project/excalidraw">
       <img src="https://img.shields.io/badge/License-GPL%20v3-yellow.svg">

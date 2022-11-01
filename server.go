@@ -24,5 +24,9 @@ func main() {
 	config.ConnectRedis()
 
 	router.Setup(server)
-	server.Run(":9000")
+
+	if err := server.Run(":9000"); err != nil {
+		log.Print(err.Error())
+	}
+
 }
