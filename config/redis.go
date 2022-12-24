@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"errors"
 	"os"
 
 	"github.com/go-redis/redis/v8"
@@ -13,14 +13,21 @@ var Client *redis.Client
 func ConnectRedis() {
 	err := godotenv.Load("vars.env")
 
-	rsc := redis.NewClient(&redis.Options{
+	if err != nil {
+		panic(errors.New("vars.env failed: " + err.Error()))
+	}
+
+	redisConnection := redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_URI"),
 		Password: os.Getenv("REDIS_PASSWORD"),
 		DB:       0,
 	})
 
-	if rsc != nil && err != nil {
-		log.Fatal(rsc, err)
+	errHealthCheck := redisConnection.Ping(redisConnection.Context())
+
+	if errHealthCheck.Err() != nil {
+		panic(errors.New("Redis connection failed, can't continue: " + redisConnection.String()))
 	}
-	Client = rsc
+
+	Client = redisConnection
 }
