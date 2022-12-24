@@ -8,7 +8,7 @@ import (
 
 // Setup :Security all routes with user roles
 func Setup(server *gin.Engine) {
-	api := server.Group("/probien/api/v1")
+	api := server.Group("/api/v1")
 	{
 		interfaces.AuthHandler(api.Group("/auth"))
 

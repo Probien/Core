@@ -33,6 +33,7 @@ func Paginate(params url.Values, paginate map[string]interface{}) func(db *gorm.
 		//page: 1
 		//next: 1
 		if pages <= 1 {
+			paginate["total_pages"] = 1.0
 			paginate["next"] = "1"
 			return db.Offset(0).Limit(10)
 
