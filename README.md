@@ -102,6 +102,17 @@ export REDIS_URI="your redis connection url"
 export REDIS_PASSWORD="your redis password"
 ```
 
+#### Example
+```
+export PRIVATE_KEY="M¡_$Up3R_s3Cr3t"
+
+export DATABASE_URI_DEV="postgres://postgres:root@locahost:5432/probien?sslmode=disable"
+export DATABASE_URI_PDN="postgres://postgres:root@(REMOTE_IP):(REMOTE_PORT)/probien?sslmode=enable"
+
+export REDIS_URI="redis.us-central.cloud.example:12345"
+export REDIS_PASSWORD="R3d¡s_P4$$W0rd"
+```
+
 
 If it is the first time you are running the application, you must add the flag  obligately, add it after command:
 
