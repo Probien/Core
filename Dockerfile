@@ -1,19 +1,20 @@
-FROM golang:1.18.2 AS builder
+FROM golang:1.18.2
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /go/src/Probien-Backend
+WORKDIR /app
 
-COPY go.mod .
+COPY go.mod go.sum ./
 RUN go mod download
+
+RUN ls
+
 COPY . .
+RUN go build -o app server.go
 
-RUN go install
-
-FROM scratch
-COPY --from=builder /go/bin/Probien-Backend .
 EXPOSE 9000
-ENTRYPOINT ["./server"]
+
+CMD ["./app"]
