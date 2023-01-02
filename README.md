@@ -41,7 +41,7 @@ This project is small, if you want to contribute improving code or add a new fea
 - Extras
   - When a customer doesn't make any endorsement after the deadline, all the client's things become property of probien.
 
-## Design
+## Design - Following DDD (Domain Driven Design)
 ```
 config/
 ├─ database.go | Connection to postgresql using ORM
@@ -66,7 +66,7 @@ server.go
 
 ## Database Model (subject to change)
 
-<img src="https://user-images.githubusercontent.com/67834146/177461447-59efbaa8-f04e-4003-96d8-1719af65025b.png" alt="database" border="0">
+<img src="https://user-images.githubusercontent.com/67834146/181162633-8c323f57-3a70-4cc1-a5ae-7e2fc399464c.png" alt="database" border="0">
 
 ###
 
@@ -102,6 +102,17 @@ export REDIS_URI="your redis connection url"
 export REDIS_PASSWORD="your redis password"
 ```
 
+#### Example
+```
+export PRIVATE_KEY="M¡_$Up3R_s3Cr3t"
+
+export DATABASE_URI_DEV="postgres://postgres:root@locahost:5432/probien?sslmode=disable"
+export DATABASE_URI_PDN="postgres://postgres:root@(REMOTE_IP):(REMOTE_PORT)/probien?sslmode=enable"
+
+export REDIS_URI="redis.us-central.cloud.example:12345"
+export REDIS_PASSWORD="R3d¡s_P4$$W0rd"
+```
+
 
 If it is the first time you are running the application, you must add the flag  obligately, add it after command:
 
@@ -120,5 +131,26 @@ After configure the env vars and migrated the models, run project usually with f
 go run ./server.go
 ```
 
-# Getting started - Docker
-- pending create dockerfile
+# Getting started - Docker (Image)
+Database and service by separately: first build the service image running the following command
+```
+docker build -t probien-core:1.0 .  
+```
+Next, create the database container (postgres) by exposing the host machine's ports to the container.
+```
+docker run --name probien-database -p 5432:5432 -e POSTGRES_PASSWORD=root -e POSTGRES_DB=probien -d postgres
+```
+Finally, we need to create the container service from the image that we recently build:
+```
+docker run --name probien-core -p 9000:9000  probien-core:1.0
+```
+
+# Getting started - Docker (Compose)
+To pull up a complete environment, you can do via compose
+```
+docker compose up
+```
+In case you need remove the environment, just hit
+```
+docker compose down
+```

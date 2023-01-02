@@ -21,14 +21,18 @@ var (
 
 func ConnectDB() {
 	env := godotenv.Load("vars.env")
+	if env != nil {
+		panic("check environment vars: " + env.Error())
+	}
+
 	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URI_DEV")), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
-	if err != nil || env != nil {
-		log.Fatal(err.Error() + env.Error())
+	if err != nil {
+		panic(err.Error())
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		panic(err)
+		panic(err.Error())
 	}
 
 	sqlDB.SetMaxIdleConns(1000)
@@ -37,21 +41,25 @@ func ConnectDB() {
 	Database = db
 }
 
-//cron job for update pawn orders
+// cron job for update pawn orders
 func StartCronJobs() {
 	//init cron with time zone server
 	job := gocron.NewScheduler(time.UTC)
 
-	_, _ = job.Every(1).Day().Do(func() {
+	_, cronErr := job.Every(1).Day().Do(func() {
 		Database.Exec("CALL update_orders()")
 		log.Print("calling stored procedure for update orders...")
 	})
+
+	if cronErr != nil {
+		panic(cronErr.Error())
+	}
 
 	//running job async
 	job.StartAsync()
 }
 
-//to migrate the models and stored procedures, add flag -migrate=true
+// to migrate the models and stored procedures, add flag -migrate=true
 func Migrate() {
 	sp1, sp1Err := ioutil.ReadFile("./config/migration/stored procedures/sessions.sql")
 	sp2, sp2Err := ioutil.ReadFile("./config/migration/stored procedures/moderation.sql")
@@ -76,7 +84,7 @@ func Migrate() {
 		&model.Profile{},
 	)
 	if err != nil {
-		log.Print(err)
+		panic(err.Error())
 	}
 
 	Database.Exec(string(sp1))
