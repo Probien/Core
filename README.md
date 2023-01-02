@@ -131,9 +131,26 @@ After configure the env vars and migrated the models, run project usually with f
 go run ./server.go
 ```
 
-# Getting started - Docker
-Only execute the following command
+# Getting started - Docker (Image)
+Database and service by separately: first build the service image running the following command
 ```
-docker build -t probien-backend .
-docker run -it --rm --name probien-core probien-backend
+docker build -t probien-core:1.0 .  
+```
+Next, create the database container (postgres) by exposing the host machine's ports to the container.
+```
+docker run --name probien-database -p 5432:5432 -e POSTGRES_PASSWORD=root -e POSTGRES_DB=probien -d postgres
+```
+Finally, we need to create the container service from the image that we recently build:
+```
+docker run --name probien-core -p 9000:9000  probien-core:1.0
+```
+
+# Getting started - Docker (Compose)
+To pull up a complete environment, you can do via compose
+```
+docker compose up
+```
+In case you need remove the environment, just hit
+```
+docker compose down
 ```
