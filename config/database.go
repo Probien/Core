@@ -8,8 +8,6 @@ import (
 
 	"github.com/JairDavid/Probien-Backend/config/migration/model"
 	"github.com/go-co-op/gocron"
-	"github.com/joho/godotenv"
-
 	"gorm.io/driver/postgres"
 
 	"gorm.io/gorm"
@@ -20,10 +18,6 @@ var (
 )
 
 func ConnectDB() {
-	env := godotenv.Load("vars.env")
-	if env != nil {
-		panic("check environment vars: " + env.Error())
-	}
 
 	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URI_DEV")), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
 	if err != nil {
