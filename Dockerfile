@@ -1,4 +1,4 @@
-FROM golang:1.18.2 as builder
+FROM golang:1.18.2
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -13,10 +13,8 @@ RUN go mod download
 RUN ls
 
 COPY . .
-RUN go build -o server .
+RUN go build -o app .
 
-FROM scratch
-COPY --from=builder /app/server .
 EXPOSE 9000
 
-CMD ["./server"]
+ENTRYPOINT ["./app", "-migrate=true"]
