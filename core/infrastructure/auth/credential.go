@@ -6,7 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type AuthCustomClaims struct {
+type CustomClaims struct {
 	Roles map[string]string `json:"roles"`
 	jwt.RegisteredClaims
 }

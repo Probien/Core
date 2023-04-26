@@ -1,32 +1,34 @@
 package application
 
 import (
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"net/url"
 
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
 )
 
 type ProductInteractor struct {
+	repository repository.IProductRepository
 }
 
-func (PI *ProductInteractor) GetById(id int) (*domain.Product, error) {
-	repository := postgres.NewProductRepositoryImpl(config.Database)
-	return repository.GetById(id)
+func NewProductInteractor(repository repository.IProductRepository) ProductInteractor {
+	return ProductInteractor{
+		repository: repository,
+	}
 }
 
-func (PI *ProductInteractor) GetAll(params url.Values) (*[]domain.Product, map[string]interface{}, error) {
-	repository := postgres.NewProductRepositoryImpl(config.Database)
-	return repository.GetAll(params)
+func (p *ProductInteractor) GetById(id int) (*domain.Product, error) {
+	return p.repository.GetById(id)
 }
 
-func (PI *ProductInteractor) Create(productDto *domain.Product, userSessionId int) (*domain.Product, error) {
-	repository := postgres.NewProductRepositoryImpl(config.Database)
-	return repository.Create(productDto, userSessionId)
+func (p *ProductInteractor) GetAll(params url.Values) (*[]domain.Product, map[string]interface{}, error) {
+	return p.repository.GetAll(params)
 }
 
-func (PI *ProductInteractor) Update(id int, productDto map[string]interface{}, userSessionId int) (*domain.Product, error) {
-	repository := postgres.NewProductRepositoryImpl(config.Database)
-	return repository.Update(id, productDto, userSessionId)
+func (p *ProductInteractor) Create(productDto *domain.Product, userSessionId int) (*domain.Product, error) {
+	return p.repository.Create(productDto, userSessionId)
+}
+
+func (p *ProductInteractor) Update(id int, productDto map[string]interface{}, userSessionId int) (*domain.Product, error) {
+	return p.repository.Update(id, productDto, userSessionId)
 }

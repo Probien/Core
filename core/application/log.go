@@ -1,31 +1,33 @@
 package application
 
 import (
-	"net/url"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
+	"net/url"
 )
 
-type LogsInteractor struct{}
-
-func (li *LogsInteractor) GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessions(params)
+type LogsInteractor struct {
+	repository repository.IlogsRepository
 }
 
-func (li *LogsInteractor) GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllSessionsByEmployeeId(id, params)
+func NewLogsInteractor(repository repository.IlogsRepository) LogsInteractor {
+	return LogsInteractor{
+		repository: repository,
+	}
 }
 
-func (li *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovements(params)
+func (l *LogsInteractor) GetAllSessions(params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
+	return l.repository.GetAllSessions(params)
 }
 
-func (li *LogsInteractor) GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
-	repository := postgres.NewLogsRepositoryImp(config.Database)
-	return repository.GetAllMovementsByEmployeeId(id, params)
+func (l *LogsInteractor) GetAllSessionsByEmployeeId(id int, params url.Values) (*[]domain.SessionLog, map[string]interface{}, error) {
+	return l.repository.GetAllSessionsByEmployeeId(id, params)
+}
+
+func (l *LogsInteractor) GetAllMovements(params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
+	return l.repository.GetAllMovements(params)
+}
+
+func (l *LogsInteractor) GetAllMovementsByEmployeeId(id int, params url.Values) (*[]domain.ModerationLog, map[string]interface{}, error) {
+	return l.repository.GetAllMovementsByEmployeeId(id, params)
 }

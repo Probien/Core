@@ -1,27 +1,29 @@
 package application
 
 import (
-	"net/url"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
+	"net/url"
 )
 
-type EndorsemenInteractor struct {
+type EndorsementInteractor struct {
+	repository repository.IEndorsementRepository
 }
 
-func (EI *EndorsemenInteractor) GetById(id int) (*domain.Endorsement, error) {
-	repository := postgres.NewEndorsementRepositoryImpl(config.Database)
-	return repository.GetById(id)
+func NewEndorsementInteractor(repository repository.IEndorsementRepository) EndorsementInteractor {
+	return EndorsementInteractor{
+		repository: repository,
+	}
 }
 
-func (EI *EndorsemenInteractor) GetAll(params url.Values) (*[]domain.Endorsement, map[string]interface{}, error) {
-	repository := postgres.NewEndorsementRepositoryImpl(config.Database)
-	return repository.GetAll(params)
+func (e *EndorsementInteractor) GetById(id int) (*domain.Endorsement, error) {
+	return e.repository.GetById(id)
 }
 
-func (EI *EndorsemenInteractor) Create(endorsementDto *domain.Endorsement, userSessionId int) (*domain.Endorsement, error) {
-	repository := postgres.NewEndorsementRepositoryImpl(config.Database)
-	return repository.Create(endorsementDto, userSessionId)
+func (e *EndorsementInteractor) GetAll(params url.Values) (*[]domain.Endorsement, map[string]interface{}, error) {
+	return e.repository.GetAll(params)
+}
+
+func (e *EndorsementInteractor) Create(endorsementDto *domain.Endorsement, userSessionId int) (*domain.Endorsement, error) {
+	return e.repository.Create(endorsementDto, userSessionId)
 }

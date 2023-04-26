@@ -1,32 +1,33 @@
 package application
 
 import (
-	"net/url"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
+	"net/url"
 )
 
 type PawnOrderInteractor struct {
+	repository repository.IPawnOrderRepository
 }
 
-func (PI *PawnOrderInteractor) GetById(id int) (*domain.PawnOrder, error) {
-	repository := postgres.NewPawnOrderRepositoryImpl(config.Database)
-	return repository.GetById(id)
+func NewPawnOrderInteractor(repository repository.IPawnOrderRepository) PawnOrderInteractor {
+	return PawnOrderInteractor{
+		repository: repository,
+	}
 }
 
-func (PI *PawnOrderInteractor) GetAll(params url.Values) (*[]domain.PawnOrder, map[string]interface{}, error) {
-	repository := postgres.NewPawnOrderRepositoryImpl(config.Database)
-	return repository.GetAll(params)
+func (p *PawnOrderInteractor) GetById(id int) (*domain.PawnOrder, error) {
+	return p.repository.GetById(id)
 }
 
-func (PI *PawnOrderInteractor) Create(pawnOrderDto *domain.PawnOrder, userSessionId int) (*domain.PawnOrder, error) {
-	repository := postgres.NewPawnOrderRepositoryImpl(config.Database)
-	return repository.Create(pawnOrderDto, userSessionId)
+func (p *PawnOrderInteractor) GetAll(params url.Values) (*[]domain.PawnOrder, map[string]interface{}, error) {
+	return p.repository.GetAll(params)
 }
 
-func (PI *PawnOrderInteractor) Update(id int, pawnOrderDto map[string]interface{}, userSessionId int) (*domain.PawnOrder, error) {
-	repository := postgres.NewPawnOrderRepositoryImpl(config.Database)
-	return repository.Update(id, pawnOrderDto, userSessionId)
+func (p *PawnOrderInteractor) Create(pawnOrderDto *domain.PawnOrder, userSessionId int) (*domain.PawnOrder, error) {
+	return p.repository.Create(pawnOrderDto, userSessionId)
+}
+
+func (p *PawnOrderInteractor) Update(id int, pawnOrderDto map[string]interface{}, userSessionId int) (*domain.PawnOrder, error) {
+	return p.repository.Update(id, pawnOrderDto, userSessionId)
 }

@@ -1,38 +1,38 @@
 package application
 
 import (
-	"net/url"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
 	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
+	"net/url"
 )
 
 type EmployeeInteractor struct {
+	repository repository.IEmployeeRepository
 }
 
-func (EI *EmployeeInteractor) Login(loginCredential auth.LoginCredential) (*domain.Employee, error) {
-	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Login(loginCredential)
+func NewEmployeeInteractor(repository repository.IEmployeeRepository) EmployeeInteractor {
+	return EmployeeInteractor{
+		repository: repository,
+	}
 }
 
-func (EI *EmployeeInteractor) GetByEmail(email string) (*domain.Employee, error) {
-	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetByEmail(email)
+func (e *EmployeeInteractor) Login(loginCredential auth.LoginCredential) (*domain.Employee, error) {
+	return e.repository.Login(loginCredential)
 }
 
-func (EI *EmployeeInteractor) GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error) {
-	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.GetAll(params)
+func (e *EmployeeInteractor) GetByEmail(email string) (*domain.Employee, error) {
+	return e.repository.GetByEmail(email)
 }
 
-func (EI *EmployeeInteractor) Create(employeeDto *domain.Employee, userSessionId int) (*domain.Employee, error) {
-	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Create(employeeDto, userSessionId)
+func (e *EmployeeInteractor) GetAll(params url.Values) (*[]domain.Employee, map[string]interface{}, error) {
+	return e.repository.GetAll(params)
 }
 
-func (EI *EmployeeInteractor) Update(id int, employeeDto map[string]interface{}, userSessionId int) (*domain.Employee, error) {
-	repository := postgres.NewEmployeeRepositoryImpl(config.Database)
-	return repository.Update(id, employeeDto, userSessionId)
+func (e *EmployeeInteractor) Create(employeeDto *domain.Employee, userSessionId int) (*domain.Employee, error) {
+	return e.repository.Create(employeeDto, userSessionId)
+}
+
+func (e *EmployeeInteractor) Update(id int, employeeDto map[string]interface{}, userSessionId int) (*domain.Employee, error) {
+	return e.repository.Update(id, employeeDto, userSessionId)
 }

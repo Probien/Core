@@ -11,7 +11,7 @@ import (
 )
 
 type endorsementRouter struct {
-	endorsementInteractor application.EndorsemenInteractor
+	endorsementInteractor application.EndorsementInteractor
 }
 
 func EndorsementHandler(v1 *gin.RouterGroup) {

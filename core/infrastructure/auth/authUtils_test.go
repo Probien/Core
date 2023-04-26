@@ -6,7 +6,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 
 	type errorCaseTest struct {
 		description      string
-		rolesInput       AuthCustomClaims
+		rolesInput       CustomClaims
 		authoritiesInput []string
 		expected         bool
 	}
@@ -14,7 +14,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 	tests := []errorCaseTest{
 		{
 			description: "invalid roles",
-			rolesInput: AuthCustomClaims{
+			rolesInput: CustomClaims{
 				Roles: map[string]string{"role_0": "FAKER", "role_1": "FAKER", "role_2": "FAKER", "role_3": "FAKER"},
 			},
 			authoritiesInput: []string{"ROLE_ADMIN", "ROLE_EMPLOYEE"},
@@ -22,7 +22,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 		},
 		{
 			description: "invalid empty roles",
-			rolesInput: AuthCustomClaims{
+			rolesInput: CustomClaims{
 				Roles: map[string]string{},
 			},
 			authoritiesInput: []string{"ROLE_ADMIN"},
@@ -30,7 +30,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 		},
 		{
 			description: "invalid role matches",
-			rolesInput: AuthCustomClaims{
+			rolesInput: CustomClaims{
 				Roles: map[string]string{"role_0": "ROLE_SUPERVISOR", "role_1": "ROLE_GENERAL"},
 			},
 			authoritiesInput: []string{"ROLE_ADMIN", "ROLE_EMPLOYEE"},
@@ -38,7 +38,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 		},
 		{
 			description: "valid roles",
-			rolesInput: AuthCustomClaims{
+			rolesInput: CustomClaims{
 				Roles: map[string]string{"role_0": "ROLE_EMPLOYEE"},
 			},
 			authoritiesInput: []string{"ROLE_ADMIN", "ROLE_EMPLOYEE", "ROLE_GENERAL"},

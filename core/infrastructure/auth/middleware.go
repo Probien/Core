@@ -12,7 +12,7 @@ import (
 func JwtRbac(authorities ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		checker := make(chan bool, 1)
-		data := AuthCustomClaims{}
+		data := CustomClaims{}
 		cookie, _ := c.Cookie("SID")
 		authHeader := c.GetHeader("Authorization")
 		go existCookie(cookie, checker)

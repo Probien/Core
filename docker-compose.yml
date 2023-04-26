@@ -16,5 +16,13 @@ services:
       - "9000:9000"
     links:
       - probien-database
+  redis-session:
+    image: redis/redis-stack-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/configs/redis.conf:/usr/local/etc/redis/redis.conf
+    links:
+      - probien
 volumes:
   pg-data:

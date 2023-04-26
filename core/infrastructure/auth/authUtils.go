@@ -24,7 +24,7 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 		roles["role_"+strconv.Itoa(k)] = v.Role.RoleName
 	}
 
-	claims := &AuthCustomClaims{
+	claims := &CustomClaims{
 		Roles: roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 30)),
@@ -43,9 +43,19 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 
 func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredential) {
 	sessionID := uuid.NewV4()
-	sessionClaims := SessionCredential{ID: sessionID.String(), Username: employee.Email, ExpiresAt: time.Now().Add(time.Minute * 30)}
-	sessionBytes, _ := json.Marshal(sessionClaims)
-	go config.Client.Set(context.Background(), sessionID.String(), string(sessionBytes[:]), time.Minute*30)
+	sessionClaims := SessionCredential{
+		ID:        sessionID.String(),
+		Username:  employee.Email,
+		ExpiresAt: time.Now().Add(time.Minute * 30),
+	}
+	sessionBytes, err := json.Marshal(sessionClaims)
+	if err != nil {
+		fmt.Errorf("error marshalling session: %v", err)
+	}
+	cmd := config.Client.Set(context.Background(), sessionID.String(), string(sessionBytes[:]), time.Minute*30)
+	if err := cmd.Err(); err != nil {
+		fmt.Errorf("error writing session to Redis: %v", err)
+	}
 	session <- sessionClaims
 }
 
@@ -60,7 +70,7 @@ func ClearSessionID(c *gin.Context) error {
 	return nil
 }
 
-func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClaims) (*jwt.Token, error) {
+func validateAndParseToken(encodedToken string, authCustomClaims *CustomClaims) (*jwt.Token, error) {
 	return jwt.ParseWithClaims(encodedToken, authCustomClaims, func(token *jwt.Token) (interface{}, error) {
 
 		if _, isValid := token.Method.(*jwt.SigningMethodHMAC); !isValid {
@@ -75,7 +85,10 @@ func validateAndParseToken(encodedToken string, authCustomClaims *AuthCustomClai
 func existCookie(cookie string, checker chan<- bool) {
 	var sessionID = SessionCredential{}
 	val := config.Client.Get(context.Background(), cookie).Val()
-	json.Unmarshal([]byte(val), &sessionID)
+	err := json.Unmarshal([]byte(val), &sessionID)
+	if err != nil {
+		fmt.Errorf("error getting session from Redis: %v", err)
+	}
 	checker <- val != "" && cookie == sessionID.ID
 
 }
@@ -83,12 +96,12 @@ func existCookie(cookie string, checker chan<- bool) {
 func EncryptPassword(data []byte, ch chan<- []byte) {
 	hash, err := bcrypt.GenerateFromPassword(data, bcrypt.MinCost)
 	if err != nil {
-		panic(err)
+		fmt.Errorf("error encrypting password: %v", err)
 	}
 	ch <- hash
 }
 
-func checkAuthorities(authorities []string, authCustomClaims *AuthCustomClaims) bool {
+func checkAuthorities(authorities []string, authCustomClaims *CustomClaims) bool {
 	for i := 0; i < len(authorities); i++ {
 		for _, role := range authCustomClaims.Roles {
 			if role == authorities[i] {

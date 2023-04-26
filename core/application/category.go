@@ -1,37 +1,37 @@
 package application
 
 import (
-	"net/url"
-
-	"github.com/JairDavid/Probien-Backend/config"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
+	"github.com/JairDavid/Probien-Backend/core/domain/repository"
+	"net/url"
 )
 
 type CategoryInteractor struct {
+	repository repository.ICategoryRepository
 }
 
-func (CI *CategoryInteractor) GetById(id int) (*domain.Category, error) {
-	repository := postgres.NewCategoryRepositoryImpl(config.Database)
-	return repository.GetById(id)
+func NewCategoryInteractor(repository repository.ICategoryRepository) CategoryInteractor {
+	return CategoryInteractor{
+		repository: repository,
+	}
 }
 
-func (CI *CategoryInteractor) GetAll(params url.Values) (*[]domain.Category, map[string]interface{}, error) {
-	repository := postgres.NewCategoryRepositoryImpl(config.Database)
-	return repository.GetAll(params)
+func (c *CategoryInteractor) GetById(id int) (*domain.Category, error) {
+	return c.repository.GetById(id)
 }
 
-func (CI *CategoryInteractor) Create(categoryDto *domain.Category, userSessionId int) (*domain.Category, error) {
-	repository := postgres.NewCategoryRepositoryImpl(config.Database)
-	return repository.Create(categoryDto, userSessionId)
+func (c *CategoryInteractor) GetAll(params url.Values) (*[]domain.Category, map[string]interface{}, error) {
+	return c.repository.GetAll(params)
 }
 
-func (CI *CategoryInteractor) Delete(id int, userSessionId int) (*domain.Category, error) {
-	repository := postgres.NewCategoryRepositoryImpl(config.Database)
-	return repository.Delete(id, userSessionId)
+func (c *CategoryInteractor) Create(categoryDto *domain.Category, userSessionId int) (*domain.Category, error) {
+	return c.repository.Create(categoryDto, userSessionId)
 }
 
-func (CI *CategoryInteractor) Update(id int, categoryDto map[string]interface{}, userSessionId int) (*domain.Category, error) {
-	repository := postgres.NewCategoryRepositoryImpl(config.Database)
-	return repository.Update(id, categoryDto, userSessionId)
+func (c *CategoryInteractor) Delete(id int, userSessionId int) (*domain.Category, error) {
+	return c.repository.Delete(id, userSessionId)
+}
+
+func (c *CategoryInteractor) Update(id int, categoryDto map[string]interface{}, userSessionId int) (*domain.Category, error) {
+	return c.repository.Update(id, categoryDto, userSessionId)
 }
