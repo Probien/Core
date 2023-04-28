@@ -13,9 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
-	Database *gorm.DB
-)
+var database *gorm.DB
 
 func ConnectDB() {
 
@@ -32,16 +30,20 @@ func ConnectDB() {
 	sqlDB.SetMaxIdleConns(1000)
 	sqlDB.SetMaxOpenConns(100)
 
-	Database = db
+	database = db
 }
 
-// cron job for update pawn orders
+func GetConnection() *gorm.DB {
+	return database
+}
+
+// StartCronJobs cron job for update pawn orders
 func StartCronJobs() {
 	//init cron with time zone server
 	job := gocron.NewScheduler(time.UTC)
 
 	_, cronErr := job.Every(1).Day().Do(func() {
-		Database.Exec("CALL update_orders()")
+		database.Exec("CALL update_orders()")
 		log.Print("calling stored procedure for update orders...")
 	})
 
@@ -53,7 +55,7 @@ func StartCronJobs() {
 	job.StartAsync()
 }
 
-// to migrate the models and stored procedures, add flag -migrate=true
+// Migrate to migrate the models and stored procedures, add flag -migrate=true
 func Migrate() {
 	sp1, sp1Err := ioutil.ReadFile("./config/migration/stored procedures/sessions.sql")
 	sp2, sp2Err := ioutil.ReadFile("./config/migration/stored procedures/moderation.sql")
@@ -63,7 +65,7 @@ func Migrate() {
 		panic(sp1Err.Error() + sp2Err.Error() + sp3Err.Error())
 	}
 
-	err := Database.AutoMigrate(
+	err := database.AutoMigrate(
 		&model.Category{},
 		&model.Customer{},
 		&model.BranchOffice{},
@@ -81,7 +83,7 @@ func Migrate() {
 		panic(err.Error())
 	}
 
-	Database.Exec(string(sp1))
-	Database.Exec(string(sp2))
-	Database.Exec(string(sp3))
+	database.Exec(string(sp1))
+	database.Exec(string(sp2))
+	database.Exec(string(sp3))
 }

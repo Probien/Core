@@ -1,4 +1,4 @@
-package common
+package response
 
 type PaginatedResponse struct {
 	Status       int         `json:"status"`

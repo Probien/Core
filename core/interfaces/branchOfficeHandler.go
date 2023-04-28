@@ -1,12 +1,15 @@
 package interfaces
 
 import (
+	"github.com/JairDavid/Probien-Backend/config"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/auth"
+	"github.com/JairDavid/Probien-Backend/core/infrastructure/persistence/postgres"
 	"net/http"
 	"strconv"
 
 	"github.com/JairDavid/Probien-Backend/core/application"
 	"github.com/JairDavid/Probien-Backend/core/domain"
-	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
+	"github.com/JairDavid/Probien-Backend/core/interfaces/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,17 +17,22 @@ type branchRouter struct {
 	branchInteractor application.BranchOfficeInteractor
 }
 
-func BranchOfficeHandler(v1 *gin.RouterGroup) {
-	var branchRouter branchRouter
-
-	v1.POST("/", branchRouter.createBranch)
-	v1.GET("/", branchRouter.getAllBranches)
-	v1.GET("/:id", branchRouter.getBranchById)
-	v1.PATCH("/", branchRouter.updateBranch)
-
+func NewBranchOfficeHandler() *branchRouter {
+	//dependency injection
+	return &branchRouter{
+		branchInteractor: application.NewBranchOfficeInteractor(postgres.NewBranchOfficeRepositoryImp(config.GetConnection())),
+	}
 }
 
-func (router *branchRouter) createBranch(c *gin.Context) {
+func (b *branchRouter) SetupRouterAndFilter(v1 *gin.RouterGroup) {
+	v1.Use(auth.JwtRbac("ROLE_ADMIN", "ROLE_MANAGER"))
+	v1.POST("/branch-offices", b.createBranch)
+	v1.GET("/branch-offices", b.getAllBranches)
+	v1.GET("/branch-offices/:id", b.getBranchById)
+	v1.PATCH("/branch-offices", b.updateBranch)
+}
+
+func (b *branchRouter) createBranch(c *gin.Context) {
 	var branchOfficeDto domain.BranchOffice
 	//Obtained from decoded token (middleware)
 	userSessionId, _ := c.Get("user_id")
@@ -32,50 +40,50 @@ func (router *branchRouter) createBranch(c *gin.Context) {
 	if errBinding := c.ShouldBindJSON(&branchOfficeDto); errBinding != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 		return
 	}
 
-	branchOffice, err := router.branchInteractor.Create(&branchOfficeDto, userSessionId.(int))
+	branchOffice, err := b.branchInteractor.Create(&branchOfficeDto, userSessionId.(int))
 
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusCreated, common.Response{Status: http.StatusCreated, Message: common.Created, Data: &branchOffice})
+		c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &branchOffice})
 	}
 }
 
-func (router *branchRouter) getAllBranches(c *gin.Context) {
+func (b *branchRouter) getAllBranches(c *gin.Context) {
 	params := c.Request.URL.Query()
-	branchOffices, paginationResult, err := router.branchInteractor.GetAll(params)
+	branchOffices, paginationResult, err := b.branchInteractor.GetAll(params)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
-			common.Response{Status: http.StatusInternalServerError, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
+			response.Response{Status: http.StatusInternalServerError, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"})
 	} else {
-		c.JSON(http.StatusOK, common.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &branchOffices, Previous: "localhost:9000/api/v1/branch-offices/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/branch-offices/?page=" + paginationResult["next"].(string)})
+		c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &branchOffices, Previous: "localhost:9000/api/v1/branch-offices/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/branch-offices/?page=" + paginationResult["next"].(string)})
 	}
 }
 
-func (router *branchRouter) getBranchById(c *gin.Context) {
+func (b *branchRouter) getBranchById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	branchOffice, err := router.branchInteractor.GetById(id)
+	branchOffice, err := b.branchInteractor.GetById(id)
 
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusNotFound,
-			common.Response{Status: http.StatusNotFound, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusNotFound, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusOK, common.Response{Status: http.StatusOK, Message: common.Consulted, Data: &branchOffice})
+		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &branchOffice})
 	}
 }
 
-func (router *branchRouter) updateBranch(c *gin.Context) {
+func (b *branchRouter) updateBranch(c *gin.Context) {
 	requestBodyWithId := map[string]interface{}{}
 	//Obtained from decoded token (middleware)
 	userSessionId, _ := c.Get("user_id")
@@ -83,7 +91,7 @@ func (router *branchRouter) updateBranch(c *gin.Context) {
 	if errBinding := c.Bind(&requestBodyWithId); errBinding != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: errBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 		return
 	}
@@ -93,19 +101,19 @@ func (router *branchRouter) updateBranch(c *gin.Context) {
 	if !errID {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: common.ErrorBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: response.ErrorBinding.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 		return
 	}
 
-	branchOffice, err := router.branchInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
+	branchOffice, err := b.branchInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
 
 	if err != nil {
 		c.JSON(
 			http.StatusBadRequest,
-			common.Response{Status: http.StatusBadRequest, Message: common.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
+			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
 	} else {
-		c.JSON(http.StatusAccepted, common.Response{Status: http.StatusAccepted, Message: common.Updated, Data: &branchOffice})
+		c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &branchOffice})
 	}
 }

@@ -1,6 +1,8 @@
 package auth
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAuthoritiesChecker(t *testing.T) {
 
@@ -57,4 +59,16 @@ func TestAuthoritiesChecker(t *testing.T) {
 		})
 	}
 
+}
+
+func TestEncryptPassword(t *testing.T) {
+	result := make(chan []byte, 1)
+	EncryptPassword([]byte("kmzwa8awaa"), result)
+	encryptedPassword := <-result
+
+	if len(encryptedPassword) > 0 {
+		t.Logf("encrypted password is: %v", string(encryptedPassword))
+	} else {
+		t.Fatalf("error encripting password")
+	}
 }

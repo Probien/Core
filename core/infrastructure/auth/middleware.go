@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/JairDavid/Probien-Backend/core/interfaces/common"
+	"github.com/JairDavid/Probien-Backend/core/interfaces/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,11 +29,11 @@ func JwtRbac(authorities ...string) gin.HandlerFunc {
 				c.Set("user_id", userId)
 				c.Next()
 			} else {
-				c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Unauthorized, valid token is required"})
+				c.JSON(http.StatusUnauthorized, response.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Unauthorized, valid token is required"})
 				c.AbortWithStatus(http.StatusUnauthorized)
 			}
 		} else {
-			c.JSON(http.StatusUnauthorized, common.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Token is not present in the request header"})
+			c.JSON(http.StatusUnauthorized, response.Response{Status: http.StatusUnauthorized, Message: "Authorization is required", Data: "Token is not present in the request header"})
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
 	}
