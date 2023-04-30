@@ -3,7 +3,6 @@ package config
 import (
 	"io/ioutil"
 	"log"
-	"os"
 	"time"
 
 	"github.com/JairDavid/Probien-Backend/config/migration/model"
@@ -17,7 +16,7 @@ var database *gorm.DB
 
 func ConnectDB() {
 
-	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URI_DEV")), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
+	db, err := gorm.Open(postgres.Open("postgres://postgres:root@localhost:5432/probien?sslmode=disable"), &gorm.Config{SkipDefaultTransaction: true, PrepareStmt: true})
 	if err != nil {
 		panic(err.Error())
 	}

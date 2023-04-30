@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-	"os"
-
 	"github.com/go-redis/redis/v8"
 )
 
@@ -12,8 +10,8 @@ var Client *redis.Client
 func ConnectRedis() {
 
 	redisConnection := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URI"),
-		Password: os.Getenv("REDIS_PASSWORD"),
+		Addr:     "localhost:6379",
+		Password: "",
 		DB:       0,
 	})
 

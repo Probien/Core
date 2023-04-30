@@ -1,11 +1,11 @@
 package router
 
 import (
-	"github.com/JairDavid/Probien-Backend/core/interfaces"
+	"github.com/JairDavid/Probien-Backend/pkg/interfaces"
 	"github.com/gin-gonic/gin"
 )
 
-// Setup :Secure all routes with user authorities
+// Setup Secure all routes with user authorities
 func Setup(server *gin.Engine) {
 	api := server.Group("/api/v1")
 	{
