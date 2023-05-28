@@ -46,13 +46,14 @@ func (a *authRouter) login(c *gin.Context) {
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		go auth.GenerateToken(employee, tokenizer)
-		go auth.GenerateSessionID(employee, session)
-		sessionCoockie := <-session
-		c.SetCookie("SID", sessionCoockie.ID, 60*30, "/", "localhost", true, true)
-		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.LoginDone, Data: &employee, Token: <-tokenizer})
+		return
 	}
+
+	go auth.GenerateToken(employee, tokenizer)
+	go auth.GenerateSessionID(employee, session)
+	sessionCoockie := <-session
+	c.SetCookie("SID", sessionCoockie.ID, 60*30, "/", "localhost", true, true)
+	c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.LoginDone, Data: &employee, Token: <-tokenizer})
 }
 
 func (a *authRouter) logout(c *gin.Context) {

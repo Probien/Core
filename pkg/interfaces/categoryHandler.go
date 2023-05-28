@@ -48,15 +48,15 @@ func (ca *categoryRouter) createCategory(c *gin.Context) {
 	}
 
 	category, err := ca.categoryInteractor.Create(&categoryDto, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &category})
+		return
 	}
+
+	c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &category})
 }
 
 func (ca *categoryRouter) getAllCategories(c *gin.Context) {
@@ -68,9 +68,10 @@ func (ca *categoryRouter) getAllCategories(c *gin.Context) {
 			http.StatusInternalServerError,
 			response.Response{Status: http.StatusInternalServerError, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &categories, Previous: "localhost:9000/api/v1/categories/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/categories/?page=" + paginationResult["next"].(string)})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &categories, Previous: "localhost:9000/api/v1/categories/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/categories/?page=" + paginationResult["next"].(string)})
 }
 
 func (ca *categoryRouter) getCategoryById(c *gin.Context) {
@@ -82,9 +83,10 @@ func (ca *categoryRouter) getCategoryById(c *gin.Context) {
 			http.StatusNotFound,
 			response.Response{Status: http.StatusNotFound, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &category})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &category})
 }
 
 func (ca *categoryRouter) updateCategory(c *gin.Context) {
@@ -101,7 +103,6 @@ func (ca *categoryRouter) updateCategory(c *gin.Context) {
 	}
 
 	id, errID := requestBodyWithId["id"]
-
 	if !errID {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -111,15 +112,15 @@ func (ca *categoryRouter) updateCategory(c *gin.Context) {
 	}
 
 	category, err := ca.categoryInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &category})
+		return
 	}
+
+	c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &category})
 }
 
 func (ca *categoryRouter) deleteCategory(c *gin.Context) {
@@ -133,7 +134,8 @@ func (ca *categoryRouter) deleteCategory(c *gin.Context) {
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Deleted, Data: &category})
+		return
 	}
+
+	c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Deleted, Data: &category})
 }

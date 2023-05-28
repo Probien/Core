@@ -45,15 +45,15 @@ func (e *endorsementRouter) createEndorsement(c *gin.Context) {
 	}
 
 	endorsement, err := e.endorsementInteractor.Create(&endorsementDto, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &endorsement})
+		return
 	}
+
+	c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &endorsement})
 }
 
 func (e *endorsementRouter) getAllEndorsements(c *gin.Context) {
@@ -65,9 +65,10 @@ func (e *endorsementRouter) getAllEndorsements(c *gin.Context) {
 			http.StatusInternalServerError,
 			response.Response{Status: http.StatusInternalServerError, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &endorsements, Previous: "localhost:9000/api/v1/endorsements/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/endorsements/?page=" + paginationResult["next"].(string)})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &endorsements, Previous: "localhost:9000/api/v1/endorsements/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/endorsements/?page=" + paginationResult["next"].(string)})
 }
 
 func (e *endorsementRouter) getEndorsementById(c *gin.Context) {
@@ -79,7 +80,8 @@ func (e *endorsementRouter) getEndorsementById(c *gin.Context) {
 			http.StatusNotFound,
 			response.Response{Status: http.StatusNotFound, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &endorsement})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &endorsement})
 }

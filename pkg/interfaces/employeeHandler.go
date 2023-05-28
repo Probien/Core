@@ -45,15 +45,15 @@ func (e *employeeRouter) createEmployee(c *gin.Context) {
 	}
 
 	employee, err := e.employeeInteractor.Create(employeeDto, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &employee})
+		return
 	}
+
+	c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &employee})
 }
 
 func (e *employeeRouter) getAllEmployees(c *gin.Context) {
@@ -65,9 +65,10 @@ func (e *employeeRouter) getAllEmployees(c *gin.Context) {
 			http.StatusInternalServerError,
 			response.Response{Status: http.StatusInternalServerError, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &employees, Previous: "localhost:9000/api/v1/employees/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/employees/?page=" + paginationResult["next"].(string)})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &employees, Previous: "localhost:9000/api/v1/employees/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/employees/?page=" + paginationResult["next"].(string)})
 }
 
 func (e *employeeRouter) getEmployeeByEmail(c *gin.Context) {
@@ -82,7 +83,6 @@ func (e *employeeRouter) getEmployeeByEmail(c *gin.Context) {
 	}
 
 	email, existEmail := requestEmailBody["email"]
-
 	if !existEmail {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -92,15 +92,15 @@ func (e *employeeRouter) getEmployeeByEmail(c *gin.Context) {
 	}
 
 	employee, err := e.employeeInteractor.GetByEmail(email)
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusNotFound,
 			response.Response{Status: http.StatusNotFound, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &employee})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &employee})
 }
 
 func (e *employeeRouter) updateEmployee(c *gin.Context) {
@@ -117,7 +117,6 @@ func (e *employeeRouter) updateEmployee(c *gin.Context) {
 	}
 
 	id, errID := requestBodyWithId["id"]
-
 	if !errID {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -127,13 +126,13 @@ func (e *employeeRouter) updateEmployee(c *gin.Context) {
 	}
 
 	employee, err := e.employeeInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &employee})
+		return
 	}
+
+	c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &employee})
 }

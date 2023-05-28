@@ -52,9 +52,10 @@ func (p *productRouter) createProduct(c *gin.Context) {
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &product})
+		return
 	}
+
+	c.JSON(http.StatusCreated, response.Response{Status: http.StatusCreated, Message: response.Created, Data: &product})
 }
 
 func (p *productRouter) getAllProducts(c *gin.Context) {
@@ -66,9 +67,10 @@ func (p *productRouter) getAllProducts(c *gin.Context) {
 			http.StatusInternalServerError,
 			response.Response{Status: http.StatusInternalServerError, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &products, Previous: "localhost:9000/api/v1/products/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/products/?page=" + paginationResult["next"].(string)})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.PaginatedResponse{Status: http.StatusOK, ItemsPerPage: 10, TotalPages: int(paginationResult["total_pages"].(float64)), CurrentPage: paginationResult["page"].(int), Data: &products, Previous: "localhost:9000/api/v1/products/?page=" + paginationResult["previous"].(string), Next: "localhost:9000/api/v1/products/?page=" + paginationResult["next"].(string)})
 }
 
 func (p *productRouter) getProductById(c *gin.Context) {
@@ -80,9 +82,10 @@ func (p *productRouter) getProductById(c *gin.Context) {
 			http.StatusNotFound,
 			response.Response{Status: http.StatusNotFound, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &product})
+		return
 	}
+
+	c.JSON(http.StatusOK, response.Response{Status: http.StatusOK, Message: response.Consulted, Data: &product})
 }
 
 func (p *productRouter) updateProduct(c *gin.Context) {
@@ -99,7 +102,6 @@ func (p *productRouter) updateProduct(c *gin.Context) {
 	}
 
 	id, errID := requestBodyWithId["id"]
-
 	if !errID {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
@@ -109,13 +111,13 @@ func (p *productRouter) updateProduct(c *gin.Context) {
 	}
 
 	product, err := p.productInteractor.Update(int(id.(float64)), requestBodyWithId, userSessionId.(int))
-
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			response.Response{Status: http.StatusBadRequest, Message: response.FailedHttpOperation, Data: err.Error(), Help: "https://probien/api/v1/swagger-ui.html"},
 		)
-	} else {
-		c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &product})
+		return
 	}
+
+	c.JSON(http.StatusAccepted, response.Response{Status: http.StatusAccepted, Message: response.Updated, Data: &product})
 }
