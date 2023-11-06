@@ -12,8 +12,8 @@ type PawnOrder struct {
 	Status        *Status        `json:"status,omitempty"`
 	TotalAmount   float64        `json:"total_amount" binding:"required"`
 	Monthly       bool           `json:"monthly" binding:"required"`
-	Products      *[]Product     `json:"products,omitempty"`
-	Endorsements  *[]Endorsement `json:"endorsements_done,omitempty"`
+	Products      *[]Product     `json:"products"`
+	Endorsements  *[]Endorsement `json:"endorsements_done"`
 	CutOffDay     time.Time      `json:"cutoff_date"`
 	ExtensionDate time.Time      `json:"extension_date"`
 }

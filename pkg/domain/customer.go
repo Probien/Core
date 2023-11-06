@@ -10,6 +10,6 @@ type Customer struct {
 	Address    string      `json:"address" binding:"required"`
 	Phone      string      `json:"phone" binding:"required"`
 	PawnOrders []PawnOrder `json:"pawn_orders"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	CreatedAt  time.Time   `json:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at"`
 }

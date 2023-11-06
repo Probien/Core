@@ -9,10 +9,10 @@ type Employee struct {
 	Password       string         `json:"password" binding:"required"`
 	IsActive       bool           `json:"is_active" binding:"required"`
 	BranchOfficeID uint           `json:"branch_office_id" binding:"required"`
-	PawnOrdersDone []PawnOrder    `json:"pawn_orders_done,omitempty"`
-	SessionLogs    []SessionLog   `json:"sessions,omitempty"`
-	Endorsements   []Endorsement  `json:"endorsements_done,omitempty"`
-	Roles          []EmployeeRole `json:"roles,omitempty"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	PawnOrdersDone []PawnOrder    `json:"pawn_orders_done"`
+	SessionLogs    []SessionLog   `json:"sessions"`
+	Endorsements   []Endorsement  `json:"endorsements_done"`
+	Roles          []EmployeeRole `json:"roles"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
 }

@@ -12,11 +12,21 @@ import (
 	"github.com/JairDavid/Probien-Backend/pkg/domain"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
+type Authenticator struct {
+	client *config.RedisClient
+}
+
+func New(redisClient *config.RedisClient) *Authenticator {
+	return &Authenticator{
+		client: redisClient,
+	}
+}
+
+func (a *Authenticator) GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 
 	roles := make(map[string]string)
 
@@ -39,9 +49,11 @@ func GenerateToken(employee *domain.Employee, tokenizer chan<- string) {
 		panic(err)
 	}
 	tokenizer <- token
+	close(tokenizer)
+	return
 }
 
-func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredential) {
+func (a *Authenticator) GenerateSessionID(employee *domain.Employee, session chan<- SessionCredential) {
 	sessionID := uuid.NewV4()
 	sessionClaims := SessionCredential{
 		ID:        sessionID.String(),
@@ -52,25 +64,27 @@ func GenerateSessionID(employee *domain.Employee, session chan<- SessionCredenti
 	if err != nil {
 		fmt.Errorf("error marshalling session: %v", err)
 	}
-	cmd := config.Client.Set(context.Background(), sessionID.String(), string(sessionBytes[:]), time.Minute*30)
+	cmd := a.client.GetConnection().Set(context.Background(), sessionID.String(), string(sessionBytes[:]), time.Minute*30)
 	if err := cmd.Err(); err != nil {
 		fmt.Errorf("error writing session to Redis: %v", err)
 	}
 	session <- sessionClaims
+	close(session)
+	return
 }
 
-func ClearSessionID(c *gin.Context) error {
+func (a *Authenticator) ClearSessionID(c *gin.Context) error {
 	cookie, err := c.Cookie("SID")
 
 	if err != nil {
 		return err
 	}
 
-	config.Client.Del(context.Background(), cookie)
+	a.client.GetConnection().Del(context.Background(), cookie)
 	return nil
 }
 
-func validateAndParseToken(encodedToken string, authCustomClaims *CustomClaims) (*jwt.Token, error) {
+func (a *Authenticator) ValidateAndParseToken(encodedToken string, authCustomClaims *CustomClaims) (*jwt.Token, error) {
 	return jwt.ParseWithClaims(encodedToken, authCustomClaims, func(token *jwt.Token) (interface{}, error) {
 
 		if _, isValid := token.Method.(*jwt.SigningMethodHMAC); !isValid {
@@ -82,26 +96,29 @@ func validateAndParseToken(encodedToken string, authCustomClaims *CustomClaims) 
 
 }
 
-func existCookie(cookie string, checker chan<- bool) {
-	var sessionID = SessionCredential{}
-	val := config.Client.Get(context.Background(), cookie).Val()
+func (a *Authenticator) ExistCookie(cookie string, checker chan<- bool) {
+	var sessionID SessionCredential
+	val := a.client.GetConnection().Get(context.Background(), cookie).Val()
 	err := json.Unmarshal([]byte(val), &sessionID)
 	if err != nil {
 		fmt.Errorf("error getting session from Redis: %v", err)
 	}
 	checker <- val != "" && cookie == sessionID.ID
-
+	close(checker)
+	return
 }
 
-func EncryptPassword(data []byte, ch chan<- []byte) {
+func (a *Authenticator) EncryptPassword(data []byte, ch chan<- []byte) {
 	hash, err := bcrypt.GenerateFromPassword(data, bcrypt.MinCost)
 	if err != nil {
 		fmt.Errorf("error encrypting password: %v", err)
 	}
 	ch <- hash
+	close(ch)
+	return
 }
 
-func checkAuthorities(authorities []string, authCustomClaims *CustomClaims) bool {
+func (a *Authenticator) CheckAuthorities(authorities []string, authCustomClaims *CustomClaims) bool {
 	for i := 0; i < len(authorities); i++ {
 		for _, role := range authCustomClaims.Roles {
 			if role == authorities[i] {

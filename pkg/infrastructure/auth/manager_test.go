@@ -1,11 +1,12 @@
 package auth
 
 import (
+	"github.com/JairDavid/Probien-Backend/config"
 	"testing"
 )
 
 func TestAuthoritiesChecker(t *testing.T) {
-
+	manager := New(config.NewRedisClient("localhost:6379", ""))
 	type errorCaseTest struct {
 		description      string
 		rolesInput       CustomClaims
@@ -50,7 +51,7 @@ func TestAuthoritiesChecker(t *testing.T) {
 
 	for _, v := range tests {
 		t.Run(v.description, func(t *testing.T) {
-			got := checkAuthorities(v.authoritiesInput, &v.rolesInput)
+			got := manager.CheckAuthorities(v.authoritiesInput, &v.rolesInput)
 			if v.expected != got {
 				t.Errorf("Expected %t, got %t", v.expected, got)
 			} else {
@@ -62,8 +63,9 @@ func TestAuthoritiesChecker(t *testing.T) {
 }
 
 func TestEncryptPassword(t *testing.T) {
+	manager := New(config.NewRedisClient("localhost:6379", ""))
 	result := make(chan []byte, 1)
-	EncryptPassword([]byte("kmzwa8awaa"), result)
+	manager.EncryptPassword([]byte("kmzwa8awaa"), result)
 	encryptedPassword := <-result
 
 	if len(encryptedPassword) > 0 {
