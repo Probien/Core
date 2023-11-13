@@ -9,19 +9,23 @@ import (
 type Server struct {
 	engine *gin.Engine
 
+	authRouter         router.IAuthRouter
 	branchOfficeRouter router.IBranchOfficeRouter
 }
 
-func New(engine *gin.Engine, branchOfficeRouter router.IBranchOfficeRouter) *Server {
+func New(engine *gin.Engine, authRouter router.IAuthRouter, branchOfficeRouter router.IBranchOfficeRouter) *Server {
 	return &Server{
 		engine:             engine,
+		authRouter:         authRouter,
 		branchOfficeRouter: branchOfficeRouter,
 	}
 }
 
 func (s *Server) BuildServer() {
+	//setup your basepath here
 	basePathGroup := s.engine.Group("/api/v1")
 	s.branchOfficeRouter.BranchOfficeResource(basePathGroup)
+	s.authRouter.AuthResource(basePathGroup)
 }
 
 func (s *Server) Run() {

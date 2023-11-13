@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-type IlogsRepository interface {
+type ILogRepository interface {
 	GetAllSessions(params url.Values) (*[]dto.SessionLog, map[string]interface{}, error)
 	GetAllSessionsByEmployeeId(id int, params url.Values) (*[]dto.SessionLog, map[string]interface{}, error)
 

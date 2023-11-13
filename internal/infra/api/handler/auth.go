@@ -1,6 +1,9 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	application "github.com/JairDavid/Probien-Backend/internal/app"
+	"github.com/gin-gonic/gin"
+)
 
 type IAuthHandler interface {
 	Login(c *gin.Context)
@@ -9,10 +12,13 @@ type IAuthHandler interface {
 }
 
 type AuthHandler struct {
+	app application.AuthApp
 }
 
-func NewAuthHandler() IAuthHandler {
-	return AuthHandler{}
+func NewAuthHandler(app application.AuthApp) IAuthHandler {
+	return AuthHandler{
+		app: app,
+	}
 }
 
 func (a AuthHandler) Login(c *gin.Context) {

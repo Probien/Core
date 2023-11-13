@@ -1,16 +1,22 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/JairDavid/Probien-Backend/internal/infra/api/handler"
+	"github.com/gin-gonic/gin"
+)
 
 type IAuthRouter interface {
 	AuthResource(g *gin.RouterGroup)
 }
 
 type AuthRouter struct {
+	authHandler handler.IAuthHandler
 }
 
-func NewAuth() IAuthRouter {
-	return &AuthRouter{}
+func NewAuthRouter(authHandler handler.IAuthHandler) IAuthRouter {
+	return &AuthRouter{
+		authHandler: authHandler,
+	}
 }
 
 func (a *AuthRouter) AuthResource(g *gin.RouterGroup) {

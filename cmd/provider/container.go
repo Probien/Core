@@ -2,7 +2,8 @@ package provider
 
 import (
 	"github.com/JairDavid/Probien-Backend/internal/app"
-	"github.com/JairDavid/Probien-Backend/internal/infra/adapter/postgres"
+	postgresAdapter "github.com/JairDavid/Probien-Backend/internal/infra/adapter/postgres"
+	redisAdapter "github.com/JairDavid/Probien-Backend/internal/infra/adapter/redis"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/handler"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/router"
@@ -28,14 +29,35 @@ func (c *Container) Build() *api.Server {
 	//components
 	authenticator := component.NewAuthenticator()
 
-	//DI branchOffices
-	branchOfficeRepo := adapter.NewBranchOfficeRepositoryImp(postgresClient.GetConnection())
+	//DI authentication
+	sessionRepo := redisAdapter.NewSessionRepositoryImp(redisClient.GetConnection())
+	authRepo := postgresAdapter.NewAuthRepositoryImp(postgresClient.GetConnection())
+	authApp := application.NewAuthApp(authRepo, sessionRepo)
+	authHandler := handler.NewAuthHandler(authApp)
+	authRouter := router.NewAuthRouter(authHandler)
+
+	//DI branch offices
+	branchOfficeRepo := postgresAdapter.NewBranchOfficeRepositoryImp(postgresClient.GetConnection())
 	branchOfficeApp := application.NewBranchOfficeApp(branchOfficeRepo)
 	branchOfficeHandler := handler.NewBranchOfficeHandler(branchOfficeApp)
 	branchOfficeRouter := router.NewBranchOfficeRouter(authenticator, redisClient, branchOfficeHandler)
 
+	//DI categories
+
+	//DI customers
+
+	//DI employees
+
+	//DI endorsements
+
+	//DI pawn orders
+
+	//DI products
+
+	//DI logs
+
 	//API server instance
-	server := api.New(engine, branchOfficeRouter)
+	server := api.New(engine, authRouter, branchOfficeRouter)
 	server.BuildServer()
 	return server
 }

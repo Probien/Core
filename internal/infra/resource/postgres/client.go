@@ -10,7 +10,7 @@ import (
 )
 
 type Client struct {
-	Conn *gorm.DB
+	conn *gorm.DB
 }
 
 // NewPostgresConnection receive a formatted string "postgres://postgres:user@ip:port/database_name?sslmode=disable"
@@ -29,12 +29,12 @@ func NewPostgresConnection(dsn string) *Client {
 	sqlDB.SetMaxOpenConns(100)
 
 	return &Client{
-		Conn: db,
+		conn: db,
 	}
 }
 
 func (p *Client) GetConnection() *gorm.DB {
-	return p.Conn
+	return p.conn
 }
 
 // Migrate to migrate the models and stored procedures, add flag -migrate=true
@@ -55,7 +55,7 @@ func (p *Client) Migrate() {
 		log.Fatalln(err)
 	}
 
-	err = p.Conn.AutoMigrate(
+	err = p.conn.AutoMigrate(
 		&model.Category{},
 		&model.Customer{},
 		&model.BranchOffice{},
@@ -74,8 +74,8 @@ func (p *Client) Migrate() {
 		return
 	}
 
-	p.Conn.Exec(string(sessions))
-	p.Conn.Exec(string(moderation))
-	p.Conn.Exec(string(orderDates))
+	p.conn.Exec(string(sessions))
+	p.conn.Exec(string(moderation))
+	p.conn.Exec(string(orderDates))
 	log.Print("migrated all models")
 }
