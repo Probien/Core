@@ -43,21 +43,60 @@ func (c *Container) Build() *api.Server {
 	branchOfficeRouter := router.NewBranchOfficeRouter(authenticator, redisClient, branchOfficeHandler)
 
 	//DI categories
+	categoryRepo := postgresAdapter.NewCategoryRepositoryImpl(postgresClient.GetConnection())
+	categoryApp := application.NewCategoryApp(categoryRepo)
+	categoryHandler := handler.NewCategoryHandler(categoryApp)
+	categoryRouter := router.NewCategoryHandler(authenticator, redisClient, categoryHandler)
 
 	//DI customers
+	customerRepo := postgresAdapter.NewCustomerRepositoryImpl(postgresClient.GetConnection())
+	customerApp := application.NewCustomerApp(customerRepo)
+	customerHandler := handler.NewCustomerHandler(customerApp)
+	customerRouter := router.NewCustomerRouter(authenticator, redisClient, customerHandler)
 
 	//DI employees
+	employeeRepo := postgresAdapter.NewEmployeeRepositoryImpl(postgresClient.GetConnection())
+	employeeApp := application.NewEmployeeApp(employeeRepo)
+	employeeHandler := handler.NewEmployeeHandler(employeeApp)
+	employeeRouter := router.NewEmployeeRouter(authenticator, redisClient, employeeHandler)
 
 	//DI endorsements
+	endorsementRepo := postgresAdapter.NewEndorsementRepositoryImpl(postgresClient.GetConnection())
+	endorsementApp := application.NewEndorsementApp(endorsementRepo)
+	endorsementHandler := handler.NewEndorsementHandler(endorsementApp)
+	endorsementRouter := router.NewEndorsementRouter(authenticator, redisClient, endorsementHandler)
 
 	//DI pawn orders
+	pawnOrderRepo := postgresAdapter.NewPawnOrderRepositoryImpl(postgresClient.GetConnection())
+	pawnOrderApp := application.NewPawnOrderApp(pawnOrderRepo)
+	pawnOrderHandler := handler.NewPawnOrderHandler(pawnOrderApp)
+	pawnOrderRouter := router.NewPawnOrderRouter(authenticator, redisClient, pawnOrderHandler)
 
 	//DI products
+	productRepo := postgresAdapter.NewProductRepositoryImpl(postgresClient.GetConnection())
+	productApp := application.NewProductApp(productRepo)
+	productHandler := handler.NewProductHandler(productApp)
+	productRouter := router.NewProductRouter(authenticator, redisClient, productHandler)
 
 	//DI logs
+	logRepo := postgresAdapter.NewLogsRepositoryImp(postgresClient.GetConnection())
+	logApp := application.NewLogApp(logRepo)
+	logHandler := handler.NewLogHandler(logApp)
+	logRouter := router.NewLogRouter(authenticator, redisClient, logHandler)
 
 	//API server instance
-	server := api.New(engine, authRouter, branchOfficeRouter)
+	server := api.New(
+		engine,
+		authRouter,
+		branchOfficeRouter,
+		categoryRouter,
+		customerRouter,
+		employeeRouter,
+		endorsementRouter,
+		pawnOrderRouter,
+		productRouter,
+		logRouter,
+	)
 	server.BuildServer()
 	return server
 }

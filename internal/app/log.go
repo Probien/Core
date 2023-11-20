@@ -2,15 +2,15 @@ package application
 
 import (
 	"github.com/JairDavid/Probien-Backend/internal/domain/dto"
-	port "github.com/JairDavid/Probien-Backend/internal/domain/port/postgres"
+	"github.com/JairDavid/Probien-Backend/internal/domain/port/postgres"
 	"net/url"
 )
 
 type LogApp struct {
-	port port.IlogsRepository
+	port port.ILogRepository
 }
 
-func NewLogApp(repository port.IlogsRepository) LogApp {
+func NewLogApp(repository port.ILogRepository) LogApp {
 	return LogApp{
 		port: repository,
 	}

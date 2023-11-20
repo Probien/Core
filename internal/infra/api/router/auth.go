@@ -20,6 +20,7 @@ func NewAuthRouter(authHandler handler.IAuthHandler) IAuthRouter {
 }
 
 func (a *AuthRouter) AuthResource(g *gin.RouterGroup) {
-	//TODO implement me
-	panic("implement me")
+	g.POST("/login", a.authHandler.Login)
+	g.POST("/logout", a.authHandler.Logout)
+	g.GET("/password-recovery", a.authHandler.RecoverPassword)
 }
