@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	port "github.com/JairDavid/Probien-Backend/internal/domain/port/redis"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/response"
 	"github.com/JairDavid/Probien-Backend/internal/infra/component"
-	"github.com/JairDavid/Probien-Backend/internal/infra/resource/redis"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JwtRbac(authenticator *component.Authenticator, cookieManager *redis.Client, authorities ...string) gin.HandlerFunc {
+func JwtRbac(authenticator *component.Authenticator, cookieManager port.ISessionRepository, authorities ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		data := component.CustomClaims{}
 		checker := make(chan bool, 1)

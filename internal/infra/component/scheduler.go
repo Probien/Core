@@ -22,7 +22,7 @@ func NewScheduler(cron *gocron.Scheduler, pgClient *postgres.Client) *Scheduler 
 func (s *Scheduler) StartCronJobs() {
 
 	_, cronErr := s.cron.Every(1).Day().Do(func() {
-		s.pgClient.Conn.Exec("CALL update_orders()")
+		s.pgClient.GetConnection().Exec("CALL update_orders()")
 		log.Print("updating orders...")
 	})
 

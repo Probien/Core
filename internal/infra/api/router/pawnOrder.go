@@ -1,10 +1,10 @@
 package router
 
 import (
+	port "github.com/JairDavid/Probien-Backend/internal/domain/port/redis"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/handler"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/middleware"
 	"github.com/JairDavid/Probien-Backend/internal/infra/component"
-	"github.com/JairDavid/Probien-Backend/internal/infra/resource/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,11 +14,11 @@ type IPawnOrderRouter interface {
 
 type PawnOrderRouter struct {
 	auth          *component.Authenticator
-	cookieManager *redis.Client
+	cookieManager port.ISessionRepository
 	handler       handler.IPawnOrderHandler
 }
 
-func NewPawnOrderRouter(auth *component.Authenticator, cookieManager *redis.Client, handler handler.IPawnOrderHandler) IPawnOrderRouter {
+func NewPawnOrderRouter(auth *component.Authenticator, cookieManager port.ISessionRepository, handler handler.IPawnOrderHandler) IPawnOrderRouter {
 	return PawnOrderRouter{
 		auth:          auth,
 		cookieManager: cookieManager,

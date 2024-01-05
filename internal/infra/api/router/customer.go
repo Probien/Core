@@ -1,10 +1,10 @@
 package router
 
 import (
+	port "github.com/JairDavid/Probien-Backend/internal/domain/port/redis"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/handler"
 	"github.com/JairDavid/Probien-Backend/internal/infra/api/middleware"
 	"github.com/JairDavid/Probien-Backend/internal/infra/component"
-	"github.com/JairDavid/Probien-Backend/internal/infra/resource/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,11 +14,11 @@ type ICustomerRouter interface {
 
 type CustomerRouter struct {
 	auth          *component.Authenticator
-	cookieManager *redis.Client
+	cookieManager port.ISessionRepository
 	handler       handler.ICustomerHandler
 }
 
-func NewCustomerRouter(auth *component.Authenticator, cookieManager *redis.Client, handler handler.ICustomerHandler) ICustomerRouter {
+func NewCustomerRouter(auth *component.Authenticator, cookieManager port.ISessionRepository, handler handler.ICustomerHandler) ICustomerRouter {
 	return CustomerRouter{
 		auth:          auth,
 		cookieManager: cookieManager,
