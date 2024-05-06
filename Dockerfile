@@ -13,8 +13,12 @@ RUN go mod download
 RUN ls
 
 COPY . .
+WORKDIR /app/cmd
+
 RUN go build -o app .
+
+WORKDIR /app
 
 EXPOSE 9000
 
-ENTRYPOINT ["./app", "-migrate=true"]
+ENTRYPOINT ["./cmd/app", "-migrate=true"]

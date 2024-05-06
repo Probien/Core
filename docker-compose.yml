@@ -9,13 +9,6 @@ services:
       - POSTGRES_DB=probien
     volumes:
       - pg-data:/var/lib/postgresql/data
-  probien:
-    build: .
-    env_file: ./vars.env
-    ports:
-      - "9000:9000"
-    links:
-      - probien-database
   redis-session:
     image: redis/redis-stack-server
     ports:
@@ -24,5 +17,14 @@ services:
       - $PWD/configs/redis.conf:/usr/local/etc/redis/redis.conf
     links:
       - probien
+    depends_on:
+      - probien
+  probien:
+    build: .
+    env_file: ./vars.env
+    ports:
+      - "9000:9000"
+    links:
+      - probien-database
 volumes:
   pg-data:

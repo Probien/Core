@@ -23,8 +23,8 @@ func (c *Container) Build() *api.Server {
 	engine := gin.New()
 
 	//clients
-	postgresClient := postgres.NewPostgresConnection("postgres://postgres:root@localhost:5432/probien?sslmode=disable")
-	redisClient := redis.New("redis-10391.c279.us-central1-1.gce.cloud.redislabs.com", "10391")
+	postgresClient := postgres.NewPostgresConnection("postgres://postgres:root@probien-database/probien?sslmode=disable")
+	redisClient := redis.New("redis-session:6379", "")
 
 	//components
 	authenticator := component.NewAuthenticator()

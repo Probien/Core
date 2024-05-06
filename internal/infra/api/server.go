@@ -52,7 +52,6 @@ func (s *Server) BuildServer() {
 	basePathGroup := s.engine.Group("/api/v1")
 
 	//implement interfaces
-	s.branchOfficeRouter.BranchOfficeResource(basePathGroup)
 	s.authRouter.AuthResource(basePathGroup)
 	s.branchOfficeRouter.BranchOfficeResource(basePathGroup)
 	s.categoryRouter.CategoryResource(basePathGroup)
