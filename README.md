@@ -9,7 +9,7 @@
         <a target="_blank" href="https://crowdin.com/project/excalidraw">
       <img src="https://img.shields.io/github/last-commit/ThePandaDevs/Probien-Backend">
     </a>
-      <h4>Phase 1/3, Im still working on this when I have time</h4>
+      <h4>Phase 2/2, Im still working on this when I have time</h4>
   </p>
 </div>
 
