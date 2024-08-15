@@ -112,35 +112,6 @@ export DATABASE_URI_PDN="postgres://postgres:root@(REMOTE_IP):(REMOTE_PORT)/prob
 export REDIS_URI="redis.us-central.cloud.example:12345"
 export REDIS_PASSWORD="R3d¡s_P4$$W0rd"
 ```
-
-Once did it, make sure to add the following code below those two functions to load all enviroment vars needed (if you have docker installed, jump to docker section).
-This is inside **redis.go** file
-```
-func ConnectRedis() {
-	
-	err := godotenv.Load("vars.env")
-
-	if err != nil {
-		panic(errors.New("vars.env failed: " + err.Error()))
-	}
-
-
-        more code...
-}
-```
-And this one inside **database.go** file
-```
-func ConnectDB() {
-
-	env := godotenv.Load("vars.env")
-	if env != nil {
-		panic("check environment vars: " + env.Error())
-	}
-	
-	
-        more code...
-}
-```
 ## Running the app
 
 If it is the first time you are running the application, you must add the flag  obligately, add it after command:
@@ -183,3 +154,5 @@ In case you need remove the environment, just hit
 ```
 docker compose down
 ```
+
+#### Note: the docker compose pulls up the probien backend service, a redis server for store sessions and a postgres database

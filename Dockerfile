@@ -1,4 +1,4 @@
-FROM golang:1.18.2
+FROM golang:1.20.10
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
@@ -13,8 +13,12 @@ RUN go mod download
 RUN ls
 
 COPY . .
+WORKDIR /app/cmd
+
 RUN go build -o app .
+
+WORKDIR /app
 
 EXPOSE 9000
 
-ENTRYPOINT ["./app", "-migrate=true"]
+ENTRYPOINT ["./cmd/app", "-migrate=true"]
